@@ -1,26 +1,12 @@
 import Split from 'react-split';
-import { createTheme, ThemeProvider } from '@mui/material';
+import { ThemeProvider } from '@mui/material';
+import { theme } from './theme/theme';
 import AELogo from './assets/images/ae_logo_blue.png';
 import './App.css';
 import TopBar from './components/TopBar';
 import JackPlayground from './containers/JackPlayground';
 import NerinePlayground from './containers/NerinePlayground';
 import LuisPlayground from './containers/LuisPlayground';
-
-const theme = createTheme({
-	palette: {
-		primary: {
-			light: '#e8f0f7',
-			main: '#00569c',
-			dark: '#003765',
-		},
-		secondary: {
-			light: '#e2facc',
-			main: '#57b431',
-			dark: '#2e7511',
-		},
-	}
-});
 
 function App() {
 	return (
