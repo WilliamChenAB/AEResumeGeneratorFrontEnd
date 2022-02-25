@@ -5,19 +5,18 @@ import Dropdown from '../components/Dropdown';
 
 const defaultFormValues = {
   name: '',
-  number: '',
-  division: '',
-  image: '',
-  template: '',
+  baseTemplate: '',
+  description: ''
 };
 
 /**
- * Add workspace pop-up.
+ * Add Template pop-up.
+ * @param templates array of templates
  * @param open Boolean for if dialog is open
  * @param onClose Handler for when dialog should be closed
- * @returns AddWorkspace container
+ * @returns AddTemplate container
  */
-function AddWorkspace({ open, onClose }) {
+function AddTemplate({ templates, open, onClose }) {
   const [formValues, setFormValues] = useState(defaultFormValues);
   const [submitDisabled, setSubmitDisabled] = useState(true);
   const [openCompleteMessage, setOpenCompleteMessage] = useState(false);
@@ -49,11 +48,10 @@ function AddWorkspace({ open, onClose }) {
   }
 
   const handleSubmit = (ev) => {
-    console.log('creating workspace with values:');
+    console.log('creating template with values:');
     console.log(formValues);
 
     // TODO - display complete message based on submit success status
-    
     setOpenCompleteMessage(true);
     handleClose();
   }
@@ -65,34 +63,27 @@ function AddWorkspace({ open, onClose }) {
   return (
     <div>
       <Snackbar anchorOrigin={{vertical: 'top', horizontal: 'center'}} open={openCompleteMessage} autoHideDuration={5000} onClose={handleCloseCompleteMessage}>
-        <Alert severity='success' onClose={handleCloseCompleteMessage}>Workspace {formValues.name} has been successfully added.</Alert>
+        <Alert severity='success' onClose={handleCloseCompleteMessage}>Template {formValues.name} has been successfully created.</Alert>
       </Snackbar>
       <Dialog maxWidth='lg' fullWidth open={open}>
         <DialogTitle>
-          Add Workspace
+          Create Template
           <IconButton sx={{ position: 'absolute', right: 8, top: 8 }} onClick={handleClose}>
             <Close />
           </IconButton>
         </DialogTitle>
         <DialogContent>
           <form ref={formRef}>
-            <TextField fullWidth required label='Project Name' variant='standard' name='name' onChange={handleFormChange}></TextField>
+            <TextField fullWidth required label='Template Name' variant='standard' name='name' onChange={handleFormChange}></TextField>
             <br />
             <br />
-            <TextField fullWidth required label='Project Number' variant='standard' name='number' onChange={handleFormChange}></TextField>
+            <Dropdown label='Base Template' name='baseTemplate' options={templates} onChange={handleDropdownChange} />
             <br />
-            <br />
-            <TextField fullWidth required label='Division' variant='standard' name='division' onChange={handleFormChange}></TextField>
-            <br />
-            <br />
-            <TextField fullWidth label='Image Link' variant='standard' name='image' onChange={handleFormChange}></TextField>
-            <br />
-            <br />
-            <Dropdown required label='Resume Template' options={['template1', 'template2', 'template3', 'template4', 'template5']} name='template' onChange={handleDropdownChange}></Dropdown>
+            <TextField fullWidth multiline rows={4} label='Template Description' name='description' onChange={handleFormChange}></TextField>
             <br />
             <br />
             <Grid container justifyContent='flex-end'>
-              <Button variant='contained' onClick={handleSubmit} disabled={submitDisabled}>Create</Button>
+              <Button variant='contained' onClick={handleSubmit} disabled={submitDisabled}>Save</Button>
             </Grid>
           </form>
         </DialogContent>
@@ -101,4 +92,4 @@ function AddWorkspace({ open, onClose }) {
   );
 }
 
-export default AddWorkspace;
+export default AddTemplate;

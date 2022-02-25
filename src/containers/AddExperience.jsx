@@ -1,23 +1,25 @@
 import { useEffect, useState, useRef } from 'react';
-import { Button, Grid, IconButton, Dialog, DialogTitle, DialogContent, TextField, Snackbar, Alert } from '@mui/material';
+import { Button, Grid, IconButton, Dialog, DialogTitle, DialogContent, TextField, Snackbar, Alert, Stack, Box} from '@mui/material';
 import { Close } from '@mui/icons-material';
 import Dropdown from '../components/Dropdown';
 
 const defaultFormValues = {
   name: '',
-  number: '',
   division: '',
+  location: '',
   image: '',
-  template: '',
+  description: ''
 };
 
 /**
- * Add workspace pop-up.
+ * Add Experience Sector pop-up.
+ * @param divisions array of divisions
+ * @param locations array of locations
  * @param open Boolean for if dialog is open
  * @param onClose Handler for when dialog should be closed
- * @returns AddWorkspace container
+ * @returns AddExperience container
  */
-function AddWorkspace({ open, onClose }) {
+function AddExperience({ divisions, locations, open, onClose }) {
   const [formValues, setFormValues] = useState(defaultFormValues);
   const [submitDisabled, setSubmitDisabled] = useState(true);
   const [openCompleteMessage, setOpenCompleteMessage] = useState(false);
@@ -49,11 +51,10 @@ function AddWorkspace({ open, onClose }) {
   }
 
   const handleSubmit = (ev) => {
-    console.log('creating workspace with values:');
+    console.log('creating Experience sector with values:');
     console.log(formValues);
 
     // TODO - display complete message based on submit success status
-    
     setOpenCompleteMessage(true);
     handleClose();
   }
@@ -65,11 +66,11 @@ function AddWorkspace({ open, onClose }) {
   return (
     <div>
       <Snackbar anchorOrigin={{vertical: 'top', horizontal: 'center'}} open={openCompleteMessage} autoHideDuration={5000} onClose={handleCloseCompleteMessage}>
-        <Alert severity='success' onClose={handleCloseCompleteMessage}>Workspace {formValues.name} has been successfully added.</Alert>
+        <Alert severity='success' onClose={handleCloseCompleteMessage}>Experience Sector for project {formValues.name} has been successfully created.</Alert>
       </Snackbar>
       <Dialog maxWidth='lg' fullWidth open={open}>
         <DialogTitle>
-          Add Workspace
+          Add Experience Sector
           <IconButton sx={{ position: 'absolute', right: 8, top: 8 }} onClick={handleClose}>
             <Close />
           </IconButton>
@@ -79,20 +80,23 @@ function AddWorkspace({ open, onClose }) {
             <TextField fullWidth required label='Project Name' variant='standard' name='name' onChange={handleFormChange}></TextField>
             <br />
             <br />
-            <TextField fullWidth required label='Project Number' variant='standard' name='number' onChange={handleFormChange}></TextField>
-            <br />
-            <br />
-            <TextField fullWidth required label='Division' variant='standard' name='division' onChange={handleFormChange}></TextField>
-            <br />
-            <br />
             <TextField fullWidth label='Image Link' variant='standard' name='image' onChange={handleFormChange}></TextField>
             <br />
             <br />
-            <Dropdown required label='Resume Template' options={['template1', 'template2', 'template3', 'template4', 'template5']} name='template' onChange={handleDropdownChange}></Dropdown>
+            <Stack direction="row" spacing={2}>
+              <Box sx={{flexGrow : 1}}>
+                <Dropdown required label='Division' name='division' options={divisions} onChange={handleDropdownChange} />
+              </Box>
+              <Box sx={{flexGrow : 1}}>
+                <Dropdown required label='Location' name='location' options={locations} onChange={handleDropdownChange} />
+              </Box>
+            </Stack>
+            <br />
+            <TextField required fullWidth multiline rows={4} label='Description' name='description' onChange={handleFormChange}></TextField>
             <br />
             <br />
             <Grid container justifyContent='flex-end'>
-              <Button variant='contained' onClick={handleSubmit} disabled={submitDisabled}>Create</Button>
+              <Button variant='contained' onClick={handleSubmit} disabled={submitDisabled}>Save</Button>
             </Grid>
           </form>
         </DialogContent>
@@ -101,4 +105,4 @@ function AddWorkspace({ open, onClose }) {
   );
 }
 
-export default AddWorkspace;
+export default AddExperience;

@@ -28,7 +28,7 @@ function TopBar({ buttons, roles }) {
     <div>
       <AppBar>
         <Toolbar>
-          <Box component='img' sx={{ width: 50}} alt='Associated Engineering' src={AELogoCrop} />
+          <Box component='img' sx={{ width: 50, paddingRight: 10}} alt='Associated Engineering' src={AELogoCrop} />
           <Box sx={{ flexGrow: 1}}>
             {
               buttons.map(button => {
