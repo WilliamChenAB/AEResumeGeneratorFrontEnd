@@ -5,6 +5,7 @@ import ResumeTable from '../components/Table/ResumeTable';
 import TemplateTable from '../components/Table/TemplateTable';
 import WorkspaceEmployeeTemplate from '../components/Table/WorkspaceEmployeeTable';
 import WorkspaceTable from '../components/Table/WorkspaceTable';
+import TextBox from '../components/TextBox/TextBox';
 
 function NerinePlayground() {
     return (
@@ -21,6 +22,8 @@ function NerinePlayground() {
             <TemplateTable />
             <WorkspaceEmployeeTemplate />
             <WorkspaceTable />
+            <TextBox text='' rows={10}/>
+            <TextBox text='test'/>
         </div>
     );
 }
