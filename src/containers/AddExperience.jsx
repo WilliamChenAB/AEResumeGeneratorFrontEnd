@@ -34,9 +34,9 @@ function AddExperience({ divisions, locations, open, onClose }) {
     }
   }, [formValues]);
 
-  const handleClose = (ev) => {
+  const handleClose = (success) => {
     setSubmitDisabled(true);
-    onClose();
+    onClose(success, formValues.name, formValues.division, formValues.location, formValues.image, formValues.description);
   }
 
   const handleFormChange = (ev) => {
@@ -56,7 +56,7 @@ function AddExperience({ divisions, locations, open, onClose }) {
 
     // TODO - display complete message based on submit success status
     setOpenCompleteMessage(true);
-    handleClose();
+    handleClose(true);
   }
 
   const handleCloseCompleteMessage = (ev) => {
@@ -71,7 +71,7 @@ function AddExperience({ divisions, locations, open, onClose }) {
       <Dialog maxWidth='lg' fullWidth open={open}>
         <DialogTitle>
           Add Experience Sector
-          <IconButton sx={{ position: 'absolute', right: 8, top: 8 }} onClick={handleClose}>
+          <IconButton sx={{ position: 'absolute', right: 8, top: 8 }} onClick={() => {handleClose(false);}}>
             <Close />
           </IconButton>
         </DialogTitle>
