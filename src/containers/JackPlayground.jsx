@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Button } from '@mui/material';
 import AddButton from '../components/AddButton';
-import SearchBar from '../components/SearchBar';
 import Dropdown from '../components/Dropdown';
 import Profile from '../components/Profile';
 import AELogo from '../assets/images/ae_logo_blue.png';
@@ -15,7 +14,6 @@ function JackPlayground() {
     <div>
       <AddButton text='Add Workspace'></AddButton>
       <br />
-      <SearchBar placeholder='Search...'></SearchBar>
       <br />
       <Dropdown label='Resume Template' required options={['a', 'b', 'c', 'd', 'e']}></Dropdown>
       <br />

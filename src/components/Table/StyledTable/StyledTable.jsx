@@ -10,7 +10,7 @@ export default function StyledTable(props) {
         pageSize={5}
         rowsPerPageOptions={[5]}
         disableColumnMenu
-        disableSelectionOnClick
+        onSelectionModelChange={(id) => props.onSelect(id)}
       />
   );
 }
