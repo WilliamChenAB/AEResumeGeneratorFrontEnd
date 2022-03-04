@@ -2,12 +2,16 @@ import { useState } from 'react';
 import { Button, Box, Grid, IconButton, InputAdornment, OutlinedInput, Typography } from '@mui/material';
 import AELogo from '../assets/images/ae_logo_blue.png';
 import { Person, Key, Visibility, VisibilityOff } from '@mui/icons-material';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 /**
  * Login form.
  * @returns Login container
  */
 function Login() {
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const [showPassword, setShowPassword] = useState(false);
 
   const handleShowPassword = (ev) => {
@@ -15,12 +19,14 @@ function Login() {
   }
 
   const handleLogin = (ev) => {
-    console.log('logging in...');
+    // TODO - handle login here
+    let from = location.state?.from?.pathname || '/resumes';
+    navigate(from, { replace: true });
   }
 
   return (
     <div>
-      <Grid container direction='column' justifyContent='center' alignItems='center' sx={{ textAlign: 'center'}}>
+      <Grid container direction='column' justifyContent='center' alignItems='center' sx={{ textAlign: 'center' }}>
         <Box>
           <img src={AELogo} alt='Associated Engineering' />
         </Box>

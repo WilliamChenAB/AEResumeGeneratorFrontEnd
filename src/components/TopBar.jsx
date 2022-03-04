@@ -2,8 +2,10 @@ import React from 'react';
 import { AppBar, Box, Button, MenuItem, Select, Toolbar } from '@mui/material';
 import AELogoCrop from '../assets/images/ae_logo_blue_cropped.png';
 import { Person } from '@mui/icons-material';
+import { Link, useNavigate } from 'react-router-dom';
 
 function TopBar({ buttons, roles }) {
+  const navigate = useNavigate();
 
   //Not sure if we should just use Jack's dropdown or if its fine to handle it differently because its only in 1 place
   //might be best to just use a set of values for both that have each their own functions instead of passing it in
@@ -19,8 +21,8 @@ function TopBar({ buttons, roles }) {
   }
 
   const handleSignOutClicked = () => {
-    //add sign out logic?
-   console.log(`Sign out clicked`);
+    // TODO - handle log out here
+    navigate('/login');
   }
 
   // this is just a placeholder file. delete this if we don't end up using it!
@@ -28,12 +30,14 @@ function TopBar({ buttons, roles }) {
     <div>
       <AppBar>
         <Toolbar>
-          <Box component='img' sx={{ width: 50, paddingRight: 10}} alt='Associated Engineering' src={AELogoCrop} />
-          <Box sx={{ flexGrow: 1}}>
+          <Box component='img' sx={{ width: 50, paddingRight: 10 }} alt='Associated Engineering' src={AELogoCrop} />
+          <Box sx={{ flexGrow: 1 }}>
             {
               buttons.map(button => {
                 return (
-                  <Button onClick={e => handleMenuButtonClicked(button)} key={button} sx={{ color: 'white' }}>{button}</Button>
+                  <Link to={`/${button.toLowerCase()}`} key={button} style={{ textDecoration: 'none' }}>
+                    <Button onClick={e => handleMenuButtonClicked(button)} sx={{ color: 'white' }}>{button}</Button>
+                  </Link>
                 );
               })
             }
