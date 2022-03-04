@@ -33,6 +33,7 @@ export default function ExperienceTextBox(props) {
   const [picture, setPicture] = React.useState(props.picture);
   const [dialogOpen, setOpenDialog] = React.useState(false);
   const [truncateDescription, setTruncateDescription] = React.useState(true);
+  const [selected, setSelected] = React.useState(false);
 
 
   const descriptionRef = React.useRef();
@@ -61,7 +62,7 @@ export default function ExperienceTextBox(props) {
   return (
     <Box sx={{display: 'flex', flexDirection: 'row' }}>
       <Card sx={{ width: '100%'}}>
-        <CardActionArea>
+        <CardActionArea onClick={() => {setSelected(!selected)}}>
           <Box sx={{margin: 2}}>
             <Box sx={{display: 'flex', flexDirection: 'row' }}>
               <Box sx={{display: 'flex', flexDirection: 'column', width: '100%'}}>
@@ -79,14 +80,17 @@ export default function ExperienceTextBox(props) {
           </Box>
         </CardActionArea>
       </Card>
-      <Box sx={{display: 'flex', flexDirection: 'column', justifyContent: 'space-between'}}>
-        <IconButton onClick={() => {setOpenDialog(true)}}><EditIcon/></IconButton>
-        <Box>
-          <IconButton onClick={() => {}}>
-            <DeleteIcon/>
-          </IconButton>
+      {
+        props.hideEdit? null :
+        <Box sx={{display: 'flex', flexDirection: 'column', justifyContent: 'space-between'}}>
+          <IconButton onClick={() => {setOpenDialog(true)}}><EditIcon/></IconButton>
+          <Box>
+            <IconButton onClick={() => {}}>
+              <DeleteIcon/>
+            </IconButton>
+          </Box>
         </Box>
-      </Box>
+      }
     <AddExperience divisions={divisions} locations={locations} open={dialogOpen} onClose={onClose}></AddExperience>
     </Box>
     

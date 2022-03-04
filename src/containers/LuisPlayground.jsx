@@ -1,6 +1,7 @@
 import SideBarTabs from '../components/SideBarTabs';
 import AddTemplate from '../containers/AddTemplate'; 
 import AddExperience from '../containers/AddExperience'; 
+import SectorSelection from '../containers/SectorSelection'; 
 import ExperienceTextBox from '../components/TextBox/ExperienceTextBox';
 import React from 'react';
 import { useState } from 'react';
@@ -15,7 +16,7 @@ const longText = "In up so discovery my middleton eagerness dejection explained.
 
 
 function clickHandler(ev){
-  console.log(`clicked }`);
+  console.log(`clicked ${ev}`);
 }
 
 function selectHandler(ev){
@@ -27,11 +28,13 @@ function LuisPlayground() {
   const [entries, setEntries] = useState(ent);
   const [createTemplate, setCreateTemplate] = useState(false);
   const [addExperienceSector, setaddExperienceSector] = useState(false);
+  const [selectSector, setSelectSector] = useState(false);
 
     return (
         <div>
           <Button onClick={()=>{setCreateTemplate(true)}}>Create Template</Button>
           <Button onClick={()=>{setaddExperienceSector(true)}}>Add Experience Sector</Button>
+          <Button onClick={()=>{setSelectSector(true)}}>Select Sectors</Button>
           <ExperienceTextBox name='Special Contract'location='Vancouver BC' division='Civil' description={longText}></ExperienceTextBox>
           <ExperienceTextBox></ExperienceTextBox>
           <Box sx={{width: 500, height: 200}}>
@@ -46,6 +49,7 @@ function LuisPlayground() {
           </Box>
           <AddTemplate templates={templates} open={createTemplate} onClose={() => { setCreateTemplate(false) }} />
           <AddExperience divisions={divisions} locations={locations} open={addExperienceSector} onClose={() => { setaddExperienceSector(false) }}></AddExperience>
+          <SectorSelection entries={[{type:'Projects', sectors:[]},{type:'Experience', sectors:[{key:2132, data:{description:'interesting', imageLink:'aaa.com', division:'D1', location:'Vancouver', name:'Experiencing experience'}}]},{type:'Education', sectors:[{key:2132, data:'middle School'}, {key:123, data:'High School'}, {key:1245, data:'Uni'}]}]} resumeName='Resume Contract name thing' open={selectSector} onClose={() => { setSelectSector(false) }}></SectorSelection>
         </div>
     );
 }

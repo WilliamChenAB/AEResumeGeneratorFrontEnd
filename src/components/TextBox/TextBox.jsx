@@ -31,24 +31,27 @@ export default function TextBox(props) {
         />
         </CardActionArea>
       </Card>
-      <Box sx={{display: 'flex', flexDirection: 'column', justifyContent: 'space-between'}}>
-        <Box sx={{display: 'flex', flexDirection: 'column'}}>
-          {disabled ? <IconButton onClick={() => setDisabled(!disabled)}><EditIcon/></IconButton> :
-          <><IconButton onClick={() => setDisabled(!disabled)}>
-            <CheckIcon/>
-          </IconButton>
-          <IconButton onClick={() => {setDisabled(!disabled); setValue(props.text)}}>
-            <ClearIcon/>
-          </IconButton>
-          </>
+      {
+        props.hideEdit? null :
+        <Box sx={{display: 'flex', flexDirection: 'column', justifyContent: 'space-between'}}>
+          <Box sx={{display: 'flex', flexDirection: 'column'}}>
+            {disabled ? <IconButton onClick={() => setDisabled(!disabled)}><EditIcon/></IconButton> :
+            <><IconButton onClick={() => setDisabled(!disabled)}>
+              <CheckIcon/>
+            </IconButton>
+            <IconButton onClick={() => {setDisabled(!disabled); setValue(props.text)}}>
+              <ClearIcon/>
+           </IconButton>
+            </>
           }
         </Box>
-        <Box>
-          <IconButton onClick={() => {}}>
-            <DeleteIcon/>
-          </IconButton>
+          <Box>
+            <IconButton onClick={() => {}}>
+              <DeleteIcon/>
+            </IconButton>
+          </Box>
         </Box>
-      </Box>
+      }
     </Box>
   )
 }

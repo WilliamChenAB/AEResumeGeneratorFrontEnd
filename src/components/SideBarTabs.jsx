@@ -37,7 +37,7 @@ function SideBarTabs({entries, showCheckBoxes, color, selectedColor, textColor, 
             <ListItemButton onClick={(ev) => 
               {
                 setSelectedEntry(obj.name);
-                onEntryClick(ev);
+                onEntryClick(obj.name);
               }}>
               {checkbox}
               <ListItemText sx={{ color: textColor }}>
