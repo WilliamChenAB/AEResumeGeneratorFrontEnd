@@ -2,6 +2,7 @@ export const colorToken = {
   brand: {
     aeBlue: '#00569c',
     aeBlueDark: '#003765',
+    aeBlueMid: '#b5cde3',
     aeBlueLight: '#e8f0f7',
     aeGreen: '#57b431',
     aeGreenDark: '#2e7511 ', 
