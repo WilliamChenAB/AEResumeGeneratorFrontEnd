@@ -1,10 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit';
-import counterReducer from './slices/counterSlice';
+import resumeReducer from './slices/resumeSlice';
+import sectorReducer from './slices/sectorSlice';
+
 
 export default configureStore({
   reducer: {
-    // counter IS A SAMPLE/PLACEHOLDER REDUCER
-    // REMOVE ONCE WE HAVE ACTUAL REDUCERS
-    counter: counterReducer
+    resume: resumeReducer,
+    sector: sectorReducer,
+
   }
 });
