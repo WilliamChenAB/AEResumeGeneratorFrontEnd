@@ -25,6 +25,11 @@ export const theme = createTheme({
       fontWeight: 500,
       color: colorToken.brand.aeBlue,
     },
+    h3: {
+      fontSize: 18,
+      fontWeight: 600,
+      color: colorToken.brand.aeBlue,
+    },
     subtitle1: {
       fontSize: 18,
       color: colorToken.brand.aeBlue,

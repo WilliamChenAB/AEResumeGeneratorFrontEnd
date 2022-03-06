@@ -14,8 +14,8 @@ export default function EmployeePage(props) {
       <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
         <TopBar buttons={['Resumes', 'Sectors']} roles={['Employee', 'Project Admin', 'System Admin']} />
       </AppBar>
-      <SideBar entries={props.tabs} color='primary' />
-      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+      <SideBar entries={props.tabs} setTab={props.setTab} color='primary' />
+      <Box component="main" mx={2} sx={{ flexGrow: 1, p: 3 }}>
         <Toolbar />
         {props.children}
       </Box>

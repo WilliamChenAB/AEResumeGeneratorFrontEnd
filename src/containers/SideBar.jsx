@@ -9,7 +9,7 @@ import SideBarTabs from '../components/SideBarTabs';
 
 const drawerWidth = 240;
 
-export default function SideBar({ entries, color }) {
+export default function SideBar({ entries, setTab, color }) {
   return (
     <Drawer
       variant="permanent"
@@ -30,7 +30,7 @@ export default function SideBar({ entries, color }) {
           color = {color === 'primary' ? colorToken.brand.aeGreen : colorToken.brand.aeBlueLight}
           selectedColor = {color === 'primary' ? colorToken.brand.aeBlue : colorToken.brand.aeBlueMid}
           textColor = {color === 'primary' ? colorToken.greyPalette.white : colorToken.brand.aeBlue}
-          onEntryClick = {() => {}}
+          onEntryClick = {setTab}
           onCheckmarkClicked = {() => {}} />
       }
     </Drawer>
