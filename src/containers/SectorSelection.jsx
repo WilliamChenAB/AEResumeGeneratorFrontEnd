@@ -70,7 +70,7 @@ function SectorSelection({resumeName, open, onClose, entries}){
                   }else{
                     return (
                       <Box key={`box_${sector.key}`} sx={{mb:5}}>
-                        <TextBox hideEdit={true} key={sector.key} text={sector.data}></TextBox>
+                        <TextBox hideEdit={true} key={sector.key} text={sector.data} selectable></TextBox>
                       </Box>
                     );
                   }
@@ -110,7 +110,7 @@ function SectorSelection({resumeName, open, onClose, entries}){
           </Box>
         </DialogTitle>
         <Divider color='primary'/>
-        <DialogContent>
+        <DialogContent style={{height:'600px'}}>
           <Box sx={{display: 'flex', flexDirection: 'row' }}>
             <Box sx={{width:300, height:400}}>
               <SideBarTabs entries={entries.map(ent =>{return({name: ent.type, error: !checkIfTypeSaved(ent.type)})})} 

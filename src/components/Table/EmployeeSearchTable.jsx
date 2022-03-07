@@ -48,7 +48,7 @@ const rows = [
   { name: 'Marie McDonals', id: '45678', role: 'Bridge Designer'},
 ];
 
-export default function PermissionsTable() {
+export default function EmployeeSearchTable() {
   return (
     <div style={{ height: 400, width: '100%' }}>
       <StyledTable columns={columns} rows={rows}/>

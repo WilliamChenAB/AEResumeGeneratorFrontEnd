@@ -1,38 +1,42 @@
 import { createSlice } from '@reduxjs/toolkit';
+import * as selectors from './selectors';
 
-export const initialState = {
-  uid: '',
-  rid: '',
-  sectors: {
-    justification: {},
-    education: {
-      years: '',
-    },
-    summary: {},
-    experience: {},
-  }
-}
+// state will take form on 'sectors' from mockResume
 
-// TO-DO: replace initial state with BE data
+// export const sampleInitialState = {
+//   justification: {},
+//   education: {
+//     years: '',
+//     sections: {},
+//   },
+//   summary: {},
+//   experience: {},
+// };
 
 export const resumeSlice = createSlice({
   name: 'resume',
-  initialState,
+  initialState: {},
   reducers: {
-    selectSection: {
-      reducer(state, action) {
-        state.sectors[action.payload.sector] = [...state.sectors[action.payload.sector], action.payload.body];
-      }
+    setResume(state, action) {
+      return action.payload
     },
-    deselectSection: {
-      reducer(state, action) {
-        delete state.sectors[action.payload.sector][action.payload.sid]
-      }
-    }
+    addSelectedSection(state, action) {
+      state[action.payload.sector] = [...state[action.payload.sector], action.payload.selectedSection];
+    },
+    removeSelectedSection(state, action) {
+      const updatedSector = Object.assign({}, state);
+      delete updatedSector[action.payload.sector][action.payload.sid];
+      state[action.payload.sector] = updatedSector;
+    },
   }
 });
 
-// Action creators are generated for each case reducer function
-export const { increment, decrement, incrementByAmount } = resumeSlice.actions;
+export const sectorSelectors = {
+  ...selectors,
+}
+
+export const sectorActions = {
+  ...resumeSlice.actions,
+}
 
 export default resumeSlice.reducer;

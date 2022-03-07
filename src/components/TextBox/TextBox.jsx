@@ -17,40 +17,51 @@ export default function TextBox(props) {
   const [disabled, setDisabled] = React.useState(true);
 
   return (
-    <Box sx={{display: 'flex', flexDirection: 'row' }}>
-      <Card sx={{ width: '100%'}}>
-        <CardActionArea onClick={() => setSelected(!selected)}>
-        <TextField
-          id="textfield"
-          multiline
-          rows={props.rows? props.rows : 5}
-          value={value}
-          onChange={(event) => setValue(event.target.value)}
-          disabled={disabled}
-          fullWidth
-        />
-        </CardActionArea>
+    <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+      <Card sx={{ width: '100%' }}>
+        {props.selectable ?
+          <CardActionArea onClick={() => setSelected(!selected)}>
+            <TextField
+              id="textfield"
+              multiline
+              rows={props.rows ? props.rows : 5}
+              value={value}
+              onChange={(event) => setValue(event.target.value)}
+              disabled={disabled}
+              fullWidth
+            />
+          </CardActionArea> :
+          <TextField
+            id="textfield"
+            multiline
+            rows={props.rows ? props.rows : 5}
+            value={value}
+            onChange={(event) => setValue(event.target.value)}
+            disabled={disabled}
+            fullWidth
+          />
+        }
       </Card>
       {
-        props.hideEdit? null :
-        <Box sx={{display: 'flex', flexDirection: 'column', justifyContent: 'space-between'}}>
-          <Box sx={{display: 'flex', flexDirection: 'column'}}>
-            {disabled ? <IconButton onClick={() => setDisabled(!disabled)}><EditIcon/></IconButton> :
-            <><IconButton onClick={() => setDisabled(!disabled)}>
-              <CheckIcon/>
-            </IconButton>
-            <IconButton onClick={() => {setDisabled(!disabled); setValue(props.text)}}>
-              <ClearIcon/>
-           </IconButton>
-            </>
-          }
-        </Box>
-          <Box>
-            <IconButton onClick={() => {}}>
-              <DeleteIcon/>
-            </IconButton>
+        props.hideEdit ? null :
+          <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+            <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+              {disabled ? <IconButton onClick={() => setDisabled(!disabled)}><EditIcon /></IconButton> :
+                <><IconButton onClick={() => setDisabled(!disabled)}>
+                  <CheckIcon />
+                </IconButton>
+                  <IconButton onClick={() => { setDisabled(!disabled); setValue(props.text) }}>
+                    <ClearIcon />
+                  </IconButton>
+                </>
+              }
+            </Box>
+            <Box>
+              <IconButton onClick={() => { }}>
+                <DeleteIcon />
+              </IconButton>
+            </Box>
           </Box>
-        </Box>
       }
     </Box>
   )

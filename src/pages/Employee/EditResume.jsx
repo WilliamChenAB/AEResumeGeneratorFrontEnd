@@ -33,15 +33,15 @@ function EditResume() {
               defaultValue={sectorSections[activeTab].years}
             />
             </Box>
-            {Object.entries(sectorSections[activeTab].sections).map(([sid, description]) => <Box mb={5}><TextBox key={sid} text={description}/></Box>)}
+            {Object.entries(sectorSections[activeTab].sections).map(([sid, description]) => <Box mb={5} key={sid}><TextBox key={sid} text={description}/></Box>)}
           </>
         }
         {activeTab === 'experience' &&  Object.entries(sectorSections[activeTab]).map(([sid, body]) => 
-          <Box mb={5}>
+          <Box mb={5} key={sid}>
             <ExperienceTextBox key={sid} name={body.title} location={body.location} division={body.division} description={body.description} />
           </Box>
         )}
-        {activeTab !== 'education' && activeTab !== 'experience' && Object.entries(sectorSections[activeTab]).map(([sid, description]) => <Box mb={5}><TextBox key={sid} text={description}/></Box>)}
+        {activeTab !== 'education' && activeTab !== 'experience' && Object.entries(sectorSections[activeTab]).map(([sid, description]) => <Box mb={5} key={sid}><TextBox key={sid} text={description}/></Box>)}
         <Box mb={5}><AddButton text="Add Section" /></Box>
       </EmployeePage>
     </>
