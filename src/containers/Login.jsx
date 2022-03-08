@@ -20,7 +20,7 @@ function Login() {
 
   const handleLogin = (ev) => {
     // TODO - handle login here
-    let from = location.state?.from?.pathname || '/resumes';
+    let from = location.state?.from?.pathname || '/employee';
     navigate(from, { replace: true });
   }
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { AppBar, Box, Button, MenuItem, Select, Toolbar, Paper } from '@mui/material';
+import { AppBar, Box, Button, MenuItem, Select, Toolbar } from '@mui/material';
 import AELogoCrop from '../assets/images/ae_logo_blue_cropped.png';
 import { Person } from '@mui/icons-material';
 import { Link, useNavigate } from 'react-router-dom';
@@ -25,28 +25,27 @@ function TopBar({ buttons, roles }) {
     navigate('/login');
   }
 
-  // this is just a placeholder file. delete this if we don't end up using it!
   return (
     <div>
       <AppBar>
         <Toolbar>
-        <Box
-        component="img"
-        sx={{
-          height: 40,
-          maxHeight: { xs: 233, md: 167 },
-          maxWidth: { xs: 350, md: 250 },
-          mr: 20
-        }}
-        alt="The house from the offer."
-        src={AELogoCrop}
-      />
+          <Box
+            component="img"
+            sx={{
+              height: 40,
+              maxHeight: { xs: 233, md: 167 },
+              maxWidth: { xs: 350, md: 250 },
+              mr: 20
+            }}
+            alt="Associated Engineering"
+            src={AELogoCrop}
+          />
           <Box sx={{ flexGrow: 1 }}>
             {
               buttons.map(button => {
                 return (
-                  <Link to={`/${button.toLowerCase()}`} key={button} style={{ textDecoration: 'none' }}>
-                    <Button onClick={e => handleMenuButtonClicked(button)} sx={{ mr: 5, color: 'white' }}>{button}</Button>
+                  <Link to={button.url} key={button.text} style={{ textDecoration: 'none' }}>
+                    <Button onClick={e => handleMenuButtonClicked(button)} sx={{ mr: 5, color: 'white' }}>{button.text}</Button>
                   </Link>
                 );
               })
@@ -55,7 +54,7 @@ function TopBar({ buttons, roles }) {
 
           <Box>
             <Person sx={{ verticalAlign: 'middle' }} />
-            <Select onChange={handleChange} sx={{ mr:5, color: 'white' }} defaultValue='Employee' variant='standard'>
+            <Select onChange={handleChange} sx={{ mr: 5, color: 'white' }} defaultValue='Employee' variant='standard'>
               {
                 roles.map(role => {
                   return (

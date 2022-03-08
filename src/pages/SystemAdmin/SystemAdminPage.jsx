@@ -8,15 +8,15 @@ import TopBar from '../../components/TopBar';
 import SideBar from '../../containers/SideBar';
 
 const topBarButtons = [{
-  text: 'Resumes',
-  url: '/employee/resumes',
+  text: 'Resume Templates',
+  url: '/system/templates',
 },
 {
-  text: 'Sectors',
-  url: '/employee/sectors',
+  text: 'Employee Database',
+  url: '/system/employees',
 }];
 
-export default function EmployeePage(props) {
+export default function SystemAdminPage(props) {
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
