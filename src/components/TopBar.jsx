@@ -4,7 +4,7 @@ import AELogoCrop from '../assets/images/ae_logo_blue_cropped.png';
 import { Person } from '@mui/icons-material';
 import { Link, useNavigate } from 'react-router-dom';
 
-function TopBar({ buttons, roles }) {
+function TopBar({ buttons, roles, selectedRole }) {
   const navigate = useNavigate();
 
   //Not sure if we should just use Jack's dropdown or if its fine to handle it differently because its only in 1 place
@@ -54,11 +54,13 @@ function TopBar({ buttons, roles }) {
 
           <Box>
             <Person sx={{ verticalAlign: 'middle' }} />
-            <Select onChange={handleChange} sx={{ mr: 5, color: 'white' }} defaultValue='Employee' variant='standard'>
+            <Select onChange={handleChange} sx={{ mr: 5, color: 'white' }} value={selectedRole} variant='standard'>
               {
                 roles.map(role => {
                   return (
-                    <MenuItem key={role} value={role}>{role}</MenuItem>
+                    <MenuItem key={role.text} value={role.text}>
+                      <Link to={role.url} style={{ textDecoration: 'none', color: 'inherit' }}>{role.text}</Link>
+                    </MenuItem>
                   );
                 })
               }
