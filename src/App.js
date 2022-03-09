@@ -5,6 +5,9 @@ import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import LoginPage from './pages/Login';
 import EmployeeResume from './pages/Employee/EmployeeResume';
 import EditResume from './pages/Employee/EditResume';
+import ProjectAdminPage from './pages/ProjectAdmin/ProjectAdminPage';
+import ProjectWorkspaces from './pages/ProjectAdmin/ProjectWorkspaces';
+import EmployeeDatabase from './pages/ProjectAdmin/EmployeeDatabase';
 
 function App() {
   return (
@@ -17,10 +20,10 @@ function App() {
           <Route path='resumes' element={<RequireAuth><EmployeeResume /></RequireAuth>} />
           <Route path='sectors' element={<RequireAuth><EditResume /></RequireAuth>} />
         </Route>
-        <Route path='project'>
+        <Route path='project' element={<RequireAuth><ProjectAdminPage /></RequireAuth>}>
           <Route index element={<Navigate to='/project/workspaces' replace />} />
-          <Route path='workspaces' element={<RequireAuth><EmployeeResume /></RequireAuth>} />
-          <Route path='employees' element={<RequireAuth><EditResume /></RequireAuth>} />
+          <Route path='workspaces' element={<RequireAuth><ProjectWorkspaces /></RequireAuth>} />
+          <Route path='employees' element={<RequireAuth><EmployeeDatabase /></RequireAuth>} />
         </Route>
         <Route path='system'>
           <Route index element={<Navigate to='/system/templates' replace />} />
