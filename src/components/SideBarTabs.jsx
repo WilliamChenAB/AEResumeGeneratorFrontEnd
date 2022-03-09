@@ -18,7 +18,6 @@ import { Error } from '@mui/icons-material';
  */
 function SideBarTabs({entries, showCheckBoxes, color, selectedColor, textColor, onEntryClick, onCheckmarkClicked}){
   const [selectedEntry, setSelectedEntry] = useState(entries[0].name);
-  console.log(onEntryClick);
 
   return(
   <List sx={{maxHeight: '100%', overflow: 'auto'}}>

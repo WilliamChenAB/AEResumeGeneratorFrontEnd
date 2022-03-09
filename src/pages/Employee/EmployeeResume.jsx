@@ -1,10 +1,13 @@
 import React from 'react';
 import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import EmployeePage from './EmployeePage';
 import ResumeTable from '../../components/Table/ResumeTable';
 import { Box, Typography } from '@mui/material';
 import { mockResumes } from './__mocks__/mockResumes';
 import SectorSelection from '../../containers/SectorSelection';
+import { sectorSelectors } from '../../slices/sectorSlice';
+import { resumeActions } from '../../slices/resumeSlice';
 
 // TODO: replace mock data with BE data
 
@@ -25,9 +28,24 @@ import SectorSelection from '../../containers/SectorSelection';
 // },
 
 function EmployeeResume() {
-  const [resumes, setResumes] = useState(mockResumes);
-  const [submitDialog, setSubmitDialog] = useState(false);
+  const dispatch = useDispatch();
+
+  // get resumes from BE
+  const resumes = mockResumes;
+  const [showDialog, setShowDialog] = useState(false);
   const [selectedResumeId, setSelectedResumeId] = useState('');
+
+  // fetch resumes from BE and set resumes using selectedResumeId
+  dispatch(resumeActions.setResume(resumes[selectedResumeId]));
+
+
+
+  // const entries = tabs.map(tab => {
+  //   return {name: tab, error: Object.keys(sectorSections[activeTab]).length === 0}
+  // })
+
+
+  // get all employee entries using selectedResumeId
 
   const resumesToRows = Object.keys(resumes).map((rid) => {
       return {id: rid, projectName: resumes[rid].projectName, updateDate: resumes[rid].updateDate, status: resumes[rid].status, action: resumes[rid].action}
@@ -41,12 +59,8 @@ function EmployeeResume() {
         <Box mb={4}>
           <Typography variant='h3'>RESUMES</Typography>
         </Box>
-        <ResumeTable rows={resumesToRows} onActionClick={setSubmitDialog} onSelectClick={setSelectedResumeId}/>
-        <SectorSelection entries={
-          [{type:'Projects', sectors:[]},
-          {type:'Experience', sectors:[{key:2132, data:{description:'interesting', imageLink:'aaa.com', division:'D1', location:'Vancouver', name:'Experiencing experience'}}]},
-          {type:'Education', sectors:[{key:2132, data:'middle School'}, {key:123, data:'High School'}, {key:1245, data:'Uni'}]}]} 
-          resumeName={selectedResumeId ? resumes[selectedResumeId].projectName : 'Project Name'} open={submitDialog} onClose={() => { setSubmitDialog(false) }}></SectorSelection>
+        <ResumeTable rows={resumesToRows} onActionClick={setShowDialog} onSelectClick={setSelectedResumeId}/>
+        {showDialog && <SectorSelection resumeName={selectedResumeId ? resumes[selectedResumeId].projectName : ''} open={showDialog} onClose={() => { setShowDialog(false) }}></SectorSelection>}
       </EmployeePage>
     </>
   )

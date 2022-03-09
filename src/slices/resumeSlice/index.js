@@ -3,25 +3,40 @@ import * as selectors from './selectors';
 
 // state will take form on 'sectors' from mockResume
 
-// export const sampleInitialState = {
-//   justification: {},
-//   education: {
-//     years: '',
-//     sections: {},
-//   },
-//   summary: {},
-//   experience: {},
-// };
+export const initialState = {
+  projectName: '',
+  updateDate: '-',
+  status: 'Requested',
+  action: 'Submit',
+  sectors: {
+    justification: {},
+    education: {
+      years: '',
+      sections: {},
+    },
+    summary: {},
+    experience: {},
+  },
+};
 
 export const resumeSlice = createSlice({
   name: 'resume',
-  initialState: {},
+  initialState,
   reducers: {
     setResume(state, action) {
-      return action.payload
+      return action.payload;
     },
-    addSelectedSection(state, action) {
-      state[action.payload.sector] = [...state[action.payload.sector], action.payload.selectedSection];
+    updateSelectedSection(state, action) {
+      return {
+        ...state,
+        sectors: {
+          ...state.sectors,
+          [action.payload.sector] : action.payload.sections
+        }
+      }
+    },
+    addSelectedEducation(state, action) {
+      state.sectors.education.sections = [...state.sectors.education.sections, action.payload];
     },
     removeSelectedSection(state, action) {
       const updatedSector = Object.assign({}, state);
@@ -31,11 +46,11 @@ export const resumeSlice = createSlice({
   }
 });
 
-export const sectorSelectors = {
+export const resumeSelectors = {
   ...selectors,
 }
 
-export const sectorActions = {
+export const resumeActions = {
   ...resumeSlice.actions,
 }
 

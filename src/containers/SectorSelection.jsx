@@ -1,9 +1,16 @@
 import { useEffect, useState, useRef } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Button, Divider, IconButton, Dialog, DialogTitle, DialogContent, Snackbar, Alert, Grid, Box, Typography} from '@mui/material';
 import { Close } from '@mui/icons-material';
 import SideBarTabs from '../components/SideBarTabs'
 import TextBox from '../components/TextBox/TextBox';
 import ExperienceTextBox from '../components/TextBox/ExperienceTextBox';
+import { colorToken  } from '../theme/colorToken';
+import TextField from '@mui/material/TextField';
+
+import { sectorSelectors } from '../slices/sectorSlice';
+import { resumeSelectors } from '../slices/resumeSlice';
+import { resumeActions } from '../slices/resumeSlice';
 
 
 /**
@@ -11,87 +18,95 @@ import ExperienceTextBox from '../components/TextBox/ExperienceTextBox';
  * @param resumeName name of associated resume we are selecting
  * @param open Boolean for if dialog is open
  * @param onClose Handler for when dialog should be closed
- * @param entires an array of objects contiaining sector entries in the form of {type:, sectors:[{key:,data:},...{}]}
  * @returns SelectSectorPopUp
  */
-function SectorSelection({resumeName, open, onClose, entries}){
-
+function SectorSelection({resumeName, open, onClose}){
+  const dispatch = useDispatch();
+  
+  const tabs = useSelector(resumeSelectors.getResumeHeaders);
+  const resume = useSelector(resumeSelectors.getResume);
+  const sectorSections = useSelector(sectorSelectors.getSectors);
+  const [activeTab, setActiveTab] = useState(tabs[0]);
   const [submitDisabled, setSubmitDisabled] = useState(true);
-  const [openCompleteMessage, setOpenCompleteMessage] = useState(false);
-  const [selectedTab, setSelectedTab] = useState('');
-  const [selectedEntries, setSelectedEntries] = useState([]); //contaning {type:, key:, data:}
-  const [savedEntries, setSavedEntries] = useState([]); //contaning {type:, key:, data:}
 
-  const checkIfTypeSaved = (type) => {
-    const filtered = savedEntries.filter(entry => entry.type === type);
-    return filtered.length > 0;
+  const entries = tabs.map(tab => {
+    return {name: tab, error: activeTab === 'education' ? resume[activeTab].sections.length === 0 : resume[activeTab].length === 0}
+  })
+
+  const onSelectAdd = (id, section) => {
+    const updatedResume = Object.assign({}, resume[activeTab], {[id]: section});
+    dispatch(resumeActions.updateSelectedSection({sector: activeTab, sections: updatedResume}))
   }
+
+  const onSelectRemove = (id) => {
+    const updatedResume = Object.assign({}, resume[activeTab]);
+    delete updatedResume[id];
+    dispatch(resumeActions.updateSelectedSection({sector: activeTab, sections: updatedResume}))
+  }
+
+  const handleSelect = (id, section) => {
+    if (resume[activeTab].hasOwnProperty(id)) {
+      onSelectRemove(id);
+    }
+    else {
+      onSelectAdd(id, section);
+    }
+  }
+
+
+
+
 
   const handleClose = (success) => {
     setSubmitDisabled(true);
-    onClose(success, selectedEntries);
-    setSelectedEntries([]);
-    setSelectedTab('');
-  }
-
-  const tabSelected = (name) => {
-    setSelectedTab(name);
+    onClose(success);
   }
 
   const handleSubmit = (ev) => {
-
-    // TODO - display complete message based on submit success status
-    setOpenCompleteMessage(true);
     handleClose(true);
   }
 
-  const checkIfSaveDisabled= (type) => {
-    return false;
-  }
 
   const drawSectors = () => {
-    return(
-      entries.map(entry =>{
-        if(entry.type === selectedTab){
-          return(
-            <Box key={`container${entry.type}`}>
-              <Box key={`titlecontainer${entry.type}`} sx={{mb: 2, display: 'flex', flexDirection: 'row' }}>
-                <Box sx={{flexGrow: 1}}>
-                  <Typography variant="h1">{entry.type}</Typography>
-                </Box>                
-                <Button variant='contained' onClick={()=>{}} disabled={checkIfSaveDisabled(entry.type)}>Save</Button>
-              </Box>
-              {
-                entry.sectors.map(sector =>{
-                  if(entry.type === 'Experience'){
-                    return(<Box key={`box_${sector.key}`} sx={{mb:5}}>
-                    <ExperienceTextBox hideEdit={true} key={sector.key} description={sector.data.description} imageLink={sector.data.imageLink} division={sector.data.division} location={sector.data.location} name={sector.data.name}></ExperienceTextBox>
-                  </Box>);
-                  }else{
-                    return (
-                      <Box key={`box_${sector.key}`} sx={{mb:5}}>
-                        <TextBox hideEdit={true} key={sector.key} text={sector.data} selectable></TextBox>
-                      </Box>
-                    );
-                  }
-                })
-              }
+    return (
+      <>
+        {activeTab === 'education' && 
+          <>
+            <Box mb={5}>
+            <TextField
+              id="edit-resume-experience-years"
+              label="Years of Experience"
+              defaultValue={sectorSections[activeTab].years}
+              InputProps={{
+                readOnly: true,
+              }}
+              variant="filled"
+            />
             </Box>
-          );
+            {/* key, text, selectState, selectable, onSelect, rows, hideEdit */}
+            {Object.entries(sectorSections[activeTab].sections).map(([sid, description]) => 
+              <Box mb={5} key={sid}>
+                {/* <TextBox key={sid} text={description} onSelect={dispatch(resumeActions.addSelectedEducation(sectorSections.education[sid]))} hideEdit selectable/> */}
+              </Box>
+            )}
+          </>
         }
-      })
+        {activeTab === 'experience' &&  Object.entries(sectorSections[activeTab]).map(([sid, body]) => 
+          <Box mb={5} key={sid}>
+            <ExperienceTextBox key={sid} name={body.title} location={body.location} division={body.division} description={body.description} />
+          </Box>
+        )}
+        {activeTab !== 'education' && activeTab !== 'experience' && Object.entries(sectorSections[activeTab]).map(([sid, description]) => 
+          <Box mb={5} key={sid}>
+            <TextBox key={sid} id={sid} text={description} selectState={resume[activeTab].hasOwnProperty(sid)} onSelect={() => handleSelect(sid, description)} hideEdit selectable/>
+          </Box>
+        )}
+      </>
     )
   }
 
-  useEffect(()=>{
-    for(let i = 0; i < entries.length; i++){
-      if(!checkIfTypeSaved(entries[i].type)){
-        setSubmitDisabled(true);
-        return;
-      }
-    }
-    setSubmitDisabled(false);
-  });
+
+
 
   return (
     <div>
@@ -110,17 +125,20 @@ function SectorSelection({resumeName, open, onClose, entries}){
           </Box>
         </DialogTitle>
         <Divider color='primary'/>
-        <DialogContent style={{height:'600px'}}>
+        <DialogContent style={{height:'600px', padding: '0px 0px 0px 0px'}}>
           <Box sx={{display: 'flex', flexDirection: 'row' }}>
-            <Box sx={{width:300, height:400}}>
-              <SideBarTabs entries={entries.map(ent =>{return({name: ent.type, error: !checkIfTypeSaved(ent.type)})})} 
-              showCheckBoxes={false} color='#87C34B' selectedColor='#00569C' textColor='white' onEntryClick={(name)=>{tabSelected(name)}}></SideBarTabs>
+            <Box sx={{width:300, height:'600px'}}>
+              <SideBarTabs
+                entries = {entries}
+                showCheckBoxes = {false}
+                color = {colorToken.brand.aeGreen}
+                selectedColor = {colorToken.brand.aeBlue}
+                textColor = {colorToken.greyPalette.white}
+                onEntryClick = {setActiveTab} />
             </Box>
             <Divider color='primary' orientation="vertical" flexItem />
             <Box sx={{margin: 5, width: '100%', maxHeight: '100%', overflow: 'auto'}}>
-              {
-                drawSectors()
-              }
+              {drawSectors()}
             </Box>
           </Box>
         </DialogContent>
