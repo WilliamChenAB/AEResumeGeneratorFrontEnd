@@ -1,6 +1,6 @@
-import { useEffect, useState, useRef } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { Button, Divider, IconButton, Dialog, DialogTitle, DialogContent, Snackbar, Alert, Grid, Box, Typography} from '@mui/material';
+import { useState } from 'react';
+import { useSelector } from 'react-redux';
+import { Divider, IconButton, Dialog, DialogTitle, DialogContent, Box, Typography} from '@mui/material';
 import { Close } from '@mui/icons-material';
 import SideBarTabs from '../components/SideBarTabs'
 import TextBox from '../components/TextBox/TextBox';
@@ -8,9 +8,8 @@ import ExperienceTextBox from '../components/TextBox/ExperienceTextBox';
 import { colorToken  } from '../theme/colorToken';
 import TextField from '@mui/material/TextField';
 
-import { sectorSelectors } from '../slices/sectorSlice';
+
 import { resumeSelectors } from '../slices/resumeSlice';
-import { resumeActions } from '../slices/resumeSlice';
 
 
 /**
@@ -20,42 +19,17 @@ import { resumeActions } from '../slices/resumeSlice';
  * @param onClose Handler for when dialog should be closed
  * @returns SelectSectorPopUp
  */
-function SectorSelection({resumeName, open, onClose}){
-  const dispatch = useDispatch();
+function ViewResume({resumeName, open, onClose}){
   
   const tabs = useSelector(resumeSelectors.getResumeHeaders);
   const resume = useSelector(resumeSelectors.getResume);
-  const sectorSections = useSelector(sectorSelectors.getSectors);
+
   const [activeTab, setActiveTab] = useState(tabs[0]);
   const [submitDisabled, setSubmitDisabled] = useState(true);
 
   const entries = tabs.map(tab => {
     return {name: tab, error: activeTab === 'education' ? resume[activeTab].sections.length === 0 : resume[activeTab].length === 0}
   })
-
-  const onSelectAdd = (id, section) => {
-    const updatedResume = Object.assign({}, resume[activeTab], {[id]: section});
-    dispatch(resumeActions.updateSelectedSection({sector: activeTab, sections: updatedResume}))
-  }
-
-  const onSelectRemove = (id) => {
-    const updatedResume = Object.assign({}, resume[activeTab]);
-    delete updatedResume[id];
-    dispatch(resumeActions.updateSelectedSection({sector: activeTab, sections: updatedResume}))
-  }
-
-  const handleSelect = (id, section) => {
-    if (resume[activeTab].hasOwnProperty(id)) {
-      onSelectRemove(id);
-    }
-    else {
-      onSelectAdd(id, section);
-    }
-  }
-
-
-
-
 
   const handleClose = (success) => {
     setSubmitDisabled(true);
@@ -76,28 +50,28 @@ function SectorSelection({resumeName, open, onClose}){
             <TextField
               id="edit-resume-experience-years"
               label="Years of Experience"
-              defaultValue={sectorSections[activeTab].years}
+              defaultValue={resume[activeTab].years}
               InputProps={{
                 readOnly: true,
               }}
               variant="filled"
             />
             </Box>
-            {Object.entries(sectorSections[activeTab].sections).map(([sid, description]) => 
+            {Object.entries(resume[activeTab].sections).map(([sid, description]) => 
               <Box mb={5} key={sid}>
-                <TextBox key={sid} id={sid} text={description} selectState={resume[activeTab].hasOwnProperty(sid)} onSelect={() => handleSelect(sid, description)} hideEdit selectable/>
+                <TextBox key={sid} id={sid} text={description} hideEdit />
               </Box>
             )}
           </>
         }
-        {activeTab === 'experience' &&  Object.entries(sectorSections[activeTab]).map(([sid, body]) => 
+        {activeTab === 'experience' &&  Object.entries(resume[activeTab]).map(([sid, body]) => 
           <Box mb={5} key={sid}>
             <ExperienceTextBox key={sid} name={body.title} location={body.location} division={body.division} description={body.description} hideEdit/>
           </Box>
         )}
-        {activeTab !== 'education' && activeTab !== 'experience' && Object.entries(sectorSections[activeTab]).map(([sid, description]) => 
+        {activeTab !== 'education' && activeTab !== 'experience' && Object.entries(resume[activeTab]).map(([sid, description]) => 
           <Box mb={5} key={sid}>
-            <TextBox key={sid} id={sid} text={description} selectState={resume[activeTab].hasOwnProperty(sid)} onSelect={() => handleSelect(sid, description)} hideEdit selectable/>
+            <TextBox key={sid} id={sid} text={description} hideEdit />
           </Box>
         )}
       </>
@@ -116,8 +90,6 @@ function SectorSelection({resumeName, open, onClose}){
               <Typography variant="h2">{resumeName}</Typography>
             </Box>
             <Box sx={{alignItems:'flex-end'}}>
-              <Button variant='contained' onClick={handleSubmit} disabled={submitDisabled}>Save</Button>
-              <Button variant='contained' onClick={handleSubmit} disabled={submitDisabled}>Sumbit</Button>
             <IconButton onClick={() => {handleClose(false);}}>
                 <Close />
               </IconButton>
@@ -148,4 +120,4 @@ function SectorSelection({resumeName, open, onClose}){
   );
 }
 
-export default SectorSelection;
+export default ViewResume;

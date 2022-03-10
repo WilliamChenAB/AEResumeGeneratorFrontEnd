@@ -8,6 +8,7 @@ import { mockResumes } from './__mocks__/mockResumes';
 import SectorSelection from '../../containers/SectorSelection';
 import { sectorSelectors } from '../../slices/sectorSlice';
 import { resumeActions } from '../../slices/resumeSlice';
+import ViewResume from '../../containers/ViewResume';
 
 // TODO: replace mock data with BE data
 
@@ -60,7 +61,8 @@ function EmployeeResume() {
           <Typography variant='h3'>RESUMES</Typography>
         </Box>
         <ResumeTable rows={resumesToRows} onActionClick={setShowDialog} onSelectClick={setSelectedResumeId}/>
-        {showDialog && <SectorSelection resumeName={selectedResumeId ? resumes[selectedResumeId].projectName : ''} open={showDialog} onClose={() => { setShowDialog(false) }}></SectorSelection>}
+        {showDialog && resumes[selectedResumeId].action === 'Submit' && <SectorSelection resumeName={selectedResumeId ? resumes[selectedResumeId].projectName : ''} open={showDialog} onClose={() => { setShowDialog(false) }}></SectorSelection>}
+        {showDialog && resumes[selectedResumeId].action === 'View' && <ViewResume resumeName={selectedResumeId ? resumes[selectedResumeId].projectName : ''} open={showDialog} onClose={() => { setShowDialog(false) }}></ViewResume>}
       </EmployeePage>
     </>
   )
