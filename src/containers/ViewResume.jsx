@@ -24,11 +24,11 @@ function ViewResume({resumeName, open, onClose}){
   const tabs = useSelector(resumeSelectors.getResumeHeaders);
   const resume = useSelector(resumeSelectors.getResume);
 
-  const [activeTab, setActiveTab] = useState(tabs[0]);
+  const [activeTab, setActiveTab] = useState(0);
   const [submitDisabled, setSubmitDisabled] = useState(true);
 
   const entries = tabs.map(tab => {
-    return {name: tab, error: activeTab === 'education' ? resume[activeTab].sections.length === 0 : resume[activeTab].length === 0}
+    return {name: tab, error: tabs[activeTab] === 'education' ? resume[tabs[activeTab]].sections.length === 0 : resume[tabs[activeTab]].length === 0}
   })
 
   const handleClose = (success) => {
@@ -44,32 +44,32 @@ function ViewResume({resumeName, open, onClose}){
   const drawSectors = () => {
     return (
       <>
-        {activeTab === 'education' && 
+        {tabs[activeTab] === 'education' && 
           <>
             <Box mb={5}>
             <TextField
               id="edit-resume-experience-years"
               label="Years of Experience"
-              defaultValue={resume[activeTab].years}
+              defaultValue={resume[tabs[activeTab]].years}
               InputProps={{
                 readOnly: true,
               }}
               variant="filled"
             />
             </Box>
-            {Object.entries(resume[activeTab].sections).map(([sid, description]) => 
+            {Object.entries(resume[tabs[activeTab]].sections).map(([sid, description]) => 
               <Box mb={5} key={sid}>
                 <TextBox key={sid} id={sid} text={description} hideEdit />
               </Box>
             )}
           </>
         }
-        {activeTab === 'experience' &&  Object.entries(resume[activeTab]).map(([sid, body]) => 
+        {tabs[activeTab] === 'experience' &&  Object.entries(resume[tabs[activeTab]]).map(([sid, body]) => 
           <Box mb={5} key={sid}>
             <ExperienceTextBox key={sid} name={body.title} location={body.location} division={body.division} description={body.description} hideEdit/>
           </Box>
         )}
-        {activeTab !== 'education' && activeTab !== 'experience' && Object.entries(resume[activeTab]).map(([sid, description]) => 
+        {tabs[activeTab] !== 'education' && tabs[activeTab] !== 'experience' && Object.entries(resume[tabs[activeTab]]).map(([sid, description]) => 
           <Box mb={5} key={sid}>
             <TextBox key={sid} id={sid} text={description} hideEdit />
           </Box>

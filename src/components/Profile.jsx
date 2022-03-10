@@ -1,7 +1,7 @@
 import { Avatar, Box, Typography } from '@mui/material';
 
 function getInitials(text) {
-  return text.split(' ').map(word => word[0]).join('').toUpperCase();
+  return text? text.split(' ').map(word => word[0]).join('').toUpperCase(): null;
 }
 
 /**

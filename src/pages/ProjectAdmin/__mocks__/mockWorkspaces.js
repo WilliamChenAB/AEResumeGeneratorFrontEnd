@@ -5,12 +5,22 @@ export const mockWorkspaces = {
     id: '11111',
     division: 'Water',
     owner: 'Jane Doe',
+    employees:[{
+        id:'1932',
+        name:'John Doe'  
+      },
+      {
+        id:'2132',
+        name:'Sally Sue'  
+      }
+    ]
   },
-  rid2: {
+  wid2: {
     workspaceName: '38th Street SW Storm Trunk Relocation Contract',
     updateDate: '2/6/2022',
     id: '11112',
     division: 'Bridge',
     owner: 'Jane Doe',
+    employees: []
   },
 }

@@ -17,12 +17,16 @@ import { Error } from '@mui/icons-material';
  * @returns SideBarTabs component
  */
 function SideBarTabs({entries, showCheckBoxes, color, selectedColor, textColor, onEntryClick, onCheckmarkClicked}){
-  const [selectedEntry, setSelectedEntry] = useState(entries[0].name);
+  let selected = "";
+  if(entries[0]){
+    selected = entries[0].name;
+  }
+  const [selectedEntry, setSelectedEntry] = useState(selected);
 
   return(
   <List sx={{maxHeight: '100%', overflow: 'auto'}}>
     {
-      entries.map(obj => {
+      entries.map((obj, index) => {
         const checkbox = (showCheckBoxes)? <Checkbox key = {obj.name} onChange={onCheckmarkClicked}
         sx={{
           color: textColor,
@@ -37,7 +41,7 @@ function SideBarTabs({entries, showCheckBoxes, color, selectedColor, textColor, 
             <ListItemButton onClick={(ev) => 
               {
                 setSelectedEntry(obj.name);
-                onEntryClick(obj.name);
+                onEntryClick(index);
               }}>
               {checkbox}
               <ListItemText sx={{ color: textColor, fontWeight: 'bold' }}>

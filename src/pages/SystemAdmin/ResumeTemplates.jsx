@@ -8,7 +8,7 @@ function ResumeTemplates() {
     <>
       <Box sx={{ display: 'flex' }}>
         <Box>
-          <SideBar />
+        <SideBar />
         </Box>
         <Box sx={{ flexGrow: 1 }}>
           <Box mb={4}>

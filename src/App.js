@@ -8,6 +8,7 @@ import EditResume from './pages/Employee/EditResume';
 import ProjectAdminPage from './pages/ProjectAdmin/ProjectAdminPage';
 import ProjectWorkspaces from './pages/ProjectAdmin/ProjectWorkspaces';
 import EmployeeDatabase from './pages/ProjectAdmin/EmployeeDatabase';
+import EditWorkspace from './pages/ProjectAdmin/EditWorkspace';
 import SystemAdminPage from './pages/SystemAdmin/SystemAdminPage';
 import ResumeTemplates from './pages/SystemAdmin/ResumeTemplates';
 import EmployeePermissions from './pages/SystemAdmin/EmployeePermissions';
@@ -27,6 +28,7 @@ function App() {
           <Route index element={<Navigate to='/project/workspaces' replace />} />
           <Route path='workspaces' element={<RequireAuth><ProjectWorkspaces /></RequireAuth>} />
           <Route path='employees' element={<RequireAuth><EmployeeDatabase /></RequireAuth>} />
+          <Route path='editWorkspace' element={<RequireAuth><EditWorkspace /></RequireAuth>} />
         </Route>
         <Route path='system' element={<RequireAuth><SystemAdminPage /></RequireAuth>}>
           <Route index element={<Navigate to='/system/templates' replace />} />

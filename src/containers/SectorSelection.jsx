@@ -22,30 +22,30 @@ import { resumeActions } from '../slices/resumeSlice';
  */
 function SectorSelection({resumeName, open, onClose}){
   const dispatch = useDispatch();
-  
+
   const tabs = useSelector(resumeSelectors.getResumeHeaders);
   const resume = useSelector(resumeSelectors.getResume);
   const sectorSections = useSelector(sectorSelectors.getSectors);
-  const [activeTab, setActiveTab] = useState(tabs[0]);
+  const [activeTab, setActiveTab] = useState(0);
   const [submitDisabled, setSubmitDisabled] = useState(true);
 
   const entries = tabs.map(tab => {
-    return {name: tab, error: activeTab === 'education' ? resume[activeTab].sections.length === 0 : resume[activeTab].length === 0}
+    return {name: tab, error: tabs[activeTab] === 'education' ? resume[tabs[activeTab]].sections.length === 0 : resume[tabs[activeTab]].length === 0}
   })
 
   const onSelectAdd = (id, section) => {
-    const updatedResume = Object.assign({}, resume[activeTab], {[id]: section});
-    dispatch(resumeActions.updateSelectedSection({sector: activeTab, sections: updatedResume}))
+    const updatedResume = Object.assign({}, resume[tabs[activeTab]], {[id]: section});
+    dispatch(resumeActions.updateSelectedSection({sector: tabs[activeTab], sections: updatedResume}))
   }
 
   const onSelectRemove = (id) => {
-    const updatedResume = Object.assign({}, resume[activeTab]);
+    const updatedResume = Object.assign({}, resume[tabs[activeTab]]);
     delete updatedResume[id];
-    dispatch(resumeActions.updateSelectedSection({sector: activeTab, sections: updatedResume}))
+    dispatch(resumeActions.updateSelectedSection({sector: tabs[activeTab], sections: updatedResume}))
   }
 
   const handleSelect = (id, section) => {
-    if (resume[activeTab].hasOwnProperty(id)) {
+    if (resume[tabs[activeTab]].hasOwnProperty(id)) {
       onSelectRemove(id);
     }
     else {
@@ -70,34 +70,34 @@ function SectorSelection({resumeName, open, onClose}){
   const drawSectors = () => {
     return (
       <>
-        {activeTab === 'education' && 
+        {tabs[activeTab] === 'education' &&
           <>
             <Box mb={5}>
             <TextField
               id="edit-resume-experience-years"
               label="Years of Experience"
-              defaultValue={sectorSections[activeTab].years}
+              defaultValue={sectorSections[tabs[activeTab]].years}
               InputProps={{
                 readOnly: true,
               }}
               variant="filled"
             />
             </Box>
-            {Object.entries(sectorSections[activeTab].sections).map(([sid, description]) => 
+            {Object.entries(sectorSections[tabs[activeTab]].sections).map(([sid, description]) =>
               <Box mb={5} key={sid}>
-                <TextBox key={sid} id={sid} text={description} selectState={resume[activeTab].hasOwnProperty(sid)} onSelect={() => handleSelect(sid, description)} hideEdit selectable/>
+                <TextBox key={sid} id={sid} text={description} selectState={resume[tabs[activeTab]].hasOwnProperty(sid)} onSelect={() => handleSelect(sid, description)} hideEdit selectable/>
               </Box>
             )}
           </>
         }
-        {activeTab === 'experience' &&  Object.entries(sectorSections[activeTab]).map(([sid, body]) => 
+        {tabs[activeTab] === 'experience' &&  Object.entries(sectorSections[tabs[activeTab]]).map(([sid, body]) =>
           <Box mb={5} key={sid}>
             <ExperienceTextBox key={sid} name={body.title} location={body.location} division={body.division} description={body.description} hideEdit/>
           </Box>
         )}
-        {activeTab !== 'education' && activeTab !== 'experience' && Object.entries(sectorSections[activeTab]).map(([sid, description]) => 
+        {tabs[activeTab] !== 'education' && tabs[activeTab] !== 'experience' && Object.entries(sectorSections[tabs[activeTab]]).map(([sid, description]) =>
           <Box mb={5} key={sid}>
-            <TextBox key={sid} id={sid} text={description} selectState={resume[activeTab].hasOwnProperty(sid)} onSelect={() => handleSelect(sid, description)} hideEdit selectable/>
+            <TextBox key={sid} id={sid} text={description} selectState={resume[tabs[activeTab]].hasOwnProperty(sid)} onSelect={() => handleSelect(sid, description)} hideEdit selectable/>
           </Box>
         )}
       </>
@@ -144,7 +144,7 @@ function SectorSelection({resumeName, open, onClose}){
         </DialogContent>
       </Dialog>
     </div>
-    
+
   );
 }
 
