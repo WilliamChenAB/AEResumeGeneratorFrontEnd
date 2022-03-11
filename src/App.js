@@ -3,8 +3,10 @@ import { theme } from './theme/theme';
 import './App.css';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import LoginPage from './pages/Login';
-import EmployeeResume from './pages/Employee/EmployeeResume';
-import EditResume from './pages/Employee/EditResume';
+import EmployeePage from './pages/Employee/EmployeePage';
+import Resumes from './pages/Employee/Resumes';
+import Resume from './pages/Employee/Resume';
+import Sectors from './pages/Employee/Sectors';
 import ProjectAdminPage from './pages/ProjectAdmin/ProjectAdminPage';
 import ProjectWorkspaces from './pages/ProjectAdmin/ProjectWorkspaces';
 import EmployeeDatabase from './pages/ProjectAdmin/EmployeeDatabase';
@@ -17,12 +19,15 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <Routes>
-        <Route path='/' element={<RequireAuth><EmployeeResume /></RequireAuth>} />
+        <Route path='/' element={<Navigate to='/employee' replace />} />
         <Route path='login' element={<LoginPage />} />
-        <Route path='employee'>
+        <Route path='employee' element={<RequireAuth><EmployeePage /></RequireAuth>}>
           <Route index element={<Navigate to='/employee/resumes' replace />} />
-          <Route path='resumes' element={<RequireAuth><EmployeeResume /></RequireAuth>} />
-          <Route path='sectors' element={<RequireAuth><EditResume /></RequireAuth>} />
+          <Route path='resumes'>
+            <Route index element={<RequireAuth><Resumes /></RequireAuth>} />
+            <Route path=":resumeId" element={<RequireAuth><Resume /></RequireAuth>} />
+          </Route>
+          <Route path='sectors' element={<RequireAuth><Sectors /></RequireAuth>} />
         </Route>
         <Route path='project' element={<RequireAuth><ProjectAdminPage /></RequireAuth>}>
           <Route index element={<Navigate to='/project/workspaces' replace />} />

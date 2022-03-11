@@ -1,14 +1,12 @@
 import React from 'react';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import EmployeePage from './EmployeePage';
 import ResumeTable from '../../components/Table/ResumeTable';
 import { Box, Typography } from '@mui/material';
+import { Outlet, useNavigate } from 'react-router-dom';
 import { mockResumes } from './__mocks__/mockResumes';
-import SectorSelection from '../../containers/SectorSelection';
-import { sectorSelectors } from '../../slices/sectorSlice';
 import { resumeActions } from '../../slices/resumeSlice';
-import ViewResume from '../../containers/ViewResume';
+import SideBar from '../../containers/SideBar';
 
 // TODO: replace mock data with BE data
 
@@ -29,6 +27,7 @@ import ViewResume from '../../containers/ViewResume';
 // },
 
 function EmployeeResume() {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   // get resumes from BE
@@ -49,22 +48,26 @@ function EmployeeResume() {
   // get all employee entries using selectedResumeId
 
   const resumesToRows = Object.keys(resumes).map((rid) => {
-      return {id: rid, projectName: resumes[rid].projectName, updateDate: resumes[rid].updateDate, status: resumes[rid].status, action: resumes[rid].action}
+    return { id: rid, projectName: resumes[rid].projectName, updateDate: resumes[rid].updateDate, status: resumes[rid].status, action: resumes[rid].action }
   });
 
   // TODO: update SectorSelection
 
-  return(
-    <>
-      <EmployeePage>
+  return (
+    <Box sx={{ display: 'flex' }}>
+      <Box>
+        <SideBar title='John Doe' subtitle='Utility Coordinator' color='primary' />
+      </Box>
+      <Box sx={{ flexGrow: 1 }}>
         <Box mb={4}>
           <Typography variant='h3'>RESUMES</Typography>
         </Box>
-        <ResumeTable rows={resumesToRows} onActionClick={setShowDialog} onSelectClick={setSelectedResumeId}/>
-        {showDialog && resumes[selectedResumeId].action === 'Submit' && <SectorSelection resumeName={selectedResumeId ? resumes[selectedResumeId].projectName : ''} open={showDialog} onClose={() => { setShowDialog(false) }}></SectorSelection>}
-        {showDialog && resumes[selectedResumeId].action === 'View' && <ViewResume resumeName={selectedResumeId ? resumes[selectedResumeId].projectName : ''} open={showDialog} onClose={() => { setShowDialog(false) }}></ViewResume>}
-      </EmployeePage>
-    </>
+        <ResumeTable rows={resumesToRows} onActionClick={navigate('/employee/resumes/1')} onSelectClick={setSelectedResumeId} />
+        {/*showDialog && resumes[selectedResumeId].action === 'Submit' && <SectorSelection resumeName={selectedResumeId ? resumes[selectedResumeId].projectName : ''} open={showDialog} onClose={() => { setShowDialog(false) }}></SectorSelection>*/}
+        {/*showDialog && resumes[selectedResumeId].action === 'View' && <ViewResume resumeName={selectedResumeId ? resumes[selectedResumeId].projectName : ''} open={showDialog} onClose={() => { setShowDialog(false) }}></ViewResume>*/}
+        <Outlet />
+      </Box>
+    </Box>
   )
 }
 
