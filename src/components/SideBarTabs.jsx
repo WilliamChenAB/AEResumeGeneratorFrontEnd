@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState } from 'react';
-import {List, ListItem , ListItemText, Checkbox, ListItemButton} from '@mui/material';
+import { List, ListItem, ListItemText, Checkbox, ListItemButton } from '@mui/material';
 import { Error } from '@mui/icons-material';
 
 
@@ -16,43 +16,42 @@ import { Error } from '@mui/icons-material';
  * @param onCheckmarkClicked onSelected hanlder for checkboxes
  * @returns SideBarTabs component
  */
-function SideBarTabs({entries, showCheckBoxes, color, selectedColor, textColor, onEntryClick, onCheckmarkClicked}){
+function SideBarTabs({ entries, showCheckBoxes, color, selectedColor, textColor, onEntryClick, onCheckmarkClicked }) {
   let selected = "";
-  if(entries[0]){
+  if (entries[0]) {
     selected = entries[0].name;
   }
   const [selectedEntry, setSelectedEntry] = useState(selected);
 
-  return(
-  <List sx={{maxHeight: '100%', overflow: 'auto'}}>
-    {
-      entries.map((obj, index) => {
-        const checkbox = (showCheckBoxes)? <Checkbox key = {obj.name} onChange={onCheckmarkClicked}
-        sx={{
-          color: textColor,
-          '&.Mui-checked': {
-            color: textColor,
-          },
-        }}></Checkbox> : null;
-        const icon = (obj.error)? <Error/> : null;
-        const usedColor = obj.name === selectedEntry? selectedColor: color;
-        return(
-          <ListItem key = {obj.name} sx={{background: usedColor, marginBottom: 0.1}} disablePadding>
-            <ListItemButton onClick={(ev) => 
-              {
+  return (
+    <List sx={{ flexGrow: 500, maxHeight: '100%', overflow: 'auto' }}>
+      {
+        entries.map((obj, index) => {
+          const checkbox = (showCheckBoxes) ? <Checkbox key={obj.name} onChange={onCheckmarkClicked}
+            sx={{
+              color: textColor,
+              '&.Mui-checked': {
+                color: textColor,
+              },
+            }}></Checkbox> : null;
+          const icon = (obj.error) ? <Error /> : null;
+          const usedColor = obj.name === selectedEntry ? selectedColor : color;
+          return (
+            <ListItem key={obj.name} sx={{ background: usedColor, marginBottom: 0.1 }} disablePadding>
+              <ListItemButton onClick={(ev) => {
                 setSelectedEntry(obj.name);
                 onEntryClick(index);
               }}>
-              {checkbox}
-              <ListItemText sx={{ color: textColor, fontWeight: 'bold' }}>
-                {obj.name.toUpperCase()}
-              </ListItemText>
-              {icon}
-            </ListItemButton>
-        </ListItem>);
-      })
-    }
-  </List>
+                {checkbox}
+                <ListItemText sx={{ color: textColor, fontWeight: 'bold' }}>
+                  {obj.name.toUpperCase()}
+                </ListItemText>
+                {icon}
+              </ListItemButton>
+            </ListItem>);
+        })
+      }
+    </List>
   );
 }
 

@@ -6,9 +6,9 @@ import ExperienceTextBox from '../../components/TextBox/ExperienceTextBox';
 import TextBox from '../../components/TextBox/TextBox';
 import TextField from '@mui/material/TextField';
 import { Box, Typography } from '@mui/material';
-import SideBar from '../../containers/SideBar';
+import SideBar from '../../containers/SideBar0';
 
-function EditResume() {
+function Sectors() {
   const tabs = useSelector(sectorSelectors.getSectorsHeaders);
   const sectorSections = useSelector(sectorSelectors.getSectors)
   const [activeTab, setActiveTab] = useState(0);
@@ -18,11 +18,11 @@ function EditResume() {
   })
 
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Box sx={{ display: 'flex', height: '100%' }}>
       <Box>
         <SideBar title='John Doe' subtitle='Utility Coordinator' entries={entries} setTab={setActiveTab} color='primary' />
       </Box>
-      <Box sx={{ flexGrow: 1 }}>
+      <Box sx={{ flexGrow: 1 }} className='content-section-margins'>
         <Box mb={4}>
           <Typography variant='h3'>{tabs[activeTab].toUpperCase()}</Typography>
         </Box>
@@ -46,7 +46,7 @@ function EditResume() {
         {tabs[activeTab] !== 'education' && tabs[activeTab] !== 'experience' && Object.entries(sectorSections[tabs[activeTab]]).map(([sid, description]) => <Box mb={5} key={sid}><TextBox key={sid} text={description} /></Box>)}
       </Box>
     </Box>
-  )
+  );
 }
 
-export default EditResume;
+export default Sectors;

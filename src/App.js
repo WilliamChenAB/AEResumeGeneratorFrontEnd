@@ -25,7 +25,7 @@ function App() {
           <Route index element={<Navigate to='/employee/resumes' replace />} />
           <Route path='resumes'>
             <Route index element={<RequireAuth><Resumes /></RequireAuth>} />
-            <Route path=":resumeId" element={<RequireAuth><Resume /></RequireAuth>} />
+            <Route path=':resumeId' element={<RequireAuth><Resume /></RequireAuth>} />
           </Route>
           <Route path='sectors' element={<RequireAuth><Sectors /></RequireAuth>} />
         </Route>

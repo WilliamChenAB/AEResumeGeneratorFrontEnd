@@ -1,7 +1,4 @@
 import Box from '@mui/material/Box';
-import AppBar from '@mui/material/AppBar';
-import CssBaseline from '@mui/material/CssBaseline';
-import Toolbar from '@mui/material/Toolbar';
 import { Outlet } from 'react-router-dom';
 import TopBar from '../../components/TopBar';
 
@@ -27,15 +24,13 @@ const topBarRoles = [{
   url: '/system',
 }];
 
-export default function ProjectAdminPage(props) {
+export default function ProjectAdminPage() {
   return (
-    <Box sx={{ display: 'flex' }}>
-      <CssBaseline />
-      <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
+      <Box sx={{ flexGrow: 0, flexShrink: 1 }}>
         <TopBar buttons={topBarButtons} roles={topBarRoles} selectedRole='Project Admin' />
-      </AppBar>
-      <Box component="main" mx={2} sx={{ flexGrow: 1, p: 3 }}>
-        <Toolbar />
+      </Box>
+      <Box sx={{ flexGrow: 1, flexShrink: 1 }}>
         <Outlet />
       </Box>
     </Box>

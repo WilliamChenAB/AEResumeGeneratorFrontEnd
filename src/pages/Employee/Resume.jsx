@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Box, Button, Typography } from '@mui/material';
 import { ArrowBack } from '@mui/icons-material';
 import { Link, useParams } from 'react-router-dom';
-import SideBar from '../../containers/SideBar';
+import SideBar from '../../containers/SideBar0';
 import { sectorSelectors } from '../../slices/sectorSlice';
 import { useSelector } from 'react-redux';
 import AddButton from '../../components/AddButton';
@@ -25,12 +25,12 @@ function Resume() {
   })
 
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Box sx={{ display: 'flex', height: '100%' }}>
       <Box>
         <SideBar title='John Doe' subtitle='Utility Coordinator' entries={entries} setTab={setActiveTab} color='primary' useButton buttonText='Add Sector' buttonClick={() => { setShowDialog(true) }} />
       </Box>
-      <Box sx={{ flexGrow: 1 }}>
-        <Link to='/employee' style={{ textDecoration: 'none' }}>
+      <Box sx={{ flexGrow: 1 }} className='content-section-margins'>
+        <Link to='/employee/resumes' style={{ textDecoration: 'none' }}>
           <Button startIcon={<ArrowBack />}>Back to Resumes</Button>
         </Link>
         <br />

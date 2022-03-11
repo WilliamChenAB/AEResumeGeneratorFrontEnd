@@ -17,14 +17,14 @@ function ProjectWorkspaces() {
   });
 
   return (
-    <>
+    <Box className='content-section-margins'>
       <Box mb={4}>
         <Typography variant='h3'>PROPOSAL WORKSPACES</Typography>
       </Box>
       <AddButton text='Add Workspace' onClick={() => setShowWorkspaceDialog(true)} />
       <AddWorkspace open={showWorkspaceDialog} onClose={() => setShowWorkspaceDialog(false)}></AddWorkspace>
       <WorkspaceTable rows={workspacesToRows} onSelectClick={setSelectedWorkspaceId} workSpaceExpanded={(id)=>{navigate('/project/editWorkspace')}}/>
-    </>
+    </Box>
   )
 }
 

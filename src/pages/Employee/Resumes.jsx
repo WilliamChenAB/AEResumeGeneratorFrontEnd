@@ -6,7 +6,7 @@ import { Box, Typography } from '@mui/material';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { mockResumes } from './__mocks__/mockResumes';
 import { resumeActions } from '../../slices/resumeSlice';
-import SideBar from '../../containers/SideBar';
+import SideBar from '../../containers/SideBar0';
 
 // TODO: replace mock data with BE data
 
@@ -26,7 +26,7 @@ import SideBar from '../../containers/SideBar';
 //   },
 // },
 
-function EmployeeResume() {
+function Resumes() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -54,15 +54,15 @@ function EmployeeResume() {
   // TODO: update SectorSelection
 
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Box sx={{ display: 'flex', height: '100%' }}>
       <Box>
         <SideBar title='John Doe' subtitle='Utility Coordinator' color='primary' />
       </Box>
-      <Box sx={{ flexGrow: 1 }}>
+      <Box sx={{ flexGrow: 1 }} className='content-section-margins'>
         <Box mb={4}>
           <Typography variant='h3'>RESUMES</Typography>
         </Box>
-        <ResumeTable rows={resumesToRows} onActionClick={navigate('/employee/resumes/1')} onSelectClick={setSelectedResumeId} />
+        <ResumeTable rows={resumesToRows} onActionClick={() => { navigate('/employee/resumes/1') }} onSelectClick={setSelectedResumeId} />
         {/*showDialog && resumes[selectedResumeId].action === 'Submit' && <SectorSelection resumeName={selectedResumeId ? resumes[selectedResumeId].projectName : ''} open={showDialog} onClose={() => { setShowDialog(false) }}></SectorSelection>*/}
         {/*showDialog && resumes[selectedResumeId].action === 'View' && <ViewResume resumeName={selectedResumeId ? resumes[selectedResumeId].projectName : ''} open={showDialog} onClose={() => { setShowDialog(false) }}></ViewResume>*/}
         <Outlet />
@@ -71,4 +71,4 @@ function EmployeeResume() {
   )
 }
 
-export default EmployeeResume;
+export default Resumes;
