@@ -7,6 +7,7 @@ import { Outlet, useNavigate } from 'react-router-dom';
 import { mockResumes } from './__mocks__/mockResumes';
 import { resumeActions } from '../../slices/resumeSlice';
 import SideBar from '../../containers/SideBar0';
+import SearchBar from '../../components/SearchBar';
 
 // TODO: replace mock data with BE data
 
@@ -59,8 +60,11 @@ function Resumes() {
         <SideBar title='John Doe' subtitle='Utility Coordinator' color='primary' />
       </Box>
       <Box sx={{ flexGrow: 1 }} className='content-section-margins'>
-        <Box mb={4}>
-          <Typography variant='h3'>RESUMES</Typography>
+        <Box mb={4}sx={{display: 'flex', flexDirection: 'row'}}>
+          <Box sx={{flexGrow:1, alignItems:'flex-end'}}>
+            <Typography variant='h3'>RESUMES</Typography>
+          </Box>
+          <SearchBar placeholder='Search Resumes' onChange={()=>{}}></SearchBar>
         </Box>
         <ResumeTable rows={resumesToRows} onActionClick={() => { navigate('/employee/resumes/1') }} onSelectClick={setSelectedResumeId} />
         {/*showDialog && resumes[selectedResumeId].action === 'Submit' && <SectorSelection resumeName={selectedResumeId ? resumes[selectedResumeId].projectName : ''} open={showDialog} onClose={() => { setShowDialog(false) }}></SectorSelection>*/}

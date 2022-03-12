@@ -33,7 +33,10 @@ function App() {
           <Route index element={<Navigate to='/project/workspaces' replace />} />
           <Route path='workspaces' element={<RequireAuth><ProjectWorkspaces /></RequireAuth>} />
           <Route path='employees' element={<RequireAuth><EmployeeDatabase /></RequireAuth>} />
-          <Route path='editWorkspace' element={<RequireAuth><EditWorkspace /></RequireAuth>} />
+          <Route path='editWorkspace'>
+            <Route index element={<RequireAuth><ProjectWorkspaces /></RequireAuth>} />
+            <Route path=':workspaceId' element={<RequireAuth><EditWorkspace /></RequireAuth>} />
+          </Route>
         </Route>
         <Route path='system' element={<RequireAuth><SystemAdminPage /></RequireAuth>}>
           <Route index element={<Navigate to='/system/templates' replace />} />

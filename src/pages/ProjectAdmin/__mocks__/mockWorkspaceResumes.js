@@ -13,11 +13,8 @@ export const mockWorkspaceResumes = {
         sid2: 'John Doe is a municipal infrastructure engineer in our Calgary office with 19 years utility design and coordination experience. He has worked on multiple municipal projects including the 5th Avenue Flyover bridge, Glenmore Water Treatment Plant Upgrades, and has established personal contacts with deep and franchise utility companies to facilitate coordination.',
       },
       education: {
-        years: '',
-        sections: {
-          sid3: 'Professional License (Engineering), 2011',
-          sid4: 'Civil Engineering Technology, Southern Alberta Institute of Technology, 2001',
-        }
+        sid3: 'Professional License (Engineering), 2011',
+        sid4: 'Civil Engineering Technology, Southern Alberta Institute of Technology, 2001'
       },
       summary: {
         sid5: 'John Doe has an eye for detail and is methodical in his work - assets that will reduce utility surprises and facilitate adherence to schedule.',

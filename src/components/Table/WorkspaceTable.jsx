@@ -14,7 +14,7 @@ export default function WorkspaceTable({ rows, onSelectClick, workSpaceExpanded}
       flex: 1.2, 
       minWidth: 200,
       renderCell: (params) => {
-        return <TextButton onClick={() => {workSpaceExpanded(params.row.id)}} text={params.row.workspaceName}/>
+        return <TextButton onClick={() => {workSpaceExpanded(params.row.key)}} text={params.row.workspaceName}/>
       }
     },
     { field: 'id', headerName: 'Proposal No.', flex: 0.5, minWidth: 125 },
