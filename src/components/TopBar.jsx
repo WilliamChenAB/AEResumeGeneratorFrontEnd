@@ -58,8 +58,8 @@ function TopBar({ buttons, roles, selectedRole }) {
               {
                 roles.map(role => {
                   return (
-                    <MenuItem key={role.text} value={role.text}>
-                      <Link to={role.url} style={{ textDecoration: 'none', color: 'inherit' }}>{role.text}</Link>
+                    <MenuItem key={role.text} value={role.text} component={Link} to={role.url}>
+                      {role.text}
                     </MenuItem>
                   );
                 })

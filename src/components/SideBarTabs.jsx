@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState } from 'react';
-import { List, ListItem, ListItemText, Checkbox, ListItemButton } from '@mui/material';
+import { List, ListItem, ListItemText, Checkbox, ListItemButton, Tooltip } from '@mui/material';
 import { Error } from '@mui/icons-material';
 
 
@@ -34,7 +34,6 @@ function SideBarTabs({ entries, showCheckBoxes, color, selectedColor, textColor,
                 color: textColor,
               },
             }}></Checkbox> : null;
-          const icon = (obj.error) ? <Error /> : null;
           const usedColor = obj.name === selectedEntry ? selectedColor : color;
           return (
             <ListItem key={obj.name} sx={{ background: usedColor, marginBottom: 0.1 }} disablePadding>
@@ -46,7 +45,11 @@ function SideBarTabs({ entries, showCheckBoxes, color, selectedColor, textColor,
                 <ListItemText sx={{ color: textColor, fontWeight: 'bold' }}>
                   {obj.name.toUpperCase()}
                 </ListItemText>
-                {icon}
+                {obj.error &&
+                  <Tooltip title='Required from template' placement='right'>
+                    <Error />
+                  </Tooltip>
+                }
               </ListItemButton>
             </ListItem>);
         })

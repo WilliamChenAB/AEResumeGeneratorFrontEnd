@@ -1,7 +1,8 @@
 import { useEffect, useState, useRef } from 'react';
-import { Button, Grid, IconButton, Dialog, DialogTitle, DialogContent, TextField, Snackbar, Alert } from '@mui/material';
+import { Button, Grid, IconButton, Dialog, DialogTitle, DialogContent, TextField } from '@mui/material';
 import { Close } from '@mui/icons-material';
 import Dropdown from '../components/Dropdown';
+import AlertPopup from '../components/AlertPopup';
 
 const defaultFormValues = {
   name: '',
@@ -62,9 +63,7 @@ function AddTemplate({ templates, open, onClose }) {
 
   return (
     <div>
-      <Snackbar anchorOrigin={{vertical: 'top', horizontal: 'center'}} open={openCompleteMessage} autoHideDuration={5000} onClose={handleCloseCompleteMessage}>
-        <Alert severity='success' onClose={handleCloseCompleteMessage}>Template {formValues.name} has been successfully created.</Alert>
-      </Snackbar>
+      <AlertPopup type='success' open={openCompleteMessage} onClose={handleCloseCompleteMessage}>Template {formValues.name} has been successfully created.</AlertPopup>
       <Dialog maxWidth='lg' fullWidth open={open}>
         <DialogTitle>
           Create Template

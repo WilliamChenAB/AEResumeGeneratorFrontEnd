@@ -1,8 +1,9 @@
 import { useState } from 'react';
-import { Button, IconButton, Dialog, DialogTitle, DialogContent, Snackbar, Alert, Box} from '@mui/material';
+import { Button, IconButton, Dialog, DialogTitle, DialogContent, Box } from '@mui/material';
 import { Close } from '@mui/icons-material';
 import WorkSpaceEmployeeTable from '../components/Table/WorkspaceEmployeeTable';
-import SearchBar from '../components/SearchBar'; 
+import SearchBar from '../components/SearchBar';
+import AlertPopup from '../components/AlertPopup';
 
 // TODO: replace mock data with BE data, id to be resume id
 
@@ -40,19 +41,17 @@ function AddEmployee({ open, onClose, data }) {
 
   return (
     <div>
-      <Snackbar anchorOrigin={{vertical: 'top', horizontal: 'center'}} open={openCompleteMessage} autoHideDuration={5000} onClose={handleCloseCompleteMessage}>
-        <Alert severity='success' onClose={handleCloseCompleteMessage}>Employee {employeeId} has been successfully added.</Alert>
-      </Snackbar>
+      <AlertPopup type='success' open={openCompleteMessage} onClose={handleCloseCompleteMessage}>Employee {employeeId} has been successfully added.</AlertPopup>
       <Dialog maxWidth='lg' fullWidth open={open}>
         <DialogTitle>
-          <IconButton sx={{ position: 'absolute', right: 8, top: 8 }} onClick={() => {handleClose(false)}}>
+          <IconButton sx={{ position: 'absolute', right: 8, top: 8 }} onClick={() => { handleClose(false) }}>
             <Close />
           </IconButton>
         </DialogTitle>
         <DialogContent>
-          <SearchBar placeholder="Search Table..." value={search} handleChange={(searchVal) => {setSearch(searchVal); tableFilter(searchVal)}} />
-          <WorkSpaceEmployeeTable rows={rows} onSelect={setEmployeeId}/>
-          <Box mx={2} sx={{flexDirection: 'row'}}>
+          <SearchBar placeholder='Search Table...' value={search} handleChange={(searchVal) => { setSearch(searchVal); tableFilter(searchVal) }} />
+          <WorkSpaceEmployeeTable rows={rows} onSelect={setEmployeeId} />
+          <Box mx={2} sx={{ flexDirection: 'row' }}>
             <Button variant='contained' onClick={handleSubmit} disabled={employeeId === '' ? true : false}>Request New Resume</Button>
             <Button variant='contained' onClick={handleSubmit} disabled={employeeId === '' ? true : false}>Import Existing Resume</Button>
             <Button variant='contained' onClick={handleSubmit} disabled={employeeId === '' ? true : false}>Import By Sector</Button>

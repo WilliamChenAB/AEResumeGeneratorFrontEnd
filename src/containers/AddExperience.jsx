@@ -1,7 +1,8 @@
 import { useEffect, useState, useRef } from 'react';
-import { Button, Grid, IconButton, Dialog, DialogTitle, DialogContent, TextField, Snackbar, Alert, Stack, Box} from '@mui/material';
+import { Button, Grid, IconButton, Dialog, DialogTitle, DialogContent, TextField, Stack, Box } from '@mui/material';
 import { Close } from '@mui/icons-material';
 import Dropdown from '../components/Dropdown';
+import AlertPopup from '../components/AlertPopup';
 
 const defaultFormValues = {
   name: '',
@@ -65,13 +66,11 @@ function AddExperience({ divisions, locations, open, onClose }) {
 
   return (
     <div>
-      <Snackbar anchorOrigin={{vertical: 'top', horizontal: 'center'}} open={openCompleteMessage} autoHideDuration={5000} onClose={handleCloseCompleteMessage}>
-        <Alert severity='success' onClose={handleCloseCompleteMessage}>Experience Sector for project {formValues.name} has been successfully created.</Alert>
-      </Snackbar>
+      <AlertPopup type='success' open={openCompleteMessage} onClose={handleCloseCompleteMessage}>Experience Sector for project {formValues.name} has been successfully created.</AlertPopup>
       <Dialog maxWidth='lg' fullWidth open={open}>
         <DialogTitle>
           Add Experience Sector
-          <IconButton sx={{ position: 'absolute', right: 8, top: 8 }} onClick={() => {handleClose(false);}}>
+          <IconButton sx={{ position: 'absolute', right: 8, top: 8 }} onClick={() => { handleClose(false); }}>
             <Close />
           </IconButton>
         </DialogTitle>
@@ -83,11 +82,11 @@ function AddExperience({ divisions, locations, open, onClose }) {
             <TextField fullWidth label='Image Link' variant='standard' name='image' onChange={handleFormChange}></TextField>
             <br />
             <br />
-            <Stack direction="row" spacing={2}>
-              <Box sx={{flexGrow : 1}}>
+            <Stack direction='row' spacing={2}>
+              <Box sx={{ flexGrow: 1 }}>
                 <Dropdown required label='Division' name='division' options={divisions} onChange={handleDropdownChange} />
               </Box>
-              <Box sx={{flexGrow : 1}}>
+              <Box sx={{ flexGrow: 1 }}>
                 <Dropdown required label='Location' name='location' options={locations} onChange={handleDropdownChange} />
               </Box>
             </Stack>
