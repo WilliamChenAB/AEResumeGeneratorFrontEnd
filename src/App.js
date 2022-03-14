@@ -14,6 +14,7 @@ import EditWorkspace from './pages/ProjectAdmin/EditWorkspace';
 import SystemAdminPage from './pages/SystemAdmin/SystemAdminPage';
 import ResumeTemplates from './pages/SystemAdmin/ResumeTemplates';
 import EmployeePermissions from './pages/SystemAdmin/EmployeePermissions';
+import EditTemplate from './pages/SystemAdmin/EditTemplate';
 
 function App() {
   return (
@@ -42,6 +43,7 @@ function App() {
           <Route index element={<Navigate to='/system/templates' replace />} />
           <Route path='templates' element={<RequireAuth><ResumeTemplates /></RequireAuth>} />
           <Route path='employees' element={<RequireAuth><EmployeePermissions /></RequireAuth>} />
+          <Route path='editTemplate' element={<RequireAuth><EditTemplate /></RequireAuth>} />
         </Route>
         <Route
           path='*'
