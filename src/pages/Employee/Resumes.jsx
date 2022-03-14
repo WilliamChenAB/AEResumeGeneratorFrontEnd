@@ -7,7 +7,9 @@ import { Outlet, useNavigate } from 'react-router-dom';
 import { mockResumes } from './__mocks__/mockResumes';
 import { resumeActions } from '../../slices/resumeSlice';
 import SideBar from '../../containers/SideBar0';
+import AddResume from '../../containers/AddResume';
 import SearchBar from '../../components/SearchBar';
+import AddButton from '../../components/AddButton';
 
 // TODO: replace mock data with BE data
 
@@ -66,9 +68,9 @@ function Resumes() {
           </Box>
           <SearchBar placeholder='Search Resumes' onChange={()=>{}}></SearchBar>
         </Box>
+        <AddButton text='Add Resume' onClick={() => setShowDialog(true)} />
         <ResumeTable rows={resumesToRows} onActionClick={() => { navigate('/employee/resumes/1') }} onSelectClick={setSelectedResumeId} />
-        {/*showDialog && resumes[selectedResumeId].action === 'Submit' && <SectorSelection resumeName={selectedResumeId ? resumes[selectedResumeId].projectName : ''} open={showDialog} onClose={() => { setShowDialog(false) }}></SectorSelection>*/}
-        {/*showDialog && resumes[selectedResumeId].action === 'View' && <ViewResume resumeName={selectedResumeId ? resumes[selectedResumeId].projectName : ''} open={showDialog} onClose={() => { setShowDialog(false) }}></ViewResume>*/}
+        <AddResume open={showDialog} onClose={()=>{setShowDialog(false)}}></AddResume>
         <Outlet />
       </Box>
     </Box>
