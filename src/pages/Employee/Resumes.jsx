@@ -6,7 +6,7 @@ import { Box, Typography } from '@mui/material';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { mockResumes } from './__mocks__/mockResumes';
 import { resumeActions } from '../../slices/resumeSlice';
-import SideBar from '../../containers/SideBar0';
+import SideBar from '../../containers/SideBar';
 import AddResume from '../../containers/AddResume';
 import SearchBar from '../../components/SearchBar';
 import AddButton from '../../components/AddButton';

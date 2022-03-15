@@ -32,18 +32,19 @@ function App() {
         </Route>
         <Route path='project' element={<RequireAuth><ProjectAdminPage /></RequireAuth>}>
           <Route index element={<Navigate to='/project/workspaces' replace />} />
-          <Route path='workspaces' element={<RequireAuth><ProjectWorkspaces /></RequireAuth>} />
           <Route path='employees' element={<RequireAuth><EmployeeDatabase /></RequireAuth>} />
-          <Route path='editWorkspace'>
+          <Route path='workspaces'>
             <Route index element={<RequireAuth><ProjectWorkspaces /></RequireAuth>} />
             <Route path=':workspaceId' element={<RequireAuth><EditWorkspace /></RequireAuth>} />
           </Route>
         </Route>
         <Route path='system' element={<RequireAuth><SystemAdminPage /></RequireAuth>}>
           <Route index element={<Navigate to='/system/templates' replace />} />
-          <Route path='templates' element={<RequireAuth><ResumeTemplates /></RequireAuth>} />
           <Route path='employees' element={<RequireAuth><EmployeePermissions /></RequireAuth>} />
-          <Route path='editTemplate' element={<RequireAuth><EditTemplate /></RequireAuth>} />
+          <Route path='templates'>
+            <Route index element={<RequireAuth><ResumeTemplates /></RequireAuth>} />
+            <Route path=':templateId' element={<RequireAuth><EditTemplate /></RequireAuth>} />
+          </Route>
         </Route>
         <Route
           path='*'

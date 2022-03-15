@@ -10,7 +10,6 @@ import SideBarResumeTemplate from '../../containers/SideBarResumeTemplate';
 import AddEmployee from '../../containers/AddEmployee';
 // import { mockWorkspaces } from './__mocks__/mockWorkspaces';
 // import { mockWorkspaceResumes } from './__mocks__/mockWorkspaceResumes';
-import SideBar from '../../containers/SideBar'
 import Divider from '@mui/material/Divider';
 
 const mockTemplate = {

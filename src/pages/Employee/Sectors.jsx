@@ -6,7 +6,7 @@ import ExperienceTextBox from '../../components/TextBox/ExperienceTextBox';
 import TextBox from '../../components/TextBox/TextBox';
 import TextField from '@mui/material/TextField';
 import { Box, Typography } from '@mui/material';
-import SideBar from '../../containers/SideBar0';
+import SideBar from '../../containers/SideBar';
 
 function Sectors() {
   const tabs = useSelector(sectorSelectors.getSectorsHeaders);

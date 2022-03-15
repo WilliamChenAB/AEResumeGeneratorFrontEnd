@@ -27,7 +27,7 @@ function ProjectWorkspaces() {
       </Box>
       <AddButton text='Add Workspace' onClick={() => setShowWorkspaceDialog(true)} />
       <AddWorkspace open={showWorkspaceDialog} onClose={() => setShowWorkspaceDialog(false)}></AddWorkspace>
-      <WorkspaceTable rows={workspacesToRows} onSelectClick={setSelectedWorkspaceId} workSpaceExpanded={(id)=>{navigate('/project/editWorkspace/'.concat(id))}}/>
+      <WorkspaceTable rows={workspacesToRows} onSelectClick={setSelectedWorkspaceId} workSpaceExpanded={(id)=>{navigate('/project/workspaces/'.concat(id))}}/>
     </Box>
   )
 }

@@ -7,7 +7,7 @@ import SectorSelection from '../../containers/SectorSelection';
 import TextBox from '../../components/TextBox/TextBox';
 import { Box, Icon, Typography } from '@mui/material';
 import AddButton from '../../components/AddButton';
-import SideBar from '../../containers/SideBar0';
+import SideBar from '../../containers/SideBar';
 import AddEmployee from '../../containers/AddEmployee';
 import { mockWorkspaces } from './__mocks__/mockWorkspaces';
 import { mockWorkspaceResumes } from './__mocks__/mockWorkspaceResumes';

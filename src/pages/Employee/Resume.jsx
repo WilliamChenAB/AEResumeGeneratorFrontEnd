@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Box, Button, Typography } from '@mui/material';
 import { ArrowBack } from '@mui/icons-material';
 import { Link, useParams } from 'react-router-dom';
-import SideBar from '../../containers/SideBar0';
+import SideBar from '../../containers/SideBar';
 import { sectorSelectors } from '../../slices/sectorSlice';
 import { useSelector } from 'react-redux';
 import AddButton from '../../components/AddButton';
