@@ -14,7 +14,7 @@ import Divider from '@mui/material/Divider';
 
 const mockTemplate = {
   name: 'Project Name',
-  template:['experience','education','projects'],
+  template: ['experience', 'education', 'projects'],
 }
 
 function EditWorkspace() {
@@ -25,23 +25,29 @@ function EditWorkspace() {
   const entries = mockTemplate.template.map(sector => { return ({ name: sector, error: false }) });
 
   return (
-    <>
+    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
       <Box m={2}>
         <Typography variant='h3'>{mockTemplate.name}</Typography>
       </Box>
       <Divider />
       <Box sx={{ display: 'flex', flexDirection: 'row', height: '100%' }} >
-        <SideBarResumeTemplate entries={entries} setTab={(index) => { setActiveTemplateTab(index)}} color='primary'/>
-        
-        {/* {
-          activeEmployeeTab !== -1 && mockWorkspaces[workspaceId] && entries[activeEmployeeTab] && <SideBar title={entries[activeEmployeeTab].name} color='secondary' setTab={setActiveSectorTypeTab} useButton={true} buttonText='Add Sector' buttonClick={() => { }} entries={getResumeEntries()}></SideBar>
-        } */}
+        <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+          <SideBarResumeTemplate entries={entries} setTab={(index) => { setActiveTemplateTab(index) }} color='primary' />
+          <Box m={2}>
+            <AddButton text='Add sector'/>
+          </Box>
+        </Box>
+        <Box m={4} sx={{ width: '100%' }}>
+          <Typography variant='h3'>{entries[activeTemplateTab].name.toUpperCase()}</Typography>
+          <Box my={3}>
+            <TextBox rows={5} hideEdit></TextBox>
+          </Box>
+        </Box>
       </Box>
 
       <AddEmployee data={[]} open={openAddEmployee} onClose={() => (setOpenAddEmployee(false))}></AddEmployee>
-    </>
+    </Box>
   );
 }
 
 export default EditWorkspace;
-
