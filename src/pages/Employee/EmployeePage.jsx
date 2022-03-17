@@ -7,7 +7,7 @@ const topBarButtons = [{
   url: '/employee/resumes',
 },
 {
-  text: 'Sectors',
+  text: 'Edit Sectors',
   url: '/employee/sectors',
 }];
 

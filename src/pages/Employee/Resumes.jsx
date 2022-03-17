@@ -1,60 +1,58 @@
-import React from 'react';
-import { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useEffect, useState } from 'react';
 import ResumeTable from '../../components/Table/ResumeTable';
 import { Box, Typography } from '@mui/material';
-import { Outlet, useNavigate } from 'react-router-dom';
-import { mockResumes } from './__mocks__/mockResumes';
-import { resumeActions } from '../../slices/resumeSlice';
+import { useNavigate } from 'react-router-dom';
 import SideBar from '../../containers/SideBar';
 import AddResume from '../../containers/AddResume';
 import SearchBar from '../../components/SearchBar';
 import AddButton from '../../components/AddButton';
-
-// TODO: replace mock data with BE data
-
-// rid1: {
-//   projectName: '37th Street SW Storm Trunk Relocation Contract',
-//   updateDate: '-',
-//   status: 'Requested',
-//   action: 'Submit',
-//   sectors: {
-//     justification: {},
-//     education: {
-//       years: '',
-//       sections: {},
-//     },
-//     summary: {},
-//     experience: {},
-//   },
-// },
+import Loading from '../../components/Loading';
+import Error from '../../components/Error';
+import axios from 'axios';
 
 function Resumes() {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
 
-  // get resumes from BE
-  const resumes = mockResumes;
-  const [showDialog, setShowDialog] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorStatus, setErrorStatus] = useState(false);
+  const [data, setData] = useState([]); // full data
+  const [rows, setRows] = useState([]); // rows to display in table (with filter applied)
+  const [showAddDialog, setShowAddDialog] = useState(false);
   const [selectedResumeId, setSelectedResumeId] = useState('');
 
-  // fetch resumes from BE and set resumes using selectedResumeId
-  dispatch(resumeActions.setResume(resumes[selectedResumeId]));
+  // Get all resumes for user
+  useEffect(() => {
+    setIsLoading(true);
+    setErrorStatus(false);
+    axios.get('/Facade/GetResumesForEmployee', {
+      params: {
+        // TODO - replace with EID of logged in user
+        EID: '5',
+      }
+    }).then((response) => {
+      const responseData = response.data.map((resume) => {
+        return {
+          id: resume.rid,
+          resumeName: `${resume.rid}`, // force name to be string
+          updateDate: resume.lastEditedDate,
+          status: 'STATUS',
+        };
+      });
+      setData(responseData);
+      setRows(responseData);
+      setIsLoading(false);
+    }).catch((error) => {
+      setIsLoading(false);
+      setErrorStatus(error.response);
+    });
+  }, []);
 
-
-
-  // const entries = tabs.map(tab => {
-  //   return {name: tab, error: Object.keys(sectorSections[activeTab]).length === 0}
-  // })
-
-
-  // get all employee entries using selectedResumeId
-
-  const resumesToRows = Object.keys(resumes).map((rid) => {
-    return { id: rid, projectName: resumes[rid].projectName, updateDate: resumes[rid].updateDate, status: resumes[rid].status, action: resumes[rid].action }
-  });
-
-  // TODO: update SectorSelection
+  const tableFilter = (value) => {
+    const filteredRows = data.filter((row) => {
+      return row.resumeName.toLowerCase().includes(value.toLowerCase());
+    });
+    setRows(filteredRows);
+  }
 
   return (
     <Box sx={{ display: 'flex', height: '100%' }}>
@@ -62,18 +60,25 @@ function Resumes() {
         <SideBar title='John Doe' subtitle='Utility Coordinator' color='primary' />
       </Box>
       <Box sx={{ flexGrow: 1 }} className='content-section-margins'>
-        <Box mb={4}sx={{display: 'flex', flexDirection: 'row'}}>
-          <Box sx={{flexGrow:1, alignItems:'flex-end'}}>
+        {isLoading && <Loading text='Loading Resumes...' />}
+        {!isLoading && errorStatus && <Error text='Error retrieving resumes.' response={errorStatus}></Error>}
+        {!isLoading && !errorStatus &&
+          <>
             <Typography variant='h3'>RESUMES</Typography>
-          </Box>
-          <SearchBar placeholder='Search Resumes' onChange={()=>{}}></SearchBar>
-        </Box>
-        <AddButton text='Add Resume' onClick={() => setShowDialog(true)} />
-        <ResumeTable rows={resumesToRows} onActionClick={() => { navigate('/employee/resumes/1') }} onSelectClick={setSelectedResumeId} />
-        <AddResume open={showDialog} onClose={()=>{setShowDialog(false)}}></AddResume>
-        <Outlet />
+            <br />
+            <br />
+            <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+              <Box sx={{ width: '40%' }}>
+                <SearchBar placeholder='Search Resumes' onChange={(value) => { tableFilter(value) }}></SearchBar>
+              </Box>
+              <AddButton text='Add Resume' onClick={() => setShowAddDialog(true)} />
+            </Box>
+            <ResumeTable rows={rows} handleSelect={(id) => { navigate(`/employee/resumes/${id}`) }} onSelectClick={setSelectedResumeId} />
+            <AddResume open={showAddDialog} onClose={() => { setShowAddDialog(false) }}></AddResume>
+          </>
+        }
       </Box>
-    </Box>
+    </Box >
   )
 }
 
