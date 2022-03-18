@@ -67,7 +67,7 @@ function TopBar({ buttons, roles, selectedRole }) {
               </Box>
               <Box component={Grid} display={{ xs: 'block', lg: 'none' }}>
                 <IconButton
-                  onClick={() => { handleClick() }}
+                  onClick={(e) => { handleClick(e) }}
                   size='small'
                   sx={{ ml: 2 }}
                   aria-controls={open ? 'account-menu' : undefined}
