@@ -4,6 +4,7 @@ import { AddCircleOutline } from '@mui/icons-material';
 /**
  * Add button component with add icon and text
  * @param text Text to display in button
+ * @param onClick onClick handler for button
  * @returns AddButton component
  */
 function AddButton({ text, onClick }) {

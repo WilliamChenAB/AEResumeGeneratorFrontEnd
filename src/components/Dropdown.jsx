@@ -5,7 +5,7 @@ import { FormControl, Select, MenuItem, InputLabel } from '@mui/material';
  * Takes up full width of parent container.
  * @param label Label text
  * @param required Boolean for whether or not field is required
- * @param options Array of options for the dropdown
+ * @param options Array of options for dropdown, must be objects with id (value) and name (text)
  * @param name Name of select input
  * @param onChange onChange handler
  * @returns Dropdown component
@@ -25,7 +25,7 @@ function Dropdown({ label, required, options, name, onChange }) {
           {
             options.map(option => {
               return (
-                <MenuItem key={option} value={option}>{option}</MenuItem>
+                <MenuItem key={option.id} value={option.id}>{option.name}</MenuItem>
               );
             })
           }

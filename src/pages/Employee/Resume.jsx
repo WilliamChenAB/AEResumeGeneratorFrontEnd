@@ -3,13 +3,13 @@ import { Box, Button, Typography } from '@mui/material';
 import { ArrowBack } from '@mui/icons-material';
 import { Link, useParams } from 'react-router-dom';
 import SideBar from '../../containers/SideBar';
-import { sectorSelectors } from '../../slices/sectorSlice';
-import { useSelector } from 'react-redux';
 import AddButton from '../../components/AddButton';
 import TextBox from '../../components/TextBox/TextBox';
 import SectorSelection from '../../containers/SectorSelection';
 import Loading from '../../components/Loading';
 import Error from '../../components/Error';
+import AlertPopup from '../../components/AlertPopup';
+import ConfirmDelete from '../../containers/ConfirmDelete';
 import axios from 'axios';
 
 function Resume() {
@@ -17,14 +17,17 @@ function Resume() {
 
   const [isLoading, setIsLoading] = useState(false);
   const [errorStatus, setErrorStatus] = useState(false);
-  const tabs = useSelector(sectorSelectors.getSectorsHeaders);
-  const sectorSections = useSelector(sectorSelectors.getSectors);
   const [activeTab, setActiveTab] = useState(0);
   const [showDialog, setShowDialog] = useState(false);
+  const [openCompleteMessage, setOpenCompleteMessage] = useState(false);
   const [sectors, setSectors] = useState([]);
+  const [sectorTypes, setSectorTypes] = useState([]);
+  const [resumeName, setResumeName] = useState('');
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [deleteSectorId, setDeleteSectorId] = useState('');
+  const [isDeleting, setIsDeleting] = useState(false);
 
-  // Get resume
-  useEffect(() => {
+  const getResume = () => {
     setIsLoading(true);
     setErrorStatus(false);
     axios.get('/Facade/GetResume', {
@@ -32,12 +35,23 @@ function Resume() {
         RID: resumeId,
       }
     }).then((response) => {
+      setResumeName(response.data.name || 'untitled');
+      const typesAll = response.data.sectorList.map((sector) => {
+        return {
+          id: sector.typeID,
+          name: sector.typeTitle || 'untitled',
+          error: false,
+        };
+      });
+      const typesUnique = [...new Map(typesAll.map(item => [item.id, item])).values()];
+      setSectorTypes(typesUnique);
       setSectors(response.data.sectorList.map((sector) => {
         return {
           id: sector.sid,
+          createDate: sector.creationDate,
           updateDate: sector.lastEditedDate,
           content: sector.content,
-          sectorType: sector.sectorType,
+          type: sector.typeID,
         }
       }));
       setIsLoading(false);
@@ -45,16 +59,103 @@ function Resume() {
       setIsLoading(false);
       setErrorStatus(error.response);
     });
+  }
+
+  useEffect(() => {
+    getResume();
   }, []);
 
-  const entries = tabs.map(tab => {
-    return { name: tab, error: Object.keys(sectorSections[tabs[activeTab]]).length === 0 }
-  })
+  const addNewBlankSector = () => {
+    setIsLoading(true);
+    axios.post('/Facade/AddSectorToResume', null, {
+      params: {
+        RID: resumeId,
+        content: '',
+        typeID: sectorTypes[activeTab]?.id,
+      }
+    }).then((response) => {
+      setIsLoading(false);
+      setOpenCompleteMessage({
+        type: 'success',
+        text: `A blank sector for ${sectorTypes[activeTab]?.name} has been successfully created.`
+      });
+      getResume();
+    }).catch((error) => {
+      setIsLoading(false);
+      setOpenCompleteMessage({
+        type: 'error',
+        text: `An error occurred while creating blank sector. (${error.response.status} ${error.response.statusText})`
+      });
+    });
+  }
+
+  const deleteSector = () => {
+    setIsDeleting(true);
+    axios.delete('/Facade/DeleteSector', {
+      params: {
+        SID: deleteSectorId,
+      }
+    }).then((response) => {
+      setIsDeleting(false);
+      setOpenCompleteMessage({
+        type: 'success',
+        text: `Sector has been permanently deleted.`
+      });
+      setShowDeleteDialog(false);
+      getResume();
+    }).catch((error) => {
+      setIsDeleting(false);
+      setOpenCompleteMessage({
+        type: 'error',
+        text: `An error occurred while deleting sector. (${error.response.status} ${error.response.statusText})`
+      });
+      setShowDeleteDialog(false);
+    });
+  };
+
+  const handleDeleteSectorClick = (sectorId) => {
+    setDeleteSectorId(sectorId);
+    setShowDeleteDialog(true);
+  }
+
+  const handleSectorSelectionSubmit = (selectedSectors) => {
+    let requests = selectedSectors.map(sector =>
+      axios.post('/Facade/AddSectorToResume', null, {
+        params: {
+          RID: resumeId,
+          content: sector.content,
+          typeID: sector.type,
+        }
+      }));
+
+    setIsLoading(true);
+    Promise.all(requests).then((results) => {
+      setIsLoading(false);
+      setOpenCompleteMessage({
+        type: 'success',
+        text: `Sectors have been successfully copied.`
+      });
+      getResume();
+    }).catch((error) => {
+      setIsLoading(false);
+      setOpenCompleteMessage({
+        type: 'error',
+        text: `An error occurred while copying one or more of the sectors. (${error.response.status} ${error.response.statusText})`
+      });
+    });
+  }
 
   return (
     <Box sx={{ display: 'flex', height: '100%' }}>
+      {openCompleteMessage &&
+        <AlertPopup type={openCompleteMessage.type} open onClose={() => { setOpenCompleteMessage(false) }}>
+          {openCompleteMessage.text}
+        </AlertPopup>
+      }
+      <SectorSelection resumeName={resumeName} open={showDialog} onClose={() => { setShowDialog(false) }} onSubmit={(sectors) => { handleSectorSelectionSubmit(sectors) }} />
+      <ConfirmDelete nameToDelete={`the sector from this resume`} open={showDeleteDialog} onClose={() => { setShowDeleteDialog(false) }} onConfirm={() => { deleteSector() }} isDeleting={isDeleting} />
       <Box>
-        <SideBar title='John Doe' subtitle='Utility Coordinator' entries={entries} setTab={setActiveTab} color='primary' useButton buttonText='Add Sector' buttonClick={() => { setShowDialog(true) }} />
+        <SideBar title='John Doe' subtitle='Utility Coordinator' entries={sectorTypes} setTab={setActiveTab} color='primary' useButton buttonText='Add Sector' buttonClick={() => { setShowDialog(true) }} />
       </Box>
       <Box sx={{ flexGrow: 1 }} className='content-section-margins'>
         {isLoading && <Loading text='Loading Resume...' />}
@@ -66,17 +167,25 @@ function Resume() {
             </Link>
             <br />
             <br />
-            <Typography variant='subtitle2'>37th Street SW Storm Trunk Relocation Contract</Typography>
+            <Typography variant='subtitle2'>{resumeName}</Typography>
             <br />
-            <Typography variant='h3'>{tabs[activeTab].toUpperCase()}</Typography>
-            <br />
-            <SectorSelection resumeName='37th Street SW Storm Trunk Relocation Contract' open={showDialog} onClose={() => { setShowDialog(false) }} />
-            <AddButton text='Add Blank Sector' />
-            {sectors.map((sector) =>
-              <Box mb={5} key={sector.id}>
-                <TextBox key={sector.id} id={sector.id} text={sector.content} />
-              </Box>
-            )}
+            {sectorTypes.length > 0 &&
+              <>
+                <Typography variant='h3'>{sectorTypes[activeTab]?.name.toUpperCase()} SECTORS</Typography>
+                <br />
+                <AddButton text='Add Blank Sector' onClick={() => { addNewBlankSector() }} />
+                {sectors.filter((sector) => {
+                  return sector.type === sectorTypes[activeTab]?.id;
+                }).map((sector) =>
+                  <Box mb={5} key={sector.id}>
+                    <TextBox key={sector.id} id={sector.id} text={sector.content} onDelete={() => { handleDeleteSectorClick(sector.id) }} footer={`Last Updated: ${sector.updateDate}`} />
+                  </Box>
+                )}
+              </>
+            }
+            {sectorTypes.length === 0 &&
+              <Typography variant='body1'>To begin constructing your resume, click the Add Sector button on the bottom left.</Typography>
+            }
           </>
         }
       </Box>

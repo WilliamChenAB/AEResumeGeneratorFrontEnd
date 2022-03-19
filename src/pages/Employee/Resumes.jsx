@@ -8,6 +8,8 @@ import SearchBar from '../../components/SearchBar';
 import AddButton from '../../components/AddButton';
 import Loading from '../../components/Loading';
 import Error from '../../components/Error';
+import AlertPopup from '../../components/AlertPopup';
+import ConfirmDelete from '../../containers/ConfirmDelete';
 import axios from 'axios';
 
 function Resumes() {
@@ -19,23 +21,26 @@ function Resumes() {
   const [rows, setRows] = useState([]); // rows to display in table (with filter applied)
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [selectedResumeId, setSelectedResumeId] = useState('');
+  const [openCompleteMessage, setOpenCompleteMessage] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [deleteResumeObj, setDeleteResumeObj] = useState({});
 
-  // Get all resumes for user
-  useEffect(() => {
+  const getAllResumes = () => {
     setIsLoading(true);
     setErrorStatus(false);
     axios.get('/Facade/GetResumesForEmployee', {
       params: {
         // TODO - replace with EID of logged in user
-        EID: '5',
+        EID: '1',
       }
     }).then((response) => {
       const responseData = response.data.map((resume) => {
         return {
           id: resume.rid,
-          resumeName: `${resume.rid}`, // force name to be string
+          resumeName: resume.name || 'untitled',
           updateDate: resume.lastEditedDate,
-          status: 'STATUS',
+          status: resume.status,
         };
       });
       setData(responseData);
@@ -45,6 +50,34 @@ function Resumes() {
       setIsLoading(false);
       setErrorStatus(error.response);
     });
+  }
+
+  const deleteResume = () => {
+    setIsDeleting(true);
+    axios.delete('/Facade/DeleteResume', {
+      params: {
+        RID: deleteResumeObj.id,
+      }
+    }).then((response) => {
+      setIsDeleting(false);
+      setOpenCompleteMessage({
+        type: 'success',
+        text: `Resume ${deleteResumeObj.resumeName} has been permanently deleted.`
+      });
+      setShowDeleteDialog(false);
+      getAllResumes();
+    }).catch((error) => {
+      setIsDeleting(false);
+      setOpenCompleteMessage({
+        type: 'error',
+        text: `An error occurred while deleting resume. (${error.response.status} ${error.response.statusText})`
+      });
+      setShowDeleteDialog(false);
+    });
+  };
+
+  useEffect(() => {
+    getAllResumes();
   }, []);
 
   const tableFilter = (value) => {
@@ -54,8 +87,19 @@ function Resumes() {
     setRows(filteredRows);
   }
 
+  const handleDeleteClick = (resumeObj) => {
+    setDeleteResumeObj(resumeObj);
+    setShowDeleteDialog(true);
+  }
+
   return (
     <Box sx={{ display: 'flex', height: '100%' }}>
+      {openCompleteMessage &&
+        <AlertPopup type={openCompleteMessage.type} open onClose={() => { setOpenCompleteMessage(false) }}>
+          {openCompleteMessage.text}
+        </AlertPopup>
+      }
+      <ConfirmDelete nameToDelete={`resume ${deleteResumeObj?.resumeName}`} open={showDeleteDialog} onClose={() => { setShowDeleteDialog(false) }} onConfirm={() => { deleteResume() }} isDeleting={isDeleting} />
       <Box>
         <SideBar title='John Doe' subtitle='Utility Coordinator' color='primary' />
       </Box>
@@ -73,7 +117,7 @@ function Resumes() {
               </Box>
               <AddButton text='Add Resume' onClick={() => setShowAddDialog(true)} />
             </Box>
-            <ResumeTable rows={rows} handleSelect={(id) => { navigate(`/employee/resumes/${id}`) }} onSelectClick={setSelectedResumeId} />
+            <ResumeTable rows={rows} handleSelect={(id) => { navigate(`/employee/resumes/${id}`) }} onSelectClick={setSelectedResumeId} onDeleteClick={(resumeObj) => { handleDeleteClick(resumeObj) }} />
             <AddResume open={showAddDialog} onClose={() => { setShowAddDialog(false) }}></AddResume>
           </>
         }

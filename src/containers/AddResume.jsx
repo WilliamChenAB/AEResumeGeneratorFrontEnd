@@ -1,9 +1,12 @@
 import { useEffect, useState, useRef } from 'react';
-import { Box, Button, CircularProgress, Grid, IconButton, Dialog, DialogTitle, DialogContent, TextField } from '@mui/material';
+import { Grid, IconButton, Dialog, DialogTitle, DialogContent, TextField, DialogActions } from '@mui/material';
 import { Close } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import Dropdown from '../components/Dropdown';
 import AlertPopup from '../components/AlertPopup';
+import LoadingButton from '../components/LoadingButton';
+import Loading from '../components/Loading';
+import Error from '../components/Error';
 import axios from 'axios';
 
 const defaultFormValues = {
@@ -21,9 +24,11 @@ function AddResume({ open, onClose }) {
   const navigate = useNavigate();
 
   const [isLoading, setIsLoading] = useState(false);
+  const [errorStatus, setErrorStatus] = useState(false);
   const [formValues, setFormValues] = useState(defaultFormValues);
   const [submitDisabled, setSubmitDisabled] = useState(true);
   const [openCompleteMessage, setOpenCompleteMessage] = useState(false);
+  const [templates, setTemplates] = useState([]);
 
   const formRef = useRef();
 
@@ -54,13 +59,13 @@ function AddResume({ open, onClose }) {
   const handleSubmit = (ev) => {
     setIsLoading(true);
     setSubmitDisabled(true);
-    console.log('creating resume with values:');
-    console.log(formValues);
-
-    axios.post('/Facade/NewResume', {
-      // TODO - replace with user EID
-      eid: 5,
-      // TODO - more request body
+    axios.post('/Facade/NewResume', null, {
+      params: {
+        // TODO - replace with user EID
+        templateID: formValues.template,
+        resumeName: formValues.name,
+        EID: 1,
+      }
     }).then((response) => {
       setIsLoading(false);
       setOpenCompleteMessage({
@@ -83,6 +88,26 @@ function AddResume({ open, onClose }) {
     setOpenCompleteMessage(false)
   }
 
+  useEffect(() => {
+    if (open) {
+      setIsLoading(true);
+      setErrorStatus(false);
+      axios.get('/Facade/GetAllTemplates').then((response) => {
+        setTemplates(response.data.map((template) => {
+          return {
+            id: template.templateID,
+            name: template.title || 'untitled',
+            description: template.description,
+          };
+        }));
+        setIsLoading(false);
+      }).catch((error) => {
+        setIsLoading(false);
+        setErrorStatus(error.response);
+      });
+    }
+  }, [open]);
+
   return (
     <div>
       {openCompleteMessage &&
@@ -98,32 +123,20 @@ function AddResume({ open, onClose }) {
           </IconButton>
         </DialogTitle>
         <DialogContent>
-          <form ref={formRef}>
-            <TextField fullWidth required label='Resume Name' variant='standard' name='name' onChange={handleFormChange}></TextField>
-            <br />
-            <br />
-            <Dropdown required label='Resume Template' options={['template1', 'template2', 'template3', 'template4', 'template5']} name='template' onChange={handleDropdownChange}></Dropdown>
-            <br />
-            <br />
-            <Grid container justifyContent='flex-end'>
-              <Box sx={{ m: 1, position: 'relative' }}>
-                <Button variant='contained' onClick={handleSubmit} disabled={submitDisabled}>Create</Button>
-                {isLoading &&
-                  <CircularProgress
-                    size={24}
-                    sx={{
-                      position: 'absolute',
-                      top: '50%',
-                      left: '50%',
-                      marginTop: '-12px',
-                      marginLeft: '-12px',
-                    }}
-                  />
-                }
-              </Box>
-            </Grid>
-          </form>
+          {isLoading && <Loading text='Loading Templates...' />}
+          {!isLoading && errorStatus && <Error text='Error retrieving templates.' response={errorStatus}></Error>}
+          {!isLoading && !errorStatus &&
+            <form ref={formRef}>
+              <TextField fullWidth required label='Resume Name' variant='standard' name='name' onChange={handleFormChange}></TextField>
+              <br />
+              <br />
+              <Dropdown required label='Resume Template' options={templates} name='template' onChange={handleDropdownChange}></Dropdown>
+            </form>
+          }
         </DialogContent>
+        <DialogActions>
+          <LoadingButton variant='contained' isLoading={isLoading} onClick={handleSubmit} disabled={submitDisabled}>Create</LoadingButton>
+        </DialogActions>
       </Dialog>
     </div>
   );
