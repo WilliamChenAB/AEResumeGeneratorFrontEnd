@@ -1,8 +1,12 @@
 import { useEffect, useState, useRef } from 'react';
 import { Button, Grid, IconButton, Dialog, DialogTitle, DialogContent, TextField } from '@mui/material';
-import { Close } from '@mui/icons-material';
+import { Close, RsvpTwoTone } from '@mui/icons-material';
 import Dropdown from '../components/Dropdown';
 import AlertPopup from '../components/AlertPopup';
+import { useNavigate } from 'react-router-dom';
+import Loading from '../components/Loading';
+import Error from '../components/Error';
+import axios from 'axios';
 
 const defaultFormValues = {
   name: '',
@@ -21,6 +25,8 @@ function AddTemplate({ templates, open, onClose }) {
   const [formValues, setFormValues] = useState(defaultFormValues);
   const [submitDisabled, setSubmitDisabled] = useState(true);
   const [openCompleteMessage, setOpenCompleteMessage] = useState(false);
+
+  const navigate = useNavigate();
 
   const formRef = useRef();
 
@@ -48,22 +54,63 @@ function AddTemplate({ templates, open, onClose }) {
     handleFormChange(ev);
   }
 
-  const handleSubmit = (ev) => {
-    console.log('creating template with values:');
-    console.log(formValues);
+  // const handleSubmit = (ev) => {
+  //   console.log('creating template with values:');
+  //   console.log(formValues);
 
-    // TODO - display complete message based on submit success status
-    setOpenCompleteMessage(true);
-    handleClose();
-  }
+  //   // TODO - display complete message based on submit success status
+  //   setOpenCompleteMessage(true);
+  //   handleClose();
+  // }
 
   const handleCloseCompleteMessage = (ev) => {
     setOpenCompleteMessage(false)
   }
 
+  const handleSubmit = (ev) => {
+    setSubmitDisabled(true);
+    axios.get('Admin/GetSectorsInTemplate', {
+      params: {
+        templateID: formValues.baseTemplate
+      }
+    }).then((response) => {
+      axios.post('/Admin/CreateTemplate', response.data, {
+        params: {
+          templateID: 3,
+          title: formValues.name,
+          description: formValues.description,
+          eid: 1,
+        }
+      }).then((response) => {
+        setOpenCompleteMessage({
+          type: 'success',
+          text: `Template ${formValues.name} has been successfully created.`
+        });
+        handleClose();
+        navigate(`/system/templates/${response.data.templateID}`);
+      }).catch((error) => {
+        setSubmitDisabled(false);
+        setOpenCompleteMessage({
+          type: 'error',
+          text: `An error occurred while creating template. (${error.response.status} ${error.response.statusText})`
+        });
+      })
+    }).catch((error) => {
+      setSubmitDisabled(false);
+      setOpenCompleteMessage({
+        type: 'error',
+        text: `An error occurred while creating template. (${error.response.status} ${error.response.statusText})`
+      });
+    });
+  }
+
   return (
     <div>
-      <AlertPopup type='success' open={openCompleteMessage} onClose={handleCloseCompleteMessage}>Template {formValues.name} has been successfully created.</AlertPopup>
+      {openCompleteMessage &&
+        <AlertPopup type={openCompleteMessage.type} open onClose={handleCloseCompleteMessage}>
+          {openCompleteMessage.text}
+        </AlertPopup>
+      }
       <Dialog maxWidth='lg' fullWidth open={open}>
         <DialogTitle>
           Create Template
@@ -72,19 +119,19 @@ function AddTemplate({ templates, open, onClose }) {
           </IconButton>
         </DialogTitle>
         <DialogContent>
-          <form ref={formRef}>
-            <TextField fullWidth required label='Template Name' variant='standard' name='name' onChange={handleFormChange}></TextField>
-            <br />
-            <br />
-            <Dropdown label='Base Template' name='baseTemplate' options={templates} onChange={handleDropdownChange} />
-            <br />
-            <TextField fullWidth multiline rows={4} label='Template Description' name='description' onChange={handleFormChange}></TextField>
-            <br />
-            <br />
-            <Grid container justifyContent='flex-end'>
-              <Button variant='contained' onClick={handleSubmit} disabled={submitDisabled}>Save</Button>
-            </Grid>
-          </form>
+            <form ref={formRef}>
+              <TextField fullWidth required label='Template Name' variant='standard' name='name' onChange={handleFormChange}></TextField>
+              <br />
+              <br />
+              <Dropdown label='Base Template' name='baseTemplate' options={templates} onChange={handleDropdownChange} />
+              <br />
+              <TextField fullWidth multiline rows={4} label='Template Description' name='description' onChange={handleFormChange}></TextField>
+              <br />
+              <br />
+              <Grid container justifyContent='flex-end'>
+                <Button variant='contained' onClick={handleSubmit} disabled={submitDisabled}>Save</Button>
+              </Grid>
+            </form>
         </DialogContent>
       </Dialog>
     </div>
