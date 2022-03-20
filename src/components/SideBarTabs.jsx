@@ -18,14 +18,13 @@ function SideBarTabs({ entries, showCheckBoxes, color, selectedColor, textColor,
   const [selectedEntry, setSelectedEntry] = useState(0);
   return (
     <List sx={{ flexGrow: 500, maxHeight: '100%', overflow: 'auto' }}>
-      {entries.map((obj, index) => {
-        const checkbox = showCheckBoxes && <Checkbox key={`checkbox${index}`} onChange={onCheckmarkClicked}
-          sx={{
-            color: textColor,
-            '&.Mui-checked': {
+      {
+        entries.map((obj, index) => {
+          const checkbox = showCheckBoxes && <Checkbox key={obj.name} defaultChecked={obj.checked ? obj.checked : false } onChange={onCheckmarkClicked} color='checkbox'
+            sx={{
               color: textColor,
-            },
-          }} />;
+            }}
+          />;
         const usedColor = index === selectedEntry ? selectedColor : color;
         return (
           <ListItem key={`item${index}`} sx={{ background: usedColor, marginBottom: 0.1 }} disablePadding>

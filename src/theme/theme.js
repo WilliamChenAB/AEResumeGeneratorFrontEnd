@@ -12,7 +12,10 @@ export const theme = createTheme({
       light: colorToken.brand.aeGreenLight,
       main: colorToken.brand.aeGreen,
       dark: colorToken.brand.aeGreenDark,
-    }
+    },
+    checkbox: {
+      main: colorToken.greyPalette.white,
+    } 
   },
   typography: {
     h1: {
