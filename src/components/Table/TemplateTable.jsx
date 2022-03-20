@@ -1,6 +1,6 @@
 import * as React from 'react';
 import StyledTable from './StyledTable/StyledTable';
-import IconButton from '@mui/material/IconButton';
+import { IconButton, Tooltip } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import TextButton from '../TextButton';
 
@@ -8,7 +8,7 @@ import TextButton from '../TextButton';
 
 // TODO: replace mock data with BE data, id to be template id
 
-export default function TemplateTable({rows, onSelectClick, handleSelect}) {
+export default function TemplateTable({rows, onSelectClick, handleSelect, onDeleteClick }) {
   const columns = [
     {
       field: 'name',
@@ -27,12 +27,13 @@ export default function TemplateTable({rows, onSelectClick, handleSelect}) {
       flex: 0.5,
       minWidth: 125,
       sortable: false,
-      renderCell: () => {
-        const onClick = () => { }
+      renderCell: (params) => {
         return (
-          <IconButton onClick={onClick}>
-            <DeleteIcon />
-          </IconButton>
+          <Tooltip title='Click to delete template'>
+            <IconButton onClick={() => { onDeleteClick(params.row) }}>
+              <DeleteIcon />
+            </IconButton>
+          </Tooltip>
         )
       }
     },

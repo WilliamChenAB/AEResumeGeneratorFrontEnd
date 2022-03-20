@@ -13,7 +13,6 @@ import Loading from '../../components/Loading';
 import Error from '../../components/Error';
 import axios from 'axios';
 
-import { templateSelectors } from '../../slices/templateSlice';
 
 const mockTemplate = {
   name: 'Project Name',
