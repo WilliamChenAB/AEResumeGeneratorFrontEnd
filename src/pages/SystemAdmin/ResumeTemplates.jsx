@@ -11,7 +11,6 @@ import AddTemplate from '../../containers/AddTemplate';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-import { templateActions } from '../../slices/templateSlice';
 
 // export const mockRows = [
 //   { id: '1', name: 'Power & Energy - Government', updateDate: '2/4/2022' },
