@@ -2,7 +2,7 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import TextBox from '../../components/TextBox/TextBox';
-import { Box, Typography } from '@mui/material';
+import { Box, Button, Typography } from '@mui/material';
 import AddButton from '../../components/AddButton';
 import SideBarResumeTemplate from '../../containers/SideBarResumeTemplate';
 import AddSectorType from '../../containers/AddSectorType';
@@ -11,23 +11,11 @@ import AddSectorType from '../../containers/AddSectorType';
 import Divider from '@mui/material/Divider';
 import Loading from '../../components/Loading';
 import Error from '../../components/Error';
+import AlertPopup from '../../components/AlertPopup';
 import axios from 'axios';
 
 
-const mockTemplate = {
-  name: 'Project Name',
-  template: ['experience', 'education', 'projects'],
-}
-
-// const requestAllSectors = axios.get('/Facade/GetAllSectorTypes');
-// const requestTemplate = axios.get('/Admin/GetTemplate', { params: { templateID: workspaceID }});
-// const requestTemplateSectors = axios.get('Admin/GetSectorsInTemplate', { params: { templateID: workspaceID }});
-
-// const entries = mockTemplate.template.map(sector => { return ({ name: sector, error: false }) });
-
-
 function EditWorkspace() {
-  // const workspaceID = useSelector(templateSelectors.getTemplateID);
 
   let { templateId } = useParams();
 
@@ -37,6 +25,7 @@ function EditWorkspace() {
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errorStatus, setErrorStatus] = useState(false);
+  const [openCompleteMessage, setOpenCompleteMessage] = useState(false);
 
   const createEntries = (allEntries, selectedEntries) => {
     const entries = allEntries.map((entry) => { return ({ name: entry.title, error: false, checked: selectedEntries.includes(entry.typeID) }) })
@@ -67,29 +56,22 @@ function EditWorkspace() {
     getTemplateSectors();
   }, []);
 
-  // useEffect(() => {
-  //   axios.all([
-  //     axios.get('/Facade/GetAllSectorTypes'),
-  //     axios.get('/Admin/GetTemplate', { params: { templateID: workspaceID } })]).then(
-  //       axios.spread((allSectors, template) => {
-  //         console.log(allSectors);
-  //         console.log(template);
-  //         setTemplate(template);
-  //         // createEntries(allSectors, templateSectors, setEntries);
-  //       })
-  //     )
-  // })
-
 
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+      {openCompleteMessage &&
+        <AlertPopup type={openCompleteMessage.type} open onClose={() => { setOpenCompleteMessage(false) }}>
+          {openCompleteMessage.text}
+        </AlertPopup>
+      }
       {isLoading && <Loading text='Loading Template...' />}
       {!isLoading && errorStatus && <Error text='Error retrieving resume.' response={errorStatus}></Error>}
       {!isLoading && !errorStatus &&
         <>
-          <Box m={2}>
+          <Box m={2} sx={{ display: 'flex', justifyContent: 'space-between' }}>
             <Typography variant='h3'>{template.title ? template.title : ''}</Typography>
+            {/* <Button variant='contained' onClick={handleSubmit} disabled={submitDisabled}>Save Sector Types</Button> */}
           </Box>
           <Divider />
           <Box sx={{ display: 'flex', flexDirection: 'row', height: '100%' }} >
@@ -109,7 +91,7 @@ function EditWorkspace() {
             }
           </Box>
           {showAddDialog &&
-            <AddSectorType open={showAddDialog} onClose={() => setShowAddDialog(!showAddDialog)} />
+            <AddSectorType open={showAddDialog} onClose={() => setShowAddDialog(!showAddDialog)} onSave={() => getTemplateSectors()}/>
           }
         </>
       }

@@ -10,7 +10,7 @@ const defaultFormValues = {
   name: '',
 };
 
-function AddSectorType({ open, onClose }) {
+function AddSectorType({ open, onClose, onSave }) {
   const [formValues, setFormValues] = useState(defaultFormValues);
   const [submitDisabled, setSubmitDisabled] = useState(true);
   const [openCompleteMessage, setOpenCompleteMessage] = useState(false);
@@ -54,6 +54,7 @@ function AddSectorType({ open, onClose }) {
         type: 'success',
         text: `Sector type ${formValues.name} has been successfully created.`
       });
+      onSave();
       handleClose();
     }).catch((error) => {
       setSubmitDisabled(false);

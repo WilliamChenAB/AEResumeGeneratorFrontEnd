@@ -48,7 +48,7 @@ function ResumeTemplates() {
       setIsDeleting(false);
       setOpenCompleteMessage({
         type: 'success',
-        text: `Template ${deleteTemplateObj.resumeName} has been permanently deleted.`
+        text: `Template ${deleteTemplateObj.name} has been permanently deleted.`
       });
       setShowDeleteDialog(false);
       getAllTemplates();
@@ -56,7 +56,7 @@ function ResumeTemplates() {
       setIsDeleting(false);
       setOpenCompleteMessage({
         type: 'error',
-        text: `An error occurred while deleting resume. (${error.response.status} ${error.response.statusText})`
+        text: `An error occurred while deleting template. (${error.response.status} ${error.response.statusText})`
       });
       setShowDeleteDialog(false);
     });
@@ -69,7 +69,7 @@ function ResumeTemplates() {
   }
 
   useEffect(() => {
-    getAllTemplates();
+      getAllTemplates();
   }, []);
 
 
@@ -84,10 +84,10 @@ function ResumeTemplates() {
           {openCompleteMessage.text}
         </AlertPopup>
       }
-      <ConfirmDelete nameToDelete={`template ${deleteTemplateObj?.resumeName}`} open={showDeleteDialog} onClose={() => { setShowDeleteDialog(false) }} onConfirm={() => { deleteTemplate() }} isDeleting={isDeleting} />
+      <ConfirmDelete nameToDelete={`template ${deleteTemplateObj?.name}`} open={showDeleteDialog} onClose={() => { setShowDeleteDialog(false) }} onConfirm={() => { deleteTemplate() }} isDeleting={isDeleting} />
       <Box sx={{ flexGrow: 1 }} className='content-section-margins'>
         {isLoading && <Loading text='Loading Templates...' />}
-        {!isLoading && errorStatus && <Error text='Error retrieving resume.' response={errorStatus}></Error>}
+        {!isLoading && errorStatus && <Error text='Error retrieving templates.' response={errorStatus}></Error>}
         {!isLoading && !errorStatus && <>
           <Box mb={4} sx={{ display: 'flex', flexDirection: 'row' }}>
             <Box sx={{ flexGrow: 1, alignItems: 'flex-end' }}>
