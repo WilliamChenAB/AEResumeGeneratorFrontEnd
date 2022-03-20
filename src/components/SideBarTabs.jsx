@@ -16,11 +16,10 @@ import { Error } from '@mui/icons-material';
  */
 function SideBarTabs({ entries, showCheckBoxes, color, selectedColor, textColor, onEntryClick, onCheckmarkClicked }) {
   const [selectedEntry, setSelectedEntry] = useState(0);
-
   return (
     <List sx={{ flexGrow: 500, maxHeight: '100%', overflow: 'auto' }}>
       {entries.map((obj, index) => {
-        const checkbox = showCheckBoxes && <Checkbox key={obj.name} onChange={onCheckmarkClicked}
+        const checkbox = showCheckBoxes && <Checkbox key={`checkbox${index}`} onChange={onCheckmarkClicked}
           sx={{
             color: textColor,
             '&.Mui-checked': {
@@ -29,7 +28,7 @@ function SideBarTabs({ entries, showCheckBoxes, color, selectedColor, textColor,
           }} />;
         const usedColor = index === selectedEntry ? selectedColor : color;
         return (
-          <ListItem key={obj.name} sx={{ background: usedColor, marginBottom: 0.1 }} disablePadding>
+          <ListItem key={`item${index}`} sx={{ background: usedColor, marginBottom: 0.1 }} disablePadding>
             <ListItemButton onClick={(ev) => {
               setSelectedEntry(index);
               onEntryClick(index);

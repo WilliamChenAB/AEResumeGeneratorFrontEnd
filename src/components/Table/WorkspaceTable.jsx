@@ -7,14 +7,15 @@ import TextButton from '../TextButton';
 
 // TODO: trigger pop-up on click
 
-export default function WorkspaceTable({ rows, onSelectClick, workSpaceExpanded}) {
+export default function WorkspaceTable({ rows, onSelectClick, workSpaceExpanded, onDeleteClick }) {
   const columns = [
-    { field: 'workspaceName', 
-      headerName: 'Workspace Name', 
-      flex: 1.2, 
+    {
+      field: 'workspaceName',
+      headerName: 'Workspace Name',
+      flex: 1.2,
       minWidth: 200,
       renderCell: (params) => {
-        return <TextButton onClick={() => {workSpaceExpanded(params.row.key)}} text={params.row.workspaceName}/>
+        return <TextButton onClick={() => { workSpaceExpanded(params.row.key) }} text={params.row.workspaceName} />
       }
     },
     { field: 'id', headerName: 'Proposal No.', flex: 0.5, minWidth: 125 },
@@ -28,10 +29,9 @@ export default function WorkspaceTable({ rows, onSelectClick, workSpaceExpanded}
       flex: 0.10,
       minWidth: 100,
       sortable: false,
-      renderCell: () => {
-        const onClick = () => { }
+      renderCell: (params) => {
         return (
-          <IconButton onClick={onClick}>
+          <IconButton onClick={() => { }}>
             <ExportIcon />
           </IconButton>
         )
@@ -44,10 +44,9 @@ export default function WorkspaceTable({ rows, onSelectClick, workSpaceExpanded}
       flex: 0.10,
       minWidth: 100,
       sortable: false,
-      renderCell: () => {
-        const onClick = () => { }
+      renderCell: (params) => {
         return (
-          <IconButton onClick={onClick}>
+          <IconButton onClick={() => { onDeleteClick(params.row) }}>
             <DeleteIcon />
           </IconButton>
         )

@@ -1,8 +1,6 @@
 import * as React from 'react';
 import StyledTable from './StyledTable/StyledTable';
 
-// TODO: trigger pop-up on click
-
 const columns = [
   { field: 'name', headerName: 'Name', flex: 0.5, minWidth: 200 },
   { field: 'id', headerName: 'Employee ID', flex: 0.5, minWidth: 200},
