@@ -4,11 +4,12 @@ import { Close } from '@mui/icons-material';
 import WorkSpaceEmployeeTable from '../components/Table/WorkspaceEmployeeTable';
 import SearchBar from '../components/SearchBar';
 import AlertPopup from '../components/AlertPopup';
+import ResumeSelection from '../containers/ResumeSelection.jsx';
 import Loading from '../components/Loading';
 import Error from '../components/Error';
 import axios from 'axios';
 
-function AddEmployee({ open, onClose, wid, wname}) {
+function AddEmployee({ open, onClose, wid, wname }) {
   const [isLoading, setIsLoading] = useState(false);
   const [errorStatus, setErrorStatus] = useState(false);
   const [openCompleteMessage, setOpenCompleteMessage] = useState(false);
@@ -16,7 +17,7 @@ function AddEmployee({ open, onClose, wid, wname}) {
   const [employeeName, setEmployeeName] = useState('');
   const [data, setData] = useState([])
   const [rows, setRows] = useState([]);
-  const [search, setSearch] = useState('');
+  const [openResumeSelection, setOpenResumeSelection] = useState(false);
 
 
   useEffect(() => {
@@ -25,9 +26,9 @@ function AddEmployee({ open, onClose, wid, wname}) {
     axios.get('/Admin/GetAllEmployees').then((response) => {
       const responseData = response.data.map((employee) => {
         return {
-          id: employee.eid ,
+          id: employee.eid,
           name: `${employee.name}`, // force name to be string
-          role: employee.access
+          role: employee.access //Change to role
         };
       });
       setData(responseData);
@@ -41,7 +42,7 @@ function AddEmployee({ open, onClose, wid, wname}) {
 
   const tableFilter = (searchVal) => {
     const filteredRows = data.filter((row) => {
-      return row.name.toLowerCase().includes(searchVal.toLowerCase()) || row.id.toLowerCase().includes(searchVal.toLowerCase()) || row.role.toLowerCase().includes(searchVal.toLowerCase());
+      return String(row.name).toLowerCase().includes(searchVal.toLowerCase()) || String(row.id).toLowerCase().includes(searchVal.toLowerCase()) || String(row.role).toLowerCase().includes(searchVal.toLowerCase());
     });
     setRows(filteredRows);
   }
@@ -52,13 +53,7 @@ function AddEmployee({ open, onClose, wid, wname}) {
   }
 
   const handleFromResume = (ev) => {
-    console.log('requesting employee:');
-    console.log(employeeId);
-
-    // TODO
-    setEmployeeId('');
-    setOpenCompleteMessage(true);
-    handleClose(true);
+    setOpenResumeSelection(true);
   }
 
   const handleNew = (ev) => {
@@ -67,11 +62,13 @@ function AddEmployee({ open, onClose, wid, wname}) {
     console.log(employeeId);
 
     setIsLoading(true);
-    axios.post('/Attributes/AddEmptyResumeToWorkspace', null, {params: {
-      WID: wid,
-      EID: employeeId,
-      name: wname.concat(': ').concat(employeeName)
-    }}).then((response) => {
+    axios.post('/Attributes/AddEmptyResumeToWorkspace', null, {
+      params: {
+        WID: wid,
+        EID: employeeId,
+        name: wname.concat(': ').concat(employeeName)
+      }
+    }).then((response) => {
       setIsLoading(false);
       setOpenCompleteMessage({
         type: 'success',
@@ -85,22 +82,22 @@ function AddEmployee({ open, onClose, wid, wname}) {
         type: 'error',
         text: `An error occurred while creating blank resume. (${error.response.status} ${error.response.statusText})`
       });
-    setEmployeeId('');
-    handleClose(true);
+      setEmployeeId('');
+      handleClose(true);
     });
   }
 
   const handleNewResumeRequest = (ev) => {
     console.log('requesting employee:');
-    console.log(employeeId);
-
     setIsLoading(true);
-    axios.post('/Attributes/CreateTemplateRequest', null, {params: {
-      // TODO - replace with actual template
-      TemplateID: 1,
-      EID: employeeId,
-      WID: wid
-    }}).then((response) => {
+    axios.post('/Attributes/CreateTemplateRequest', null, {
+      params: {
+        // TODO - replace with actual template
+        TemplateID: 1,
+        EID: employeeId,
+        WID: wid
+      }
+    }).then((response) => {
       setIsLoading(false);
       setOpenCompleteMessage({
         type: 'success',
@@ -114,15 +111,42 @@ function AddEmployee({ open, onClose, wid, wname}) {
         type: 'error',
         text: `An error occurred while requesting Resume. (${error.response.status} ${error.response.statusText})`
       });
-      
 
-    setEmployeeId('');
-    handleClose(true);
+
+      setEmployeeId('');
+      handleClose(true);
     });
   }
 
   const handleCloseCompleteMessage = (ev) => {
     setOpenCompleteMessage(false)
+  }
+
+  const handleSubmitCopiedResume = (rid) => {
+    console.log(rid);
+    axios.post('/Attributes/CopyResume', null, {
+      params: {
+        // TODO - replace with actual template
+        RID: rid,
+        WID: wid,
+      }
+    }).then((response) => {
+      setIsLoading(false);
+      setOpenCompleteMessage({
+        type: 'success',
+        text: `Copied resume for employee ${employeeId}.`
+      });
+      setEmployeeId('');
+      handleClose(true);
+    }).catch((error) => {
+      setIsLoading(false);
+      setOpenCompleteMessage({
+        type: 'error',
+        text: `An error occurred while copying Resume. (${error.response.status} ${error.response.statusText})`
+      });
+      setEmployeeId('');
+      handleClose(true);
+    });
   }
 
   return (
@@ -132,6 +156,7 @@ function AddEmployee({ open, onClose, wid, wname}) {
           {openCompleteMessage.text}
         </AlertPopup>
       }
+      <ResumeSelection open={openResumeSelection} employeeName={employeeName} eid={employeeId} onSubmit={(rid) => { handleSubmitCopiedResume(rid) }} onClose={() => { setOpenResumeSelection(false) }}></ResumeSelection>
       <Dialog maxWidth='lg' fullWidth open={open}>
         <DialogTitle>
           <IconButton sx={{ position: 'absolute', right: 8, top: 8 }} onClick={() => { handleClose(false) }}>
@@ -139,18 +164,18 @@ function AddEmployee({ open, onClose, wid, wname}) {
           </IconButton>
         </DialogTitle>
         <DialogContent>
-        {isLoading && <Loading text='Loading...' />}
-        {!isLoading && errorStatus && <Error text='Error.' response={errorStatus}></Error>}
-        {!isLoading && !errorStatus &&
-        <>
-          <SearchBar placeholder='Search Table...' value={search} handleChange={(searchVal) => { setSearch(searchVal); tableFilter(searchVal) }} />
-          <WorkSpaceEmployeeTable rows={rows} onSelect={(index) => {setEmployeeName(rows[index[0] - 1].name); setEmployeeId(rows[index[0] - 1].id);}} />
-          <Box mx={2} sx={{ flexDirection: 'row' }}>
-            <Button variant='contained' onClick={handleNewResumeRequest} disabled={employeeId === '' ? true : false}>Request New Resume</Button>
-            <Button variant='contained' onClick={handleFromResume} disabled={employeeId === '' ? true : false}>Import Existing Resume</Button>
-            <Button variant='contained' onClick={handleNew} disabled={employeeId === '' ? true : false}>Import By Sector</Button>
-          </Box>
-        </>}
+          {isLoading && <Loading text='Loading...' />}
+          {!isLoading && errorStatus && <Error text='Error.' response={errorStatus}></Error>}
+          {!isLoading && !errorStatus &&
+            <>
+              <SearchBar placeholder='Search Table...'  onChange={(searchVal) => { tableFilter(searchVal); }} />
+              <WorkSpaceEmployeeTable rows={rows} onSelect={(index) => { setEmployeeName(rows[index[0] - 1]?.name); setEmployeeId(rows[index[0] - 1]?.id); }} />
+              <Box mx={2} sx={{ flexDirection: 'row' }}>
+                <Button variant='contained' onClick={handleNewResumeRequest} disabled={employeeId === '' ? true : false}>Request New Resume</Button>
+                <Button variant='contained' onClick={handleFromResume} disabled={employeeId === '' ? true : false}>Import Existing Resume</Button>
+                <Button variant='contained' onClick={handleNew} disabled={employeeId === '' ? true : false}>Import By Sector</Button>
+              </Box>
+            </>}
         </DialogContent>
       </Dialog>
     </div>

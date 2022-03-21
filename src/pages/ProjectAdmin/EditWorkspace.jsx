@@ -135,7 +135,6 @@ function EditWorkspace() {
   };
 
   const handleSectorSelectionSubmit = (selectedSectors) => {
-    console.log(resumes[activeEmployeeTab]);
     let requests = selectedSectors.map(sector =>
       axios.post('/Facade/AddSectorToResume', null, {
         params: {
@@ -254,17 +253,17 @@ function EditWorkspace() {
           <>
             <SideBar title={workSpaceName} entries={entries} setTab={(index) => { setActiveEmployeeTab(index); setActiveSectorTypeTab(-1) }} subtitle='' color='primary' useButton={true} buttonText='Add Employee' buttonClick={() => { setOpenAddEmployee(true) }} />
             {
-              activeEmployeeTab !== -1 && workSpace.name && entries[activeEmployeeTab] && <SideBar title={entries[activeEmployeeTab].name} color='secondary' setTab={setActiveSectorTypeTab} useButton={true} buttonText='Add Sector' buttonClick={() => { setShowSelectionDialog(true) }} entries={getResumeEntries()}></SideBar>
+              activeEmployeeTab !== -1 && workSpace && entries[activeEmployeeTab] && <SideBar title={entries[activeEmployeeTab].name} color='secondary' setTab={setActiveSectorTypeTab} useButton={true} buttonText='Add Sector' buttonClick={() => { setShowSelectionDialog(true) }} entries={getResumeEntries()}></SideBar>
             }
             {
-              activeEmployeeTab !== -1 && workSpace.name && entries[activeEmployeeTab] && activeSectorTypeTab !== -1 && drawSectors()
+              activeEmployeeTab !== -1 && workSpace && entries[activeEmployeeTab] && activeSectorTypeTab !== -1 && drawSectors()
             }
           </>
         }
       </Box>
       <AddEmployee wname={workSpaceName} wid={workspaceId} open={openAddEmployee} onClose={() => { setOpenAddEmployee(false); getWorkspace(); }}></AddEmployee>
       {
-        activeEmployeeTab !== -1 && workSpace.name && <SectorSelection resumeName={resumes[activeEmployeeTab]?.name} open={showSelectionDialog} onClose={() => { setShowSelectionDialog(false) }} onSubmit={(sectors) => { handleSectorSelectionSubmit(sectors) }} />
+        activeEmployeeTab !== -1 && workSpace && <SectorSelection resumeName={resumes[activeEmployeeTab]?.name} open={showSelectionDialog} onClose={() => { setShowSelectionDialog(false) }} onSubmit={(sectors) => { handleSectorSelectionSubmit(sectors) }} />
       }
 
     </>

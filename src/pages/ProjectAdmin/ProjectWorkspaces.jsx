@@ -62,13 +62,14 @@ function ProjectWorkspaces() {
         EID: eid,
       }
     }).then((response) => {
+      console.log(response);
       const responseData = response.data.map((workspace) => {
         const name = workspace.name === '' ? 'name' : workspace.name;
         return {
           key: workspace.wid,
           id: workspace.proposalNumber,
-          workspaceName: name, // force name to be string
-          updateDate: workspace.lastEditedDate,
+          workspaceName: name,
+          creationDate: workspace.creationDate,
           division: workspace.division
         };
       });
@@ -90,6 +91,13 @@ function ProjectWorkspaces() {
     setShowDeleteDialog(true);
   }
 
+  const tableFilter = (value) => {
+    const filteredRows = data.filter((row) => {
+      return String(row.workspaceName).toLowerCase().includes(value.toLowerCase()) || String(row.id).toLowerCase().includes(value.toLowerCase()) || String(row.division).toLowerCase().includes(value.toLowerCase());
+    });
+    setRows(filteredRows);
+  }
+
   return (
     <Box className='content-section-margins'>
       {openCompleteMessage &&
@@ -106,7 +114,7 @@ function ProjectWorkspaces() {
             <Box sx={{ flexGrow: 1, alignItems: 'flex-end' }}>
               <Typography variant='h3'>PROPOSAL WORKSPACES</Typography>
             </Box>
-            <SearchBar placeholder='Search Workspaces' onChange={() => { }}></SearchBar>
+            <SearchBar placeholder='Search Workspaces' onChange={(value) => { tableFilter(value) }}></SearchBar>
           </Box>
           <AddButton text='Add Workspace' onClick={() => setShowWorkspaceDialog(true)} />
           <AddWorkspace eid={eid} open={showWorkspaceDialog} onClose={() => setShowWorkspaceDialog(false)}></AddWorkspace>

@@ -130,7 +130,7 @@ function AddWorkspace({ open, onClose, eid }) {
             <TextField fullWidth required label='Project Name' variant='standard' name='name' onChange={handleFormChange}></TextField>
             <br />
             <br />
-            <TextField fullWidth required label='Project Number' variant='standard' name='number' onChange={handleFormChange}></TextField>
+            <TextField fullWidth type='number' required label='Project Number' variant='standard' name='number' onChange={handleFormChange}></TextField>
             <br />
             <br />
             <TextField fullWidth required label='Division' variant='standard' name='division' onChange={handleFormChange}></TextField>

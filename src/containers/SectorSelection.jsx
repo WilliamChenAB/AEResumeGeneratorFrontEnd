@@ -17,7 +17,7 @@ import axios from 'axios';
  * @param onSubmit Handler for when submit button is clicked
  * @returns SelectSectorPopUp
  */
-function SectorSelection({ resumeName, open, onClose, onSubmit }) {
+function SectorSelection({ resumeName, open, onClose, onSubmit, targetEid=false, submittable=true}) {
   const [isLoading, setIsLoading] = useState(false);
   const [errorStatus, setErrorStatus] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
@@ -32,7 +32,7 @@ function SectorSelection({ resumeName, open, onClose, onSubmit }) {
       axios.get('/Facade/GetAllSectorsForEmployee', {
         params: {
           // TODO - replace with EID of logged in user
-          EID: '1',
+          EID: targetEid? targetEid: '1',
         }
       }).then((responseSectors) => {
         axios.get('/Facade/GetAllSectorTypes').then((responseTypes) => {
@@ -117,12 +117,12 @@ function SectorSelection({ resumeName, open, onClose, onSubmit }) {
               </Box>
               <Divider color='primary' orientation='vertical' flexItem />
               <Box sx={{ ml: 5, mr: 5, mt: 2, width: '100%', maxHeight: '100%', overflow: 'auto' }}>
-                <AddButton text='Add Blank Sector' onClick={() => { addNewBlankSector() }} />
+                {submittable && <AddButton text='Add Blank Sector' onClick={() => { addNewBlankSector() }} />}
                 {sectors.filter((sector) => {
                   return sector.type === sectorTypes[activeTab]?.id;
                 }).map((sector) =>
                   <Box mb={5} key={sector.id}>
-                    <TextBox key={sector.id} id={sector.id} text={sector.content} selectState={sector.selected} onSelect={() => { sector.selected = !sector.selected }} header={`Resume: ${sector.resumeName}`} footer={`Date Created: ${sector.createDate}`} hideEdit selectable />
+                    <TextBox key={sector.id} id={sector.id} text={sector.content} selectState={sector.selected} onSelect={() => { sector.selected = !sector.selected }} header={`Resume: ${sector.resumeName}`} footer={`Date Created: ${sector.createDate}`} hideEdit selectable={submittable} />
                   </Box>
                 )}
               </Box>
@@ -131,7 +131,9 @@ function SectorSelection({ resumeName, open, onClose, onSubmit }) {
         </DialogContent>
         <Divider color='primary' />
         <DialogActions>
-          <Button variant='contained' onClick={() => { handleSubmit() }} disabled={false}>Copy Selected Sectors</Button>
+          {
+            submittable && <Button variant='contained' onClick={() => { handleSubmit() }} disabled={false}>Copy Selected Sectors</Button>
+          }
         </DialogActions>
       </Dialog>
     </div>
