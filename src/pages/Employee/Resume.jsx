@@ -10,6 +10,7 @@ import Loading from '../../components/Loading';
 import Error from '../../components/Error';
 import AlertPopup from '../../components/AlertPopup';
 import ConfirmDelete from '../../containers/ConfirmDelete';
+import ChooseSectorTypes from '../../containers/ChooseSectorTypes';
 import axios from 'axios';
 
 function Resume() {
@@ -18,7 +19,7 @@ function Resume() {
   const [isLoading, setIsLoading] = useState(false);
   const [errorStatus, setErrorStatus] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
-  const [showDialog, setShowDialog] = useState(false);
+  const [showSectorSelectionDialog, setShowSectorSelectionDialog] = useState(false);
   const [openCompleteMessage, setOpenCompleteMessage] = useState(false);
   const [sectors, setSectors] = useState([]);
   const [sectorTypes, setSectorTypes] = useState([]);
@@ -26,6 +27,7 @@ function Resume() {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [deleteSectorId, setDeleteSectorId] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
+  const [showChooseSectorTypeDialog, setShowChooseSectorTypeDialog] = useState(false);
 
   const getResume = () => {
     setIsLoading(true);
@@ -119,7 +121,7 @@ function Resume() {
   }
 
   const handleSectorSelectionSubmit = (selectedSectors) => {
-    let requests = selectedSectors.map(sector =>
+    const requests = selectedSectors.map(sector =>
       axios.post('/Facade/AddSectorToResume', null, {
         params: {
           RID: resumeId,
@@ -145,6 +147,33 @@ function Resume() {
     });
   }
 
+  const handleSectorTypeSelectionSubmit = (selectedTypes) => {
+    const requests = selectedTypes.map(type =>
+      axios.post('/Facade/AddSectorToResume', null, {
+        params: {
+          RID: resumeId,
+          content: '',
+          typeID: type.id,
+        }
+      }));
+
+    setIsLoading(true);
+    Promise.all(requests).then((results) => {
+      setIsLoading(false);
+      setOpenCompleteMessage({
+        type: 'success',
+        text: `Sectors have been successfully created.`
+      });
+      getResume();
+    }).catch((error) => {
+      setIsLoading(false);
+      setOpenCompleteMessage({
+        type: 'error',
+        text: `An error occurred while creating one or more sectors for sector types. (${error.response.status} ${error.response.statusText})`
+      });
+    });
+  }
+
   return (
     <Box sx={{ display: 'flex', height: '100%' }}>
       {openCompleteMessage &&
@@ -152,10 +181,11 @@ function Resume() {
           {openCompleteMessage.text}
         </AlertPopup>
       }
-      <SectorSelection resumeName={resumeName} open={showDialog} onClose={() => { setShowDialog(false) }} onSubmit={(sectors) => { handleSectorSelectionSubmit(sectors) }} />
+      <SectorSelection title={`${sectorTypes[activeTab]?.name} Sectors`} open={showSectorSelectionDialog} onClose={() => { setShowSectorSelectionDialog(false) }} onSubmit={(sectors) => { handleSectorSelectionSubmit(sectors) }} singleSectorTypeObj={sectorTypes[activeTab]} />
       <ConfirmDelete nameToDelete={`the sector from this resume`} open={showDeleteDialog} onClose={() => { setShowDeleteDialog(false) }} onConfirm={() => { deleteSector() }} isDeleting={isDeleting} />
+      <ChooseSectorTypes open={showChooseSectorTypeDialog} onSubmit={(types) => { handleSectorTypeSelectionSubmit(types) }} onClose={() => { setShowChooseSectorTypeDialog(false) }} />
       <Box>
-        <SideBar title='John Doe' subtitle='Utility Coordinator' entries={sectorTypes} setTab={setActiveTab} color='primary' useButton buttonText='Add Sector' buttonClick={() => { setShowDialog(true) }} />
+        <SideBar title='John Doe' subtitle='Utility Coordinator' entries={sectorTypes} setTab={setActiveTab} color='primary' useButton buttonText='Add Sector Types' buttonClick={() => { setShowChooseSectorTypeDialog(true) }} />
       </Box>
       <Box sx={{ flexGrow: 1 }} className='content-section-margins'>
         {isLoading && <Loading text='Loading Resume...' />}
@@ -174,6 +204,7 @@ function Resume() {
                 <Typography variant='h3'>{sectorTypes[activeTab]?.name.toUpperCase()} SECTORS</Typography>
                 <br />
                 <AddButton text='Add Blank Sector' onClick={() => { addNewBlankSector() }} />
+                <AddButton text='Duplicate Previous Sector' onClick={() => { setShowSectorSelectionDialog(true) }} />
                 {sectors.filter((sector) => {
                   return sector.type === sectorTypes[activeTab]?.id;
                 }).map((sector) =>

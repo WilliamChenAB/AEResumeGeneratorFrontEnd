@@ -11,13 +11,13 @@ import axios from 'axios';
 
 /**
  * Select Sector popup
- * @param resumeName name of associated resume we are selecting
+ * @param title title of dialog
  * @param open Boolean for if dialog is open
  * @param onClose Handler for when dialog should be closed
  * @param onSubmit Handler for when submit button is clicked
  * @returns SelectSectorPopUp
  */
-function SectorSelection({ resumeName, open, onClose, onSubmit, targetEid=false, submittable=true}) {
+function SectorSelection({ title, open, onClose, onSubmit, targetEid = false, submittable = true, singleSectorTypeObj }) {
   const [isLoading, setIsLoading] = useState(false);
   const [errorStatus, setErrorStatus] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
@@ -26,13 +26,13 @@ function SectorSelection({ resumeName, open, onClose, onSubmit, targetEid=false,
   const [sectorTypes, setSectorTypes] = useState([]);
 
   useEffect(() => {
-    if (open) {
+    if (open && !singleSectorTypeObj) {
       setIsLoading(true);
       setErrorStatus(false);
       axios.get('/Facade/GetAllSectorsForEmployee', {
         params: {
           // TODO - replace with EID of logged in user
-          EID: targetEid? targetEid: '1',
+          EID: targetEid ? targetEid : '1',
         }
       }).then((responseSectors) => {
         axios.get('/Facade/GetAllSectorTypes').then((responseTypes) => {
@@ -63,6 +63,37 @@ function SectorSelection({ resumeName, open, onClose, onSubmit, targetEid=false,
         setIsLoading(false);
         setErrorStatus(error.response);
       });
+    } else if (open && singleSectorTypeObj) {
+      setIsLoading(true);
+      setErrorStatus(false);
+      axios.get('/Facade/GetAllSectorsForEmployeeByType', {
+        params: {
+          // TODO - replace with EID of logged in user
+          EID: targetEid ? targetEid : '1',
+          TypeID: singleSectorTypeObj.id,
+        }
+      }).then((response) => {
+        setSectorTypes([{
+          id: singleSectorTypeObj.id,
+          name: singleSectorTypeObj.name,
+          description: singleSectorTypeObj.description,
+        }]);
+        setSectors(response.data.map((sector) => {
+          return {
+            id: sector.sid,
+            createDate: sector.creationDate,
+            updateDate: sector.lastEditedDate,
+            content: sector.content,
+            type: sector.typeID,
+            resumeName: sector.resumeName,
+            selected: false,
+          }
+        }));
+        setIsLoading(false);
+      }).catch((error) => {
+        setIsLoading(false);
+        setErrorStatus(error.response);
+      });
     }
   }, [open]);
 
@@ -79,23 +110,11 @@ function SectorSelection({ resumeName, open, onClose, onSubmit, targetEid=false,
     handleClose(true);
   }
 
-  const addNewBlankSector = () => {
-    setSectors([...sectors, {
-      id: `newblank${sectors.length}`,
-      createDate: 'New Blank Sector',
-      updateDate: 'New Blank Sector',
-      content: '',
-      type: sectorTypes[activeTab]?.id,
-      resumeName: 'New Blank Sector',
-      selected: true,
-    }]);
-  }
-
   return (
     <div>
       <Dialog fullWidth maxWidth='lg' open={open}>
         <DialogTitle>
-          <div><Typography variant='h2'>{resumeName}</Typography></div>
+          <div><Typography variant='h2'>{title}</Typography></div>
           <IconButton sx={{ position: 'absolute', right: 8, top: 8 }} onClick={() => { handleClose(false); }}>
             <Close />
           </IconButton>
@@ -106,18 +125,21 @@ function SectorSelection({ resumeName, open, onClose, onSubmit, targetEid=false,
           {!isLoading && errorStatus && <Error text='Error retrieving sectors.' response={errorStatus}></Error>}
           {!isLoading && !errorStatus &&
             <Box sx={{ display: 'flex', flexDirection: 'row' }}>
-              <Box sx={{ width: 300, height: '600px' }}>
-                <SideBarTabs
-                  entries={sectorTypes}
-                  showCheckBoxes={false}
-                  color={colorToken.brand.aeGreen}
-                  selectedColor={colorToken.brand.aeBlue}
-                  textColor={colorToken.greyPalette.white}
-                  onEntryClick={setActiveTab} />
-              </Box>
-              <Divider color='primary' orientation='vertical' flexItem />
+              {!singleSectorTypeObj &&
+                <>
+                  <Box sx={{ width: 300, height: '600px' }}>
+                    <SideBarTabs
+                      entries={sectorTypes}
+                      showCheckBoxes={false}
+                      color={colorToken.brand.aeGreen}
+                      selectedColor={colorToken.brand.aeBlue}
+                      textColor={colorToken.greyPalette.white}
+                      onEntryClick={setActiveTab} />
+                  </Box>
+                  <Divider color='primary' orientation='vertical' flexItem />
+                </>
+              }
               <Box sx={{ ml: 5, mr: 5, mt: 2, width: '100%', maxHeight: '100%', overflow: 'auto' }}>
-                {submittable && <AddButton text='Add Blank Sector' onClick={() => { addNewBlankSector() }} />}
                 {sectors.filter((sector) => {
                   return sector.type === sectorTypes[activeTab]?.id;
                 }).map((sector) =>

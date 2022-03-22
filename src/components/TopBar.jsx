@@ -13,9 +13,10 @@ import Menu from '@mui/material/Menu';
  * @param buttons Array of button objects with properties text, url
  * @param roles Array of role objects for dropdown with properties text, url 
  * @param selectedRole String for text of selected role
+ * @param logoLink Path for when logo is clicked
  * @returns TopBar component.
  */
-function TopBar({ buttons, roles, selectedRole }) {
+function TopBar({ buttons, roles, selectedRole, logoLink }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
 
@@ -39,7 +40,7 @@ function TopBar({ buttons, roles, selectedRole }) {
       <AppBar>
         <Toolbar>
           <Box sx={{ mr: 5 }}>
-            <Link to='/employee'>
+            <Link to={logoLink}>
               <Box
                 component='img'
                 sx={{

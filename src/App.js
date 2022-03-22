@@ -39,7 +39,6 @@ function App() {
             <Route index element={<Resumes />} />
             <Route path=':resumeId' element={<Resume />} />
           </Route>
-          <Route path='sectors' element={<Sectors />} />
         </Route>
         <Route path='project' element={<RequireAuth><ProjectAdminPage /></RequireAuth>}>
           <Route index element={<Navigate to='/project/workspaces' replace />} />

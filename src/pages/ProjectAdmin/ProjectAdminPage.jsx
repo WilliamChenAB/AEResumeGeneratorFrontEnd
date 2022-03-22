@@ -28,7 +28,7 @@ export default function ProjectAdminPage() {
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
       <Box sx={{ flexGrow: 0, flexShrink: 1 }}>
-        <TopBar buttons={topBarButtons} roles={topBarRoles} selectedRole='Project Admin' />
+        <TopBar buttons={topBarButtons} roles={topBarRoles} selectedRole='Project Admin' logoLink='/project' />
       </Box>
       <Box sx={{ flexGrow: 1, flexShrink: 1 }}>
         <Outlet />

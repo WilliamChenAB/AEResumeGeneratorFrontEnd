@@ -263,7 +263,7 @@ function EditWorkspace() {
       </Box>
       <AddEmployee wname={workSpaceName} wid={workspaceId} open={openAddEmployee} onClose={() => { setOpenAddEmployee(false); getWorkspace(); }}></AddEmployee>
       {
-        activeEmployeeTab !== -1 && workSpace && <SectorSelection resumeName={resumes[activeEmployeeTab]?.name} open={showSelectionDialog} onClose={() => { setShowSelectionDialog(false) }} onSubmit={(sectors) => { handleSectorSelectionSubmit(sectors) }} />
+        activeEmployeeTab !== -1 && workSpace && <SectorSelection title={resumes[activeEmployeeTab]?.name} open={showSelectionDialog} onClose={() => { setShowSelectionDialog(false) }} onSubmit={(sectors) => { handleSectorSelectionSubmit(sectors) }} />
       }
 
     </>
