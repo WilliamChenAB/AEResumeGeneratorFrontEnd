@@ -62,7 +62,6 @@ function ProjectWorkspaces() {
         EID: eid,
       }
     }).then((response) => {
-      console.log(response);
       const responseData = response.data.map((workspace) => {
         const name = workspace.name === '' ? 'name' : workspace.name;
         return {
@@ -99,14 +98,14 @@ function ProjectWorkspaces() {
   }
 
   return (
-    <Box className='content-section-margins'>
+    <Box sx={{ flexGrow: 1, height:'100%' }} className='content-section-margins'>
       {openCompleteMessage &&
         <AlertPopup type={openCompleteMessage.type} open onClose={() => { setOpenCompleteMessage(false) }}>
           {openCompleteMessage.text}
         </AlertPopup>
       }
       <ConfirmDelete nameToDelete={`workspace ${deleteWorkspaceOBJ?.workspaceName}`} open={showDeleteDialog} onClose={() => { setShowDeleteDialog(false) }} onConfirm={() => { deleteWorkspace() }} isDeleting={isDeleting} />
-      {isLoading && <Loading text='Loading Workspaces...' />}
+      {isLoading && <Box sx={{height:'100%', alignItems:"center", justifyContent:"center"}}><Loading text='Loading Workspaces...' /></Box>}
       {!isLoading && errorStatus && <Error text='Error retrieving workspaces.' response={errorStatus}></Error>}
       {!isLoading && !errorStatus &&
         <>

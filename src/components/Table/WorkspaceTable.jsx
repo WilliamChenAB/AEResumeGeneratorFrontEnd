@@ -1,9 +1,10 @@
 import * as React from 'react';
 import StyledTable from './StyledTable/StyledTable';
 import IconButton from '@mui/material/IconButton';
-import ExportIcon from '@mui/icons-material/Logout';
+import ExportIcon from '@mui/icons-material/FileDownload';
 import DeleteIcon from '@mui/icons-material/Delete';
 import TextButton from '../TextButton';
+import Tooltip from '@mui/material/Tooltip'
 
 // TODO: trigger pop-up on click
 
@@ -30,9 +31,12 @@ export default function WorkspaceTable({ rows, onSelectClick, workSpaceExpanded,
       sortable: false,
       renderCell: (params) => {
         return (
-          <IconButton onClick={() => { }}>
-            <ExportIcon />
-          </IconButton>
+          <Tooltip title='Click to export all resumes in workspace'>
+            <IconButton onClick={() => { }}>
+              <ExportIcon />
+            </IconButton>
+          </Tooltip>
+          
         )
       }
     },
@@ -45,9 +49,11 @@ export default function WorkspaceTable({ rows, onSelectClick, workSpaceExpanded,
       sortable: false,
       renderCell: (params) => {
         return (
-          <IconButton onClick={() => { onDeleteClick(params.row) }}>
-            <DeleteIcon />
-          </IconButton>
+          <Tooltip title='Click to delete workspace'>
+            <IconButton onClick={() => { onDeleteClick(params.row) }}>
+              <DeleteIcon />
+            </IconButton>
+          </Tooltip>
         )
       }
     },

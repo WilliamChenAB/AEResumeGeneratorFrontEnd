@@ -1,15 +1,14 @@
-import * as React from 'react';
+import { useState, useRef, useEffect} from 'react';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
-import { Avatar, CardActionArea, Typography, Button } from '@mui/material';
+import { Avatar, CircularProgress, CardActionArea, Typography} from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddExperience from '../../containers/AddExperience'; 
-
-//temp test data
-const locations = ["San Francisco", "Vancouver"];
-const divisions = ["D1", "D2"];
+import AlertPopup from '../AlertPopup';
+import { colorToken  } from '../../theme/colorToken';
+import axios from 'axios';
 
 const textStyle = {
   maxWidth: '100%',
@@ -24,21 +23,22 @@ const textStyle = {
 // TODO: add prop for onSubmit -> save to BE, update actions
 //       also add update for picture possibly
 
-export default function ExperienceTextBox(props) {
-  const [name, setName] = React.useState(props.name);
-  const [division, setDivision] = React.useState(props.division);
-  const [location, setLocation] = React.useState(props.location);
-  const [imageLink, setImageLink] = React.useState(props.imageLink);
-  const [description, setDescription] = React.useState(props.description);
-  const [picture, setPicture] = React.useState(props.picture);
-  const [dialogOpen, setOpenDialog] = React.useState(false);
-  const [truncateDescription, setTruncateDescription] = React.useState(true);
-  const [selected, setSelected] = React.useState(false);
+export default function ExperienceTextBox({sid, text, divisionIn, imageLinkIn, picture, selectState, selectable, onSelect, hideEdit, onDelete, header, footer}) {
+  const [dialogOpen, setOpenDialog] = useState(false);
+  const [truncateDescription, setTruncateDescription] = useState(true);
+  const [selected, setSelected] = useState(selectState);
+  const [disabled, setDisabled] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [editable, setEditable] = useState(!hideEdit);
+  const [openCompleteMessage, setOpenCompleteMessage] = useState(false);
+  const [division, setDivision] = useState(divisionIn);
+  const [content, setContent] = useState(text);
+  const [imageLink, setImageLink] = useState(imageLinkIn);
 
 
-  const descriptionRef = React.useRef();
+  const descriptionRef = useRef();
 
-  React.useEffect(()=>{
+  useEffect(()=>{
     if(descriptionRef.current?.offsetHeight < descriptionRef.current?.scrollHeight){
       setTruncateDescription(true);
     }else {
@@ -46,52 +46,107 @@ export default function ExperienceTextBox(props) {
     }
   });
 
-  const onClose = (success, newName, newDivision, newLocation, newImageLink, newDescription) => {
-    setOpenDialog(false);
-    console.log(success);
-    if(success){
-      setName(newName);
+  const handleEdit = (newDivision, newImageLink, newDescription) => {
+    console.log([newDivision, newImageLink, newDescription])
+    setIsSubmitting(true);
+    setDisabled(true);
+    setEditable(false);
+    axios.put('/Facade/EditSector', null, {
+      params: {
+        SID: sid,
+        content: newDescription,
+        division: newDivision? newDivision: '',
+        image: newImageLink? newImageLink: '',
+      }
+    }).then((response) => {
+      setIsSubmitting(false);
+      setEditable(true);
+      setContent(newDescription);
       setDivision(newDivision);
-      setLocation(newLocation);
       setImageLink(newImageLink);
-      setDescription(newDescription);
-      setTruncateDescription(true);
+      setOpenCompleteMessage({
+        type: 'success',
+        text: `Sector has been successfully edited.`
+      });
+    }).catch((error) => {
+      setIsSubmitting(false);
+      setEditable(true);
+      setOpenCompleteMessage({
+        type: 'error',
+        text: `An error occurred while editing sector. (${error.response.status} ${error.response.statusText})`
+      });
+    });
+  }
+
+  const handleClick = () => {
+    setSelected(!selected);
+    onSelect();
+  }
+
+  const onClose = (success, newDivision, newImageLink, newDescription) => {
+    setOpenDialog(false);
+    if(success){
+      handleEdit(newDivision, newImageLink, newDescription);
     }
   }
 
-  return (
-    <Box sx={{display: 'flex', flexDirection: 'row' }}>
-      <Card sx={{ width: '100%'}}>
-        <CardActionArea onClick={() => {setSelected(!selected)}}>
-          <Box sx={{margin: 2}}>
-            <Box sx={{display: 'flex', flexDirection: 'row' }}>
-              <Box sx={{display: 'flex', flexDirection: 'column', width: '100%'}}>
-                {(name === undefined || location === undefined)? <Typography></Typography> : <Typography component='div' sx={{ fontWeight: 'bold' }}>{`${name}, ${location}`}</Typography>}
-                <br />
-                <Box>
-                  <Typography ref={descriptionRef} sx={truncateDescription? textStyle : {display:'inline-block'}}>{description}</Typography>
-                  {truncateDescription? <Typography component='span' color='primary' sx={{fontWeight: 'bold'}} onClick={() => {setTruncateDescription(false)}}>Read More</Typography>: null}
-                </Box>
-                <br />
-                {(division === undefined || division === '')? <Typography></Typography> : <Typography component='div' sx={{ fontWeight: 'bold' }}>{`Division: ${division}`}</Typography>}
-              </Box>
-              <Avatar variant='rounded' alt={imageLink} src={picture} sx={{ borderRadius: 4, width: 150, height: 150, margin: 3 ,textAlign: 'center', wordWrap: 'break-word' }}>{imageLink}</Avatar>
+  const drawContent = () => {
+    return(
+      <Box sx={{margin: 2, height: '100%'}}>
+        <Box sx={{display: 'flex', flexDirection: 'row' }}>
+          <Box sx={{display: 'flex', flexDirection: 'column', width: '100%'}}>
+            <Box>
+              <Typography ref={descriptionRef} sx={truncateDescription? textStyle : {display:'inline-block'}}>{content}</Typography>
+              {truncateDescription &&<Typography component='span' color='primary' sx={{fontWeight: 'bold'}} onClick={() => {setTruncateDescription(false)}}>Read More</Typography>}
             </Box>
+            <br />
+            {!(division === null || division === undefined || division === '') && <Typography component='div' sx={{ fontWeight: 'bold' }}>{`Division: ${division}`}</Typography>}
           </Box>
-        </CardActionArea>
-      </Card>
+          {imageLink && imageLink !== '' && <Avatar variant='rounded' alt={imageLink} src={picture} sx={{ borderRadius: 4, width: 150, height: 150, margin: 3 ,textAlign: 'center', wordWrap: 'break-word' }}>{imageLink}</Avatar>}
+        </Box>
+      </Box>);
+  }
+
+  const backgroundColor = selected? colorToken.brand.aeGreenLight : colorToken.greyPalette.lightGrey;
+  return (
+    <Box sx={{minHeight: 170, display: 'flex', flexDirection: 'row'}}>
+      {openCompleteMessage &&
+        <AlertPopup type={openCompleteMessage.type} open onClose={() => { setOpenCompleteMessage(false) }}>
+          {openCompleteMessage.text}
+        </AlertPopup>
+      }
+      <Box sx={{display: 'flex', flexDirection: 'column', width: '100%'}}>
+        <Typography variant='subtitle2'>{header}</Typography>
+        <Card sx={{ height: '100%', width: '100%'}}>
+          {selectable &&
+          <CardActionArea sx={{ height: '100%', background: backgroundColor}} onClick={() => {handleClick()}}>
+            {drawContent()}
+          </CardActionArea>}
+          {!selectable &&
+          <CardActionArea sx={{height: '100%'}}>
+            {isSubmitting &&
+              <Box sx={{ position: 'absolute', top: '20px', left: '50%', marginLeft: '-70px' }}>
+                <CircularProgress size={24} />
+                <Typography variant='h3'>Editing Sector...</Typography>
+              </Box>
+            }
+            {!isSubmitting && drawContent()}
+          </CardActionArea>}
+        </Card>
+        <Typography variant='body2'>{footer}</Typography>
+      </Box>
       {
-        props.hideEdit? null :
-        <Box sx={{display: 'flex', flexDirection: 'column', justifyContent: 'space-between'}}>
+        editable &&
+        <Box sx={{mb: 3, display: 'flex', flexDirection: 'column', justifyContent: 'space-between'}}>
           <IconButton onClick={() => {setOpenDialog(true)}}><EditIcon/></IconButton>
           <Box>
-            <IconButton onClick={() => {}}>
+            <IconButton onClick={() => {onDelete()}}>
               <DeleteIcon/>
             </IconButton>
           </Box>
         </Box>
       }
-    <AddExperience divisions={divisions} locations={locations} open={dialogOpen} onClose={onClose}></AddExperience>
+    <AddExperience startingImage={imageLink} startingDiv={division} startingContent={content} open={dialogOpen} onClose={onClose}></AddExperience>
     </Box>
     
   )

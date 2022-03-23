@@ -1,12 +1,14 @@
 import React from 'react';
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import ConfirmDelete from '../../containers/ConfirmDelete';
 import SectorSelection from '../../containers/SectorSelection';
-import TextBox from '../../components/TextBox/TextBox';
-import { Box, Typography } from '@mui/material';
+import ExperienceTextBox from '../../components/TextBox/ExperienceTextBox';
+import { Box, Button, Typography } from '@mui/material';
+import { ArrowBack } from '@mui/icons-material';
 import AddButton from '../../components/AddButton';
 import SideBar from '../../containers/SideBar';
+import ChooseSectorTypes from '../../containers/ChooseSectorTypes';
 import AddEmployee from '../../containers/AddEmployee';
 import ErrorOutlineOutlined from '@mui/icons-material/ErrorOutlineOutlined';
 import AlertPopup from '../../components/AlertPopup';
@@ -24,7 +26,7 @@ function EditWorkspace() {
   const [isLoading, setIsLoading] = useState(false);
   const [errorStatus, setErrorStatus] = useState(false);
   const [activeEmployeeTab, setActiveEmployeeTab] = useState(0);
-  const [activeSectorTypeTab, setActiveSectorTypeTab] = useState(-1);
+  const [activeSectorTypeTab, setActiveSectorTypeTab] = useState(0);
   const [openAddEmployee, setOpenAddEmployee] = useState(false);
   const [showSelectionDialog, setShowSelectionDialog] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
@@ -35,6 +37,7 @@ function EditWorkspace() {
   const [resumes, setResumes] = useState([]);
   const [openCompleteMessage, setOpenCompleteMessage] = useState(false);
   const [workSpaceName, setWorkSpaceName] = useState('');
+  const [showChooseSectorTypeDialog, setShowChooseSectorTypeDialog] = useState(false);
 
 
   let { workspaceId } = useParams();
@@ -181,13 +184,40 @@ function EditWorkspace() {
     return null;
   };
 
+  const handleSectorTypeSelectionSubmit = (selectedTypes) => {
+    const requests = selectedTypes.map(type =>
+      axios.post('/Facade/AddSectorToResume', null, {
+        params: {
+          RID: resumes[activeEmployeeTab].rid,
+          content: '',
+          typeID: type.id,
+        }
+      }));
+
+    setIsLoading(true);
+    Promise.all(requests).then((results) => {
+      setIsLoading(false);
+      setOpenCompleteMessage({
+        type: 'success',
+        text: `Sectors have been successfully created.`
+      });
+      getWorkspace();
+    }).catch((error) => {
+      setIsLoading(false);
+      setOpenCompleteMessage({
+        type: 'error',
+        text: `An error occurred while creating one or more sectors for sector types. (${error.response.status} ${error.response.statusText})`
+      });
+    });
+  }
+
   const drawSectors = () => {
     if (activeEmployeeTab === -1) {
       return null;
     }
 
     const resume = resumes[activeEmployeeTab];
-    if (resume === undefined) {
+    if (resume === undefined || resume === null) {
       return null;
     }
     const requested = resume.status !== 0 ? true : false;
@@ -209,6 +239,9 @@ function EditWorkspace() {
       );
     } else {
       const entries = getResumeEntries();
+      if(entries.length <= 0){
+        return null;
+      }
       const sectorName = entries[activeSectorTypeTab].name;
 
       const sectors = resume.sectorList.filter(sector => sector.typeTitle === sectorName);
@@ -220,6 +253,7 @@ function EditWorkspace() {
               <br />
               <br />
               <AddButton onClick={() => { addNewBlankSector(resume.rid) }} text="Add Blank Sector" />
+              <AddButton text='Duplicate Previous Sector' onClick={() => { setShowSelectionDialog(true) }} />
             </Box>
           </Box>
         );
@@ -231,8 +265,9 @@ function EditWorkspace() {
             <br />
             <br />
             <AddButton onClick={() => { addNewBlankSector(resume.rid) }} text="Add Blank Sector" />
+            <AddButton text='Duplicate Previous Sector' onClick={() => { setShowSelectionDialog(true) }} />
           </Box>
-          {sectors.map((sector) => { return (<Box mb={5} key={sector.sid}><TextBox key={sector.sid} id={sector.sid} text={sector.content} onDelete={() => { handleDeleteSectorClick(sector.sid) }} footer={`Last Updated: ${sector.lastEditedDate}`} /></Box>) })}
+          {sectors.map((sector) => { return (<Box mb={5} key={sector.sid}><ExperienceTextBox key={sector.sid} imageLinkIn={sector.image} divisionIn={sector.division} sid={sector.sid} text={sector.content} onDelete={() => { handleDeleteSectorClick(sector.sid) }} footer={`Last Updated: ${sector.lastEditedDate}`} /></Box>) })}
         </Box>
       );
     }
@@ -246,24 +281,32 @@ function EditWorkspace() {
         </AlertPopup>
       }
       <ConfirmDelete nameToDelete={`the sector from this resume`} open={showDeleteDialog} onClose={() => { setShowDeleteDialog(false) }} onConfirm={() => { deleteSector() }} isDeleting={isDeleting} />
-      <Box sx={{ display: 'flex', flexDirection: 'row', height: '100%' }}>
-        {isLoading && <Loading text='Loading Resume...' />}
+      <Box sx={{ display: 'flex', flexDirection: 'row', height: '100%', width: '100%'}}>
+        {isLoading && <Box sx={{flexGrow:1, height: '100%', widht: '100%'}}><Loading text='Loading Workspace...' /></Box>}
         {!isLoading && errorStatus && <Error text='Error retrieving resume.' response={errorStatus}></Error>}
         {!isLoading && !errorStatus &&
           <>
-            <SideBar title={workSpaceName} entries={entries} setTab={(index) => { setActiveEmployeeTab(index); setActiveSectorTypeTab(-1) }} subtitle='' color='primary' useButton={true} buttonText='Add Employee' buttonClick={() => { setOpenAddEmployee(true) }} />
+            <SideBar title={workSpaceName} entries={entries} setTab={(index) => { setActiveEmployeeTab(index); setActiveSectorTypeTab(0) }} subtitle='' color='primary' useButton={true} buttonText='Add Employee' buttonClick={() => { setOpenAddEmployee(true) }} />
             {
-              activeEmployeeTab !== -1 && workSpace && entries[activeEmployeeTab] && <SideBar title={entries[activeEmployeeTab].name} color='secondary' setTab={setActiveSectorTypeTab} useButton={true} buttonText='Add Sector' buttonClick={() => { setShowSelectionDialog(true) }} entries={getResumeEntries()}></SideBar>
+              activeEmployeeTab !== -1 && workSpace && entries[activeEmployeeTab] && <SideBar title={entries[activeEmployeeTab].name} color='secondary' setTab={setActiveSectorTypeTab} useButton={true} buttonText='Add Sector Type' buttonClick={() => { setShowChooseSectorTypeDialog(true) }} entries={getResumeEntries()}></SideBar>
             }
-            {
-              activeEmployeeTab !== -1 && workSpace && entries[activeEmployeeTab] && activeSectorTypeTab !== -1 && drawSectors()
-            }
+            <Box sx={{width: '100%'}}>
+              <Box sx={{margin:2}}>
+                <Link to='/project/workspaces' style={{ textDecoration: 'none' }}>
+                  <Button startIcon={<ArrowBack />}>Back to Workspaces</Button>
+                </Link>
+              </Box>
+              {
+                activeEmployeeTab !== -1 && workSpace && entries[activeEmployeeTab] && activeSectorTypeTab !== -1 && drawSectors()
+              }
+            </Box>
           </>
         }
       </Box>
+      <ChooseSectorTypes open={showChooseSectorTypeDialog} onSubmit={(types) => { handleSectorTypeSelectionSubmit(types) }} onClose={() => { setShowChooseSectorTypeDialog(false) }} />
       <AddEmployee wname={workSpaceName} wid={workspaceId} open={openAddEmployee} onClose={() => { setOpenAddEmployee(false); getWorkspace(); }}></AddEmployee>
       {
-        activeEmployeeTab !== -1 && workSpace && <SectorSelection title={resumes[activeEmployeeTab]?.name} open={showSelectionDialog} onClose={() => { setShowSelectionDialog(false) }} onSubmit={(sectors) => { handleSectorSelectionSubmit(sectors) }} />
+        activeEmployeeTab !== -1 && workSpace && <SectorSelection title={`${getResumeEntries()? getResumeEntries()[activeSectorTypeTab]?.name : ''} Sectors`} open={showSelectionDialog} onClose={() => { setShowSelectionDialog(false) }} onSubmit={(sectors) => { handleSectorSelectionSubmit(sectors) }} singleSectorTypeObj={getResumeEntries()? getResumeEntries()[activeSectorTypeTab]: null}/>
       }
 
     </>

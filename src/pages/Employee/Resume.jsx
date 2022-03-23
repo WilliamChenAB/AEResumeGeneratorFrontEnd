@@ -4,7 +4,7 @@ import { ArrowBack } from '@mui/icons-material';
 import { Link, useParams } from 'react-router-dom';
 import SideBar from '../../containers/SideBar';
 import AddButton from '../../components/AddButton';
-import TextBox from '../../components/TextBox/TextBox';
+import ExperienceTextBox from '../../components/TextBox/ExperienceTextBox';
 import SectorSelection from '../../containers/SectorSelection';
 import Loading from '../../components/Loading';
 import Error from '../../components/Error';
@@ -209,7 +209,7 @@ function Resume() {
                   return sector.type === sectorTypes[activeTab]?.id;
                 }).map((sector) =>
                   <Box mb={5} key={sector.id}>
-                    <TextBox key={sector.id} id={sector.id} text={sector.content} onDelete={() => { handleDeleteSectorClick(sector.id) }} footer={`Last Updated: ${sector.updateDate}`} />
+                    <ExperienceTextBox imageLinkIn={sector.image} divisionIn={sector.division} key={sector.id} sid={sector.id} text={sector.content} onDelete={() => { handleDeleteSectorClick(sector.id) }} footer={`Last Updated: ${sector.updateDate}`} />
                   </Box>
                 )}
               </>

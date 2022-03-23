@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Button, Divider, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, Box, Typography } from '@mui/material';
 import { Close } from '@mui/icons-material';
 import SideBarTabs from '../components/SideBarTabs'
-import TextBox from '../components/TextBox/TextBox';
+import ExperienceTextBox from '../components/TextBox/ExperienceTextBox';
 import { colorToken } from '../theme/colorToken';
 import AddButton from '../components/AddButton';
 import Loading from '../components/Loading';
@@ -114,7 +114,7 @@ function SectorSelection({ title, open, onClose, onSubmit, targetEid = false, su
     <div>
       <Dialog fullWidth maxWidth='lg' open={open}>
         <DialogTitle>
-          <div><Typography variant='h2'>{title}</Typography></div>
+          <div><Typography variant='h2'>{`Sectors: ${title}`}</Typography></div>
           <IconButton sx={{ position: 'absolute', right: 8, top: 8 }} onClick={() => { handleClose(false); }}>
             <Close />
           </IconButton>
@@ -131,9 +131,9 @@ function SectorSelection({ title, open, onClose, onSubmit, targetEid = false, su
                     <SideBarTabs
                       entries={sectorTypes}
                       showCheckBoxes={false}
-                      color={colorToken.brand.aeGreen}
-                      selectedColor={colorToken.brand.aeBlue}
-                      textColor={colorToken.greyPalette.white}
+                      color={colorToken.brand.aeBlueLight}
+                      selectedColor={colorToken.brand.aeBlueMid}
+                      textColor={colorToken.greyPalette.aeBlue}
                       onEntryClick={setActiveTab} />
                   </Box>
                   <Divider color='primary' orientation='vertical' flexItem />
@@ -144,19 +144,23 @@ function SectorSelection({ title, open, onClose, onSubmit, targetEid = false, su
                   return sector.type === sectorTypes[activeTab]?.id;
                 }).map((sector) =>
                   <Box mb={5} key={sector.id}>
-                    <TextBox key={sector.id} id={sector.id} text={sector.content} selectState={sector.selected} onSelect={() => { sector.selected = !sector.selected }} header={`Resume: ${sector.resumeName}`} footer={`Date Created: ${sector.createDate}`} hideEdit selectable={submittable} />
+                    <ExperienceTextBox imageLinkIn={sector.image} divisionIn={sector.division} key={sector.id} sid={sector.id} text={sector.content} selectState={sector.selected} onSelect={() => { sector.selected = !sector.selected }} header={`Resume: ${sector.resumeName}`} footer={`Date Created: ${sector.createDate}`} hideEdit selectable={submittable} />
                   </Box>
                 )}
               </Box>
             </Box>
           }
         </DialogContent>
-        <Divider color='primary' />
-        <DialogActions>
-          {
-            submittable && <Button variant='contained' onClick={() => { handleSubmit() }} disabled={false}>Copy Selected Sectors</Button>
-          }
-        </DialogActions>
+        {
+          submittable &&
+          <>
+            <Divider color='primary' />
+            <DialogActions>
+              <Button variant='contained' onClick={() => { handleSubmit() }} disabled={false}>Copy Selected Sectors</Button>
+            </DialogActions>
+          </>
+        }
+        
       </Dialog>
     </div>
   );

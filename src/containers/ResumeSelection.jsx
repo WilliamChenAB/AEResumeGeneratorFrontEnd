@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Button, Divider, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, Box, Typography } from '@mui/material';
 import { Close } from '@mui/icons-material';
 import SideBarTabs from '../components/SideBarTabs'
-import TextBox from '../components/TextBox/TextBox';
+import ExperienceTextBox from '../components/TextBox/ExperienceTextBox';
 import { colorToken } from '../theme/colorToken';
 import Loading from '../components/Loading';
 import Error from '../components/Error';
@@ -37,6 +37,9 @@ function ResumeSelection({ employeeName, open, eid ,onClose, onSubmit, submittab
         }
       }).then((response) => {
         setResumes(response.data);
+        if(resumes.length > 0){
+          handleResumeClicked(0);
+        }
         setIsLoading(false);
       }).catch((error) => {
         setIsLoading(false);
@@ -88,7 +91,7 @@ function ResumeSelection({ employeeName, open, eid ,onClose, onSubmit, submittab
     <div>
       <Dialog fullWidth maxWidth='lg' open={open}>
         <DialogTitle>
-          <div><Typography variant='h2'>{employeeName}</Typography></div>
+          <div><Typography variant='h2'>{`Resumes: ${employeeName}`}</Typography></div>
           <IconButton sx={{ position: 'absolute', right: 8, top: 8 }} onClick={() => { handleClose(false); }}>
             <Close />
           </IconButton>
@@ -99,13 +102,13 @@ function ResumeSelection({ employeeName, open, eid ,onClose, onSubmit, submittab
           {!isLoading && errorStatus && <Error text='Error retrieving resumes.' response={errorStatus}></Error>}
           {!isLoading && !errorStatus &&
             <Box sx={{ display: 'flex', flexDirection: 'row' }}>
-              <Box sx={{ width: 300, height: '600px' }}>
+              <Box sx={{ width: 300, height: '600px', display: 'flex', flexDirection: 'column'}}>
                 <SideBarTabs
                   entries={resumes}
                   showCheckBoxes={false}
-                  color={colorToken.brand.aeGreen}
-                  selectedColor={colorToken.brand.aeBlue}
-                  textColor={colorToken.greyPalette.white}
+                  color={colorToken.brand.aeBlueLight}
+                  selectedColor={colorToken.brand.aeBlueMid}
+                  textColor={colorToken.greyPalette.aeBlue}
                   onEntryClick={(tabNum) => {handleResumeClicked(tabNum)}} />
               </Box>
               <Divider color='primary' orientation='vertical' flexItem />
@@ -119,7 +122,7 @@ function ResumeSelection({ employeeName, open, eid ,onClose, onSubmit, submittab
                       currentSectors.filter((sector) => sector.typeTitle === sectorTypeName).map((sector) => {
                         return( 
                         <Box mb={5} key={sector.id}>
-                          <TextBox key={sector.id} id={sector.id} text={sector.content} footer={`Date Edited: ${sector.lastEditedDate}`} hideEdit />
+                          <ExperienceTextBox imageLinkIn={sector.image} divisionIn={sector.division} key={sector.id} sid={sector.id} text={sector.content} footer={`Date Edited: ${sector.lastEditedDate}`} hideEdit />
                         </Box>);
                       })
                     }
@@ -129,12 +132,16 @@ function ResumeSelection({ employeeName, open, eid ,onClose, onSubmit, submittab
             </Box>
           }
         </DialogContent>
-        <Divider color='primary' />
-        <DialogActions>
-          {
-            submittable && <Button variant='contained' onClick={() => { handleSubmit() }} disabled={false}>Copy Selected Resume</Button>
-          }
-        </DialogActions>
+        {
+          submittable &&
+          <>
+            <Divider color='primary' />
+            <DialogActions>
+              <Button variant='contained' onClick={() => { handleSubmit() }} disabled={false}>Copy Selected Resume</Button>
+            </DialogActions>
+          </>
+        }
+        
       </Dialog>
     </div>
   );

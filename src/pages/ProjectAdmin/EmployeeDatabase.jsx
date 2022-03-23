@@ -52,7 +52,7 @@ function EmployeeDatabase() {
       {!isLoading && !errorStatus &&
         <>
           {selectedEmployee && <ResumeSeleciton submittable={false} open={openResumeSelection} employeeName={selectedEmployee.name} eid={selectedEmployee.eid} onSubmit={(rid) => {}} onClose={() => { setOpenResumeSelection(false) }} />}
-          {selectedEmployee && <SectorSelection submittable={false} targetEid={selectedEmployee.eid} resumeName={selectedEmployee.name} open={openSectorSelection} onClose={() => { setOpenSectorSelection(false) }} onSubmit={() => {}} />}
+          {selectedEmployee && <SectorSelection submittable={false} targetEid={selectedEmployee.eid} title={selectedEmployee.name} open={openSectorSelection} onClose={() => { setOpenSectorSelection(false) }} onSubmit={() => {}} />}
           <Box mb={4} sx={{ display: 'flex', flexDirection: 'row' }}>
             <Box sx={{ flexGrow: 1, alignItems: 'flex-end' }}>
               <Typography variant='h3'>EMPLOYEE DATABASE</Typography>

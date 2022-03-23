@@ -18,21 +18,21 @@ export default function SideBar({ entries, setTab, color, title, subtitle, useBu
           width: width
         }}
       >
-        <Box my={6} sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center', alignContent: 'center' }}>
+        <Box my={6} sx={{display: 'flex', justifyContent: 'center', alignContent: 'center' }}>
           <Profile title={title} subtitle={subtitle} />
         </Box>
         {entries &&
           <SideBarTabs
             entries={entries}
             showCheckBoxes={false}
-            color={color === 'primary' ? colorToken.brand.aeGreen : colorToken.brand.aeBlueLight}
-            selectedColor={color === 'primary' ? colorToken.brand.aeBlue : colorToken.brand.aeBlueMid}
-            textColor={color === 'primary' ? colorToken.greyPalette.white : colorToken.brand.aeBlue}
+            color={color === 'primary' ? colorToken.brand.aeGreenLight : colorToken.brand.aeBlueLight}
+            selectedColor={color === 'primary' ? colorToken.brand.aeGreen : colorToken.brand.aeBlueMid}
+            textColor={color === 'primary' ? colorToken.greyPalette.iconGrey : colorToken.brand.aeBlue}
             onEntryClick={setTab}
             onCheckmarkClicked={() => { }} />
         }
         {useButton &&
-          <Box item sx={{ flexGrow: 2, display: 'flex', justifyContent: 'center', alignItems: 'flex-end' }}>
+          <Box item sx={{ flexGrow: 2, display: 'flex', justifyContent: 'center', alignItems: 'flex-start' }}>
             <AddButton text={buttonText} onClick={buttonClick} />
           </Box>
         }

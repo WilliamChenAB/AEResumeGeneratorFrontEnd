@@ -168,9 +168,9 @@ function AddEmployee({ open, onClose, wid, wname }) {
           {!isLoading && errorStatus && <Error text='Error.' response={errorStatus}></Error>}
           {!isLoading && !errorStatus &&
             <>
-              <SearchBar placeholder='Search Table...'  onChange={(searchVal) => { tableFilter(searchVal); }} />
+              <SearchBar defaultValue='' placeholder='Search Table...'  onChange={(searchVal) => { tableFilter(searchVal); }} />
               <WorkSpaceEmployeeTable rows={rows} onSelect={(index) => { setEmployeeName(rows[index[0] - 1]?.name); setEmployeeId(rows[index[0] - 1]?.id); }} />
-              <Box mx={2} sx={{ flexDirection: 'row' }}>
+              <Box my={1} mx={2} sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around'}}>
                 <Button variant='contained' onClick={handleNewResumeRequest} disabled={employeeId === '' ? true : false}>Request New Resume</Button>
                 <Button variant='contained' onClick={handleFromResume} disabled={employeeId === '' ? true : false}>Import Existing Resume</Button>
                 <Button variant='contained' onClick={handleNew} disabled={employeeId === '' ? true : false}>Import By Sector</Button>
