@@ -143,7 +143,7 @@ function AddTemplate({ templates, open, onClose }) {
             <TextField fullWidth required label='Template Name' variant='standard' name='name' onChange={handleFormChange}></TextField>
             <br />
             <br />
-            <Dropdown label='Base Template' name='baseTemplate' options={templates} onChange={handleDropdownChange} />
+            <Dropdown label='Select Template' name='baseTemplate' options={templates} onChange={handleDropdownChange} />
             <br />
             <TextField fullWidth multiline rows={4} label='Template Description' name='description' onChange={handleFormChange}></TextField>
             <br />

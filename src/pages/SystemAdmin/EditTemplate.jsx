@@ -1,21 +1,21 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import TextBox from '../../components/TextBox/TextBox';
-import { Box, Button, Typography } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import AddButton from '../../components/AddButton';
 import SideBarResumeTemplate from '../../containers/SideBarResumeTemplate';
 import AddSectorType from '../../containers/AddSectorType';
-// import { mockWorkspaces } from './__mocks__/mockWorkspaces';
-// import { mockWorkspaceResumes } from './__mocks__/mockWorkspaceResumes';
 import Divider from '@mui/material/Divider';
 import Loading from '../../components/Loading';
 import Error from '../../components/Error';
 import AlertPopup from '../../components/AlertPopup';
 import axios from 'axios';
+import EditableTextField from '../../components/EditableTextField';
 
 
-function EditWorkspace() {
+
+function EditTemplate() {
 
   let { templateId } = useParams();
 
@@ -26,6 +26,7 @@ function EditWorkspace() {
   const [isLoading, setIsLoading] = useState(false);
   const [errorStatus, setErrorStatus] = useState(false);
   const [openCompleteMessage, setOpenCompleteMessage] = useState(false);
+  const [editTemplateName, setEditTemplateName] = useState(false);
 
   const createEntries = (allEntries, selectedEntries) => {
     const entries = allEntries.map((entry) => { return ({ name: entry.title, error: false, checked: selectedEntries.includes(entry.typeID) }) })
@@ -56,6 +57,14 @@ function EditWorkspace() {
     getTemplateSectors();
   }, []);
 
+  const setTemplateName = () => {
+
+  }
+
+  const onTabClick= () => {
+
+  }
+
 
 
   return (
@@ -69,12 +78,17 @@ function EditWorkspace() {
       {!isLoading && errorStatus && <Error text='Error retrieving resume.' response={errorStatus}></Error>}
       {!isLoading && !errorStatus &&
         <>
-          <Box m={2} sx={{ display: 'flex', justifyContent: 'space-between' }}>
-            <Typography variant='h3'>{template.title ? template.title : ''}</Typography>
-            {/* <Button variant='contained' onClick={handleSubmit} disabled={submitDisabled}>Save Sector Types</Button> */}
+          <Box m={2} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <EditableTextField templateText={template.title ? template.title : ''} setTemplateText={() => { }} tabClicked={activeTemplateTab}/>
+            <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+              <Box mr={2}>
+                <Button variant='contained' onClick={() => getTemplateSectors()} >Clear</Button>
+              </Box>
+              <Button variant='contained' onClick={() => { }} >Save</Button>
+            </Box>
           </Box>
           <Divider />
-          <Box sx={{ display: 'flex', flexDirection: 'row', height: '100%' }} >
+          <Box sx={{ display: 'flex', flexDirection: 'row', height: '83vh', overflow: 'auto' }} >
             <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
               <SideBarResumeTemplate entries={entries} setTab={(index) => { setActiveTemplateTab(index) }} color='primary' />
               <Box m={2}>
@@ -83,7 +97,7 @@ function EditWorkspace() {
             </Box>
             {entries.length > 0 &&
               <Box m={4} sx={{ width: '100%' }}>
-                <Typography variant='h3'>{entries[activeTemplateTab].name.toUpperCase()}</Typography>
+                <EditableTextField templateText={entries[activeTemplateTab].name} setTemplateText={() => {}} tabCLicked={activeTemplateTab}/>
                 <Box my={3}>
                   <TextBox rows={5} hideEdit></TextBox>
                 </Box>
@@ -91,7 +105,7 @@ function EditWorkspace() {
             }
           </Box>
           {showAddDialog &&
-            <AddSectorType open={showAddDialog} onClose={() => setShowAddDialog(!showAddDialog)} onSave={() => getTemplateSectors()}/>
+            <AddSectorType open={showAddDialog} onClose={() => setShowAddDialog(!showAddDialog)} onSave={() => getTemplateSectors()} />
           }
         </>
       }
@@ -99,4 +113,4 @@ function EditWorkspace() {
   );
 }
 
-export default EditWorkspace;
+export default EditTemplate;

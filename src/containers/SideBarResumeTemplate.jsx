@@ -9,7 +9,7 @@ const width = 240;
 
 export default function SideBarResumeTemplate({ entries, setTab, color, useButton, buttonText, buttonClick }) {
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'row', height: '100%' }}>
+    <Box sx={{ display: 'flex', flexDirection: 'row', height: '100%', overflow: 'auto' }}>
       <Box
         sx={{
           height: '100%',
