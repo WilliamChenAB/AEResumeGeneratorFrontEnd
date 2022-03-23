@@ -14,7 +14,7 @@ export default function SideBarResumeTemplate({ entries, setTab, color, useButto
         sx={{
           height: '100%',
           flexDirection: 'column',
-          display: 'flex', justifyContent: 'center', alignContent: 'center',
+          display: 'flex', justifyContent: 'flex-start', alignContent: 'center',
           width: width
         }}
       >

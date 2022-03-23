@@ -49,6 +49,8 @@ function SectorSelection({ title, open, onClose, onSubmit, targetEid = false, su
               createDate: sector.creationDate,
               updateDate: sector.lastEditedDate,
               content: sector.content,
+              division: sector.division,
+              image: sector.image,
               type: sector.typeID,
               resumeName: sector.resumeName,
               selected: false,

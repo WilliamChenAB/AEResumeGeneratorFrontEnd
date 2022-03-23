@@ -11,10 +11,12 @@ export default function SideBar({ entries, setTab, color, title, subtitle, useBu
   return (
     <Box sx={{ display: 'flex', flexDirection: 'row', height: '100%' }}>
       <Box
+        justifyContent= 'flex-start' 
+        alignContent= 'flex-start'
         sx={{
           height: '100%',
           flexDirection: 'column',
-          display: 'flex', justifyContent: 'center', alignContent: 'center',
+          display: 'flex',
           width: width
         }}
       >

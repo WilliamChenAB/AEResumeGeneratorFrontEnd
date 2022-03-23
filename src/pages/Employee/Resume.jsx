@@ -53,9 +53,12 @@ function Resume() {
           createDate: sector.creationDate,
           updateDate: sector.lastEditedDate,
           content: sector.content,
+          division: sector.division,
+          image: sector.image,
           type: sector.typeID,
         }
       }));
+      console.log(sectors);
       setIsLoading(false);
     }).catch((error) => {
       setIsLoading(false);
@@ -74,6 +77,8 @@ function Resume() {
         RID: resumeId,
         content: '',
         typeID: sectorTypes[activeTab]?.id,
+        division: '',
+        image: '',
       }
     }).then((response) => {
       setIsLoading(false);
@@ -127,6 +132,8 @@ function Resume() {
           RID: resumeId,
           content: sector.content,
           typeID: sector.type,
+          division: sector.division,
+          image: sector.image,
         }
       }));
 

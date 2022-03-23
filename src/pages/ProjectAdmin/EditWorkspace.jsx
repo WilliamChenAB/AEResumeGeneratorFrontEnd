@@ -87,7 +87,9 @@ function EditWorkspace() {
       params: {
         RID: rid,
         content: '',
-        typeID: typeId
+        typeID: typeId,
+        division: '',
+        image: '',
       }
     }).then((response) => {
       setIsLoading(false);
@@ -144,6 +146,8 @@ function EditWorkspace() {
           RID: resumes[activeEmployeeTab].rid,
           content: sector.content,
           typeID: sector.type,
+          division: sector.division,
+          image: sector.image,
         }
       }));
 
