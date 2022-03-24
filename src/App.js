@@ -3,6 +3,7 @@ import { theme } from './theme/theme';
 import './App.css';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from 'react-oidc-context';
+import { User } from 'oidc-client-ts';
 import axios from 'axios';
 import LoginPage from './pages/Login';
 import EmployeePage from './pages/Employee/EmployeePage';
@@ -17,14 +18,17 @@ import ResumeTemplates from './pages/SystemAdmin/ResumeTemplates';
 import EmployeePermissions from './pages/SystemAdmin/EmployeePermissions';
 import EditTemplate from './pages/SystemAdmin/EditTemplate';
 import Callback from './auth/Callback';
+import oidcConfig from './auth';
 
 function App() {
-  const auth = useAuth();
-
-  if (auth.isAuthenticated) {
-    axios.defaults.baseURL = 'https://ae-resume-api.azurewebsites.net/';
-    axios.defaults.headers.common['Authorization'] = `Bearer ${auth.user?.access_token}`;
-  }
+  axios.defaults.baseURL = process.env.REACT_APP_API_BASE_URL;
+  axios.interceptors.request.use((config) => {
+    const oidcStorage = sessionStorage.getItem(`oidc.user:${oidcConfig.authority}:${oidcConfig.client_id}`);
+    if (oidcStorage) {
+      config.headers.Authorization = `Bearer ${User.fromStorageString(oidcStorage).access_token}`;
+    }
+    return config;
+  });
 
   return (
     <ThemeProvider theme={theme}>
