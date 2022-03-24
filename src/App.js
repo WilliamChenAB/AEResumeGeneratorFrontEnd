@@ -8,7 +8,6 @@ import LoginPage from './pages/Login';
 import EmployeePage from './pages/Employee/EmployeePage';
 import Resumes from './pages/Employee/Resumes';
 import Resume from './pages/Employee/Resume';
-import Sectors from './pages/Employee/Sectors';
 import ProjectAdminPage from './pages/ProjectAdmin/ProjectAdminPage';
 import ProjectWorkspaces from './pages/ProjectAdmin/ProjectWorkspaces';
 import EmployeeDatabase from './pages/ProjectAdmin/EmployeeDatabase';

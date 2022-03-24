@@ -36,30 +36,55 @@ function Resume() {
       params: {
         RID: resumeId,
       }
-    }).then((response) => {
-      setResumeName(response.data.name || 'untitled');
-      const typesAll = response.data.sectorList.map((sector) => {
-        return {
-          id: sector.typeID,
-          name: sector.typeTitle || 'untitled',
-          error: false,
-        };
-      });
-      const typesUnique = [...new Map(typesAll.map(item => [item.id, item])).values()];
-      setSectorTypes(typesUnique);
-      setSectors(response.data.sectorList.map((sector) => {
-        return {
-          id: sector.sid,
-          createDate: sector.creationDate,
-          updateDate: sector.lastEditedDate,
-          content: sector.content,
-          division: sector.division,
-          image: sector.image,
-          type: sector.typeID,
+    }).then((resumeResponse) => {
+      axios.get('/Admin/GetSectorsInTemplate', {
+        params: {
+          templateID: resumeResponse.data.templateID,
         }
-      }));
-      console.log(sectors);
-      setIsLoading(false);
+      }).then((templateResponse) => {
+        setResumeName(resumeResponse.data.name || 'untitled');
+        const typesTemplate = templateResponse.data.map((type) => {
+          return {
+            id: type.typeID,
+            name: type.title || 'untitled',
+            template: true,
+            error: true,
+          };
+        });
+        const typesResume = resumeResponse.data.sectorList.map((sector) => {
+          return {
+            id: sector.typeID,
+            name: sector.typeTitle || 'untitled',
+            template: false,
+            error: false,
+          };
+        });
+        let typesUnique = [...typesTemplate]
+        for (const typeResume of typesResume) {
+          let found = typesUnique.find(type => type.id === typeResume.id);
+          if (found) {
+            found.error = false;
+          } else {
+            typesUnique.push(typeResume);
+          }
+        }
+        setSectorTypes(typesUnique);
+        setSectors(resumeResponse.data.sectorList.map((sector) => {
+          return {
+            id: sector.sid,
+            createDate: sector.creationDate,
+            updateDate: sector.lastEditedDate,
+            content: sector.content,
+            division: sector.division,
+            image: sector.image,
+            type: sector.typeID,
+          }
+        }));
+        setIsLoading(false);
+      }).catch((error) => {
+        setIsLoading(false);
+        setErrorStatus(error.response);
+      });
     }).catch((error) => {
       setIsLoading(false);
       setErrorStatus(error.response);
