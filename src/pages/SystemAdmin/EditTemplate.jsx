@@ -1,4 +1,4 @@
-import React from 'react';
+import React  from 'react';
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import TextBox from '../../components/TextBox/TextBox';
@@ -12,12 +12,12 @@ import Error from '../../components/Error';
 import AlertPopup from '../../components/AlertPopup';
 import axios from 'axios';
 import EditableTextField from '../../components/EditableTextField';
-
-
+import { useDispatch, useSelector } from 'react-redux';
+import { templateSelectors, templateActions } from '../../slices/templateSlice';
 
 function EditTemplate() {
-
   let { templateId } = useParams();
+  const dispatch = useDispatch();
 
   const [activeTemplateTab, setActiveTemplateTab] = useState(0);
   const [template, setTemplate] = useState([]);
@@ -26,12 +26,18 @@ function EditTemplate() {
   const [isLoading, setIsLoading] = useState(false);
   const [errorStatus, setErrorStatus] = useState(false);
   const [openCompleteMessage, setOpenCompleteMessage] = useState(false);
-  const [editTemplateName, setEditTemplateName] = useState(false);
+  const [firstRender, setFirstRender] = useState(true);
+  const [allSectors, setAllSectors] = useState([]);
 
-  const createEntries = (allEntries, selectedEntries) => {
-    const entries = allEntries.map((entry) => { return ({ name: entry.title, error: false, checked: selectedEntries.includes(entry.typeID) }) })
+  const selectedSectors = useSelector(templateSelectors.getSelectedSectorTypes);
+
+  const createEntries = (selected) => {
+    const entries = allSectors.map((entry) => { return ({ name: entry.title, error: false, checked: selected.includes(entry.typeID) }) })
     setEntries(entries);
-    setIsLoading(false);
+    if (selectedSectors.length > 0) {
+      setIsLoading(false);
+    }
+
   }
 
   const getTemplateSectors = () => {
@@ -44,8 +50,9 @@ function EditTemplate() {
     ]).then(
       axios.spread((allSectors, template, templateSectors) => {
         setTemplate(template.data);
-        createEntries(allSectors.data, templateSectors.data.map(({ typeID }) => typeID));
-        setIsLoading(false);
+        setAllSectors(allSectors.data);
+        dispatch(templateActions.setTemplateSectors(templateSectors.data.map(({ typeID }) => typeID)));
+        setFirstRender(false);
       })
     ).catch((error) => {
       setIsLoading(false);
@@ -57,13 +64,84 @@ function EditTemplate() {
     getTemplateSectors();
   }, []);
 
-  const setTemplateName = () => {
+  useEffect(() => {
+    createEntries(selectedSectors);
+  }, [selectedSectors])
+
+
+  // Actions for updating template name
+
+  const saveTemplateName = () => {
+    if (!firstRender) {
+      setIsLoading(true);
+      setErrorStatus(false);
+      axios.put('/Admin/EditTemplate', template, {
+        params: { templateID: templateId }
+      }).then(() => {
+        setIsLoading(false);
+      }).catch((error) => {
+        setIsLoading(false);
+        setErrorStatus(error.response);
+        setOpenCompleteMessage({
+          type: 'error',
+          text: `An error occurred while editing template name. (${error.response.status} ${error.response.statusText})`
+        });
+      });
+    }
+  }
+
+  // params: title, description
+
+  const setTemplateName = (newName) => {
+    setTemplate({ ...template, title: newName });
+  }
+
+  useEffect(() => {
+    saveTemplateName();
+  }, [template]);
+
+
+  // Actions for updating sector type name 
+
+  const saveSectorTypeName = (newName) => {
+    if (!firstRender) {
+      setIsLoading(true);
+      setErrorStatus(false);
+      axios.put('/Admin/EditSectorTypeTitle', {
+        params: { sectorTypeID: allSectors[activeTemplateTab].typeID, title: newName }
+      }).then(() => {
+        setIsLoading(false);
+      }).catch((error) => {
+        setIsLoading(false);
+        setErrorStatus(error.response);
+        setOpenCompleteMessage({
+          type: 'error',
+          text: `An error occurred while editing sector type name. (${error.response.status} ${error.response.statusText})`
+        });
+      });
+    }
+  }
+
+  // Action for updating selected sector types
+
+  const addSelectedSectorTypes = (index) => {
+    const typeID = allSectors[index].typeID;
+    if (selectedSectors.includes(typeID)) {
+      console.log('included');
+      dispatch(templateActions.removeTemplateSector(typeID));
+    } else {
+      console.log('not included');
+      dispatch(templateActions.addTemplateSector(typeID));
+    }
+
 
   }
 
-  const onTabClick= () => {
+  const saveSelectedSectorTypes = () => {
 
   }
+
+
 
 
 
@@ -78,26 +156,21 @@ function EditTemplate() {
       {!isLoading && errorStatus && <Error text='Error retrieving resume.' response={errorStatus}></Error>}
       {!isLoading && !errorStatus &&
         <>
-          <Box m={2} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <EditableTextField templateText={template.title ? template.title : ''} setTemplateText={() => { }} tabClicked={activeTemplateTab}/>
-            <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-              <Box mr={2}>
-                <Button variant='contained' onClick={() => getTemplateSectors()} >Clear</Button>
-              </Box>
-              <Button variant='contained' onClick={() => { }} >Save</Button>
-            </Box>
+          <Box m={1.5} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <EditableTextField templateText={template.title ? template.title : ''} setTemplateText={setTemplateName} tabClicked={activeTemplateTab} />
           </Box>
           <Divider />
           <Box sx={{ display: 'flex', flexDirection: 'row', height: '83vh', overflow: 'auto' }} >
             <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-              <SideBarResumeTemplate entries={entries} setTab={(index) => { setActiveTemplateTab(index) }} color='primary' />
+              <SideBarResumeTemplate entries={entries} setTab={(index) => { setActiveTemplateTab(index) }} color='primary' onCheck={addSelectedSectorTypes} />
               <Box m={2}>
                 <AddButton text='Add sector type' onClick={() => setShowAddDialog(true)} />
+                <Button fullWidth variant='contained' onClick={() => { }} >Save Template Sectors</Button>
               </Box>
             </Box>
             {entries.length > 0 &&
               <Box m={4} sx={{ width: '100%' }}>
-                <EditableTextField templateText={entries[activeTemplateTab].name} setTemplateText={() => {}} tabCLicked={activeTemplateTab}/>
+                <EditableTextField templateText={entries[activeTemplateTab].name} setTemplateText={saveSectorTypeName} tabClicked={activeTemplateTab} />
                 <Box my={3}>
                   <TextBox rows={5} hideEdit></TextBox>
                 </Box>
@@ -111,6 +184,9 @@ function EditTemplate() {
       }
     </Box>
   );
+
+
 }
+
 
 export default EditTemplate;

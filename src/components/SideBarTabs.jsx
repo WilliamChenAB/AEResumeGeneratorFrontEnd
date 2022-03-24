@@ -20,7 +20,7 @@ function SideBarTabs({ entries, showCheckBoxes, color, selectedColor, textColor,
     <List sx={{maxHeight: '100%', overflow: 'auto' }}>
       {
         entries.map((obj, index) => {
-          const checkbox = showCheckBoxes && <Checkbox key={obj.name} defaultChecked={obj.checked ? obj.checked : false } onChange={onCheckmarkClicked} color='checkbox'
+          const checkbox = showCheckBoxes && <Checkbox key={obj.name} checked={obj.checked ? obj.checked : false } onChange={() => onCheckmarkClicked(index)} color='checkbox'
             sx={{
               color: textColor,
             }}

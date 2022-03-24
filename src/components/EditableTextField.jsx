@@ -17,6 +17,11 @@ export default function EditableTextField({ templateText, setTemplateText, tabCl
     setEdit(false);
   }
 
+  const saveChange = () => {
+    setTemplateText(text);
+    setEdit(false);
+  }
+
 
   useEffect(() => {
     setText(templateText);
@@ -41,7 +46,7 @@ export default function EditableTextField({ templateText, setTemplateText, tabCl
                 variant="standard"
                 onChange={(e) => handleChange(e)}
               />
-              {text !== '' && <IconButton onClick={() => setEdit(false)}>
+              {text !== '' && <IconButton onClick={() => saveChange()}>
                 <CheckIcon />
               </IconButton>
               }
