@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
-import { Button, Grid, IconButton, Dialog, DialogTitle, DialogContent, TextField } from '@mui/material';
+import { Button, Grid, IconButton, Dialog, DialogTitle, DialogContent, TextField, DialogActions } from '@mui/material';
 import { Close } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import Dropdown from '../components/Dropdown';
@@ -122,20 +122,18 @@ function AddWorkspace({ open, onClose, eid }) {
         </DialogTitle>
         <DialogContent>
           <form ref={formRef}>
-            <TextField fullWidth required label='Project Name' variant='standard' name='name' onChange={handleFormChange}></TextField>
+            <TextField fullWidth required label='Project Name' variant='standard' name='name' onChange={handleFormChange} autoComplete='off'></TextField>
             <br />
             <br />
-            <TextField fullWidth type='number' required label='Project Number' variant='standard' name='number' onChange={handleFormChange}></TextField>
+            <TextField fullWidth type='number' required label='Project Number' variant='standard' name='number' onChange={handleFormChange} autoComplete='off'></TextField>
             <br />
             <br />
-            <TextField fullWidth required label='Division' variant='standard' name='division' onChange={handleFormChange}></TextField>
-            <br />
-            <br />
-            <Grid container justifyContent='flex-end'>
-              <Button variant='contained' onClick={handleSubmit} disabled={submitDisabled}>Create</Button>
-            </Grid>
+            <TextField fullWidth required label='Division' variant='standard' name='division' onChange={handleFormChange} autoComplete='off'></TextField>
           </form>
         </DialogContent>
+        <DialogActions>
+          <Button variant='contained' onClick={handleSubmit} disabled={submitDisabled}>Create</Button>
+        </DialogActions>
       </Dialog>
     </div>
   );

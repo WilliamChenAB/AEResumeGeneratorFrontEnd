@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
-import { Button, Grid, IconButton, Dialog, DialogTitle, DialogContent, TextField } from '@mui/material';
+import { Button, IconButton, Dialog, DialogTitle, DialogContent, TextField, DialogActions } from '@mui/material';
 import { Close } from '@mui/icons-material';
 import AlertPopup from '../components/AlertPopup';
 import Loading from '../components/Loading';
@@ -79,15 +79,13 @@ function AddSectorType({ open, onClose, onSave }) {
           </IconButton>
         </DialogTitle>
         <DialogContent>
-            <form ref={formRef}>
-              <TextField fullWidth required label='Sector Type Name' variant='standard' name='name' onChange={handleFormChange}></TextField>
-              <br />
-              <br />
-              <Grid container justifyContent='flex-end'>
-                <Button variant='contained' onClick={handleSubmit} disabled={submitDisabled}>Save</Button>
-              </Grid>
-            </form>
+          <form ref={formRef}>
+            <TextField fullWidth required label='Sector Type Name' variant='standard' name='name' onChange={handleFormChange} autoComplete='off'></TextField>
+          </form>
         </DialogContent>
+        <DialogActions>
+          <Button variant='contained' onClick={handleSubmit} disabled={submitDisabled}>Save</Button>
+        </DialogActions>
       </Dialog>
     </div>
   );

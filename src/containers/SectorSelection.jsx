@@ -4,7 +4,6 @@ import { Close } from '@mui/icons-material';
 import SideBarTabs from '../components/SideBarTabs'
 import ExperienceTextBox from '../components/TextBox/ExperienceTextBox';
 import { colorToken } from '../theme/colorToken';
-import AddButton from '../components/AddButton';
 import Loading from '../components/Loading';
 import Error from '../components/Error';
 import axios from 'axios';
@@ -27,8 +26,8 @@ function SectorSelection({ title, open, onClose, onSubmit, targetEid = false, su
 
   useEffect(() => {
     if (open && !singleSectorTypeObj) {
-      const endpoint =  targetEid ? '/Facade/GetAllSectorsForEmployee': '/Facade/GetAllSectors';
-      const params = targetEid ? {params: {EID: targetEid }} : null;
+      const endpoint = targetEid ? '/Facade/GetAllSectorsForEmployee' : '/Facade/GetAllSectors';
+      const params = targetEid ? { params: { EID: targetEid } } : null;
       setIsLoading(true);
       setErrorStatus(false);
       axios.get(endpoint, params
@@ -64,8 +63,8 @@ function SectorSelection({ title, open, onClose, onSubmit, targetEid = false, su
         setErrorStatus(error.response);
       });
     } else if (open && singleSectorTypeObj) {
-      const endpoint =  targetEid ? '/Facade/GetAllSectorsForEmployeeByType': '/Facade/GetAllSectorsByType';
-      const params = targetEid ? {params: {EID: targetEid, TypeID: singleSectorTypeObj.id}} : {params: {TypeID: singleSectorTypeObj.id }};
+      const endpoint = targetEid ? '/Facade/GetAllSectorsForEmployeeByType' : '/Facade/GetAllSectorsByType';
+      const params = targetEid ? { params: { EID: targetEid, TypeID: singleSectorTypeObj.id } } : { params: { TypeID: singleSectorTypeObj.id } };
       setIsLoading(true);
       setErrorStatus(false);
       axios.get(endpoint, params
@@ -157,7 +156,7 @@ function SectorSelection({ title, open, onClose, onSubmit, targetEid = false, su
             </DialogActions>
           </>
         }
-        
+
       </Dialog>
     </div>
   );

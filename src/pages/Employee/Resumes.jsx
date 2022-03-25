@@ -20,7 +20,6 @@ function Resumes() {
   const [data, setData] = useState([]); // full data
   const [rows, setRows] = useState([]); // rows to display in table (with filter applied)
   const [showAddDialog, setShowAddDialog] = useState(false);
-  const [selectedResumeId, setSelectedResumeId] = useState('');
   const [openCompleteMessage, setOpenCompleteMessage] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
@@ -113,7 +112,7 @@ function Resumes() {
               </Box>
               <AddButton text='Add Resume' onClick={() => setShowAddDialog(true)} />
             </Box>
-            <ResumeTable rows={rows} handleSelect={(id) => { navigate(`/employee/resumes/${id}`) }} onSelectClick={setSelectedResumeId} onDeleteClick={(resumeObj) => { handleDeleteClick(resumeObj) }} />
+            <ResumeTable rows={rows} handleSelect={(id) => { navigate(`/employee/resumes/${id}`) }} onDeleteClick={(resumeObj) => { handleDeleteClick(resumeObj) }} />
             <AddResume open={showAddDialog} onClose={() => { setShowAddDialog(false) }}></AddResume>
           </>
         }

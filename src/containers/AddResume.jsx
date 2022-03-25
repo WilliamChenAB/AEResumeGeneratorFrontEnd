@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
-import { Grid, IconButton, Dialog, DialogTitle, DialogContent, TextField, DialogActions } from '@mui/material';
+import { IconButton, Dialog, DialogTitle, DialogContent, TextField, DialogActions } from '@mui/material';
 import { Close } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import Dropdown from '../components/Dropdown';
@@ -126,7 +126,7 @@ function AddResume({ open, onClose }) {
           {!isLoading && errorStatus && <Error text='Error retrieving templates.' response={errorStatus}></Error>}
           {!isLoading && !errorStatus &&
             <form ref={formRef}>
-              <TextField fullWidth required label='Resume Name' variant='standard' name='name' onChange={handleFormChange}></TextField>
+              <TextField fullWidth required label='Resume Name' variant='standard' name='name' onChange={handleFormChange} autoComplete='off'></TextField>
               <br />
               <br />
               <Dropdown required label='Resume Template' options={templates} name='template' onChange={handleDropdownChange}></Dropdown>

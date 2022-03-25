@@ -3,7 +3,7 @@ import TextButton from '../TextButton';
 import { IconButton, Tooltip } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-export default function ResumeTable({ rows, onSelectClick, handleSelect, onDeleteClick }) {
+export default function ResumeTable({ rows, handleSelect, onDeleteClick }) {
   const columns = [
     {
       field: 'resumeName',
@@ -35,7 +35,7 @@ export default function ResumeTable({ rows, onSelectClick, handleSelect, onDelet
 
   return (
     <div style={{ height: 400, width: '100%' }}>
-      <StyledTable columns={columns} rows={rows} onSelect={onSelectClick} />
+      <StyledTable columns={columns} rows={rows} />
     </div>
   );
 }

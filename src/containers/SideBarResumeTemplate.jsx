@@ -1,6 +1,5 @@
 import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
-import Profile from '../components/Profile';
 import { colorToken } from '../theme/colorToken';
 import SideBarTabs from '../components/SideBarTabs';
 import AddButton from '../components/AddButton';
@@ -36,6 +35,5 @@ export default function SideBarResumeTemplate({ entries, setTab, color, useButto
       </Box>
       <Divider orientation='vertical' sx={{ height: '100%' }} />
     </Box>
-
   );
 }

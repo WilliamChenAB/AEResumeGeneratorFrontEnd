@@ -1,14 +1,12 @@
-import * as React from 'react';
 import StyledTable from './StyledTable/StyledTable';
 import IconButton from '@mui/material/IconButton';
 import ExportIcon from '@mui/icons-material/FileDownload';
 import DeleteIcon from '@mui/icons-material/Delete';
 import TextButton from '../TextButton';
 import Tooltip from '@mui/material/Tooltip'
+import { Box } from '@mui/system';
 
-// TODO: trigger pop-up on click
-
-export default function WorkspaceTable({ rows, onSelectClick, workSpaceExpanded, onDeleteClick, onExportClicked}) {
+export default function WorkspaceTable({ rows, workSpaceExpanded, onDeleteClick, onExportClicked }) {
   const columns = [
     {
       field: 'workspaceName',
@@ -27,40 +25,30 @@ export default function WorkspaceTable({ rows, onSelectClick, workSpaceExpanded,
       headerName: 'Actions',
       description: 'Click to edit export or delete',
       flex: 0.10,
-      minWidth: 100,
+      minWidth: 150,
       sortable: false,
       renderCell: (params) => {
         return (
-          <Tooltip title='Click to export all resumes in workspace'>
-            <IconButton onClick={() => {onExportClicked(params.row)}}>
-              <ExportIcon />
-            </IconButton>
-          </Tooltip>
-          
-        )
-      }
-    },
-    {
-      field: 'delete',
-      headerName: '',
-      description: '',
-      flex: 0.10,
-      minWidth: 100,
-      sortable: false,
-      renderCell: (params) => {
-        return (
-          <Tooltip title='Click to delete workspace'>
-            <IconButton onClick={() => { onDeleteClick(params.row) }}>
-              <DeleteIcon />
-            </IconButton>
-          </Tooltip>
+          <Box>
+            <Tooltip title='Click to export all resumes in workspace'>
+              <IconButton onClick={() => { onExportClicked(params.row) }}>
+                <ExportIcon />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title='Click to delete workspace'>
+              <IconButton onClick={() => { onDeleteClick(params.row) }}>
+                <DeleteIcon />
+              </IconButton>
+            </Tooltip>
+          </Box>
         )
       }
     },
   ];
+
   return (
     <div style={{ height: 400, width: '100%' }}>
-      <StyledTable columns={columns} rows={rows} onSelect={onSelectClick} />
+      <StyledTable columns={columns} rows={rows} />
     </div>
   );
 }

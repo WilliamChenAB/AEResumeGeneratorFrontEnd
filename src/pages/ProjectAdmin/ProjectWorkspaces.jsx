@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import WorkspaceTable from '../../components/Table/WorkspaceTable';
 import { Box, Typography } from '@mui/material';
-import { mockWorkspaces } from './__mocks__/mockWorkspaces';
 import AddButton from '../../components/AddButton';
 import AddWorkspace from '../../containers/AddWorkspace';
 import SearchBar from '../../components/SearchBar';
@@ -13,7 +12,6 @@ import Error from '../../components/Error';
 import axios from 'axios';
 
 function ProjectWorkspaces() {
-  const [workspaces, setWorkspaces] = useState(mockWorkspaces);
   const [showWorkspaceDialog, setShowWorkspaceDialog] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errorStatus, setErrorStatus] = useState(false);
@@ -129,7 +127,7 @@ function ProjectWorkspaces() {
           </Box>
           <AddButton text='Add Workspace' onClick={() => setShowWorkspaceDialog(true)} />
           <AddWorkspace eid={eid} open={showWorkspaceDialog} onClose={() => setShowWorkspaceDialog(false)}></AddWorkspace>
-          <WorkspaceTable onExportClicked={(workspaceObj) => {exportResume(workspaceObj)}} onDeleteClick={(workspaceObj) => { handleDeleteClick(workspaceObj) }} rows={rows} onSelectClick={() => { }} workSpaceExpanded={(id) => { navigate('/project/workspaces/'.concat(id)) }} />
+          <WorkspaceTable onExportClicked={(workspaceObj) => {exportResume(workspaceObj)}} onDeleteClick={(workspaceObj) => { handleDeleteClick(workspaceObj) }} rows={rows} workSpaceExpanded={(id) => { navigate('/project/workspaces/'.concat(id)) }} />
         </>}
 
     </Box>

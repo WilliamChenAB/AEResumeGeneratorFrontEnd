@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
-import { Button, Grid, IconButton, Dialog, DialogTitle, DialogContent, TextField } from '@mui/material';
-import { Close, RsvpTwoTone } from '@mui/icons-material';
+import { Button, IconButton, Dialog, DialogTitle, DialogContent, TextField, DialogActions } from '@mui/material';
+import { Close } from '@mui/icons-material';
 import Dropdown from '../components/Dropdown';
 import AlertPopup from '../components/AlertPopup';
 import { useNavigate } from 'react-router-dom';
@@ -140,19 +140,17 @@ function AddTemplate({ templates, open, onClose }) {
         </DialogTitle>
         <DialogContent>
           <form ref={formRef}>
-            <TextField fullWidth required label='Template Name' variant='standard' name='name' onChange={handleFormChange}></TextField>
+            <TextField fullWidth required label='Template Name' variant='standard' name='name' onChange={handleFormChange} autoComplete='off'></TextField>
             <br />
             <br />
             <Dropdown label='Select Template' name='baseTemplate' options={templates} onChange={handleDropdownChange} />
             <br />
             <TextField fullWidth multiline rows={4} label='Template Description' name='description' onChange={handleFormChange}></TextField>
-            <br />
-            <br />
-            <Grid container justifyContent='flex-end'>
-              <Button variant='contained' onClick={formValues.baseTemplate === '' ? handleNoBaseTemplateSubmit : handleSubmit} disabled={submitDisabled}>Save</Button>
-            </Grid>
           </form>
         </DialogContent>
+        <DialogActions>
+          <Button variant='contained' onClick={formValues.baseTemplate === '' ? handleNoBaseTemplateSubmit : handleSubmit} disabled={submitDisabled}>Save</Button>
+        </DialogActions>
       </Dialog>
     </div>
   );
