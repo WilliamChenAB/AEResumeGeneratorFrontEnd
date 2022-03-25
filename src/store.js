@@ -2,6 +2,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import resumeReducer from './slices/resumeSlice';
 import sectorReducer from './slices/sectorSlice';
 import employeeReducer from './slices/currentEmployeeSlice';
+import templateReducer from './slices/templateSlice';
 
 
 export default configureStore({
@@ -9,5 +10,6 @@ export default configureStore({
     resume: resumeReducer,
     sector: sectorReducer,
     employee: employeeReducer,
+    template: templateReducer,
   }
 });

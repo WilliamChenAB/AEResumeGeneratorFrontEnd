@@ -1,4 +1,4 @@
-import React  from 'react';
+import React from 'react';
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import TextBox from '../../components/TextBox/TextBox';
@@ -41,6 +41,7 @@ function EditTemplate() {
   }
 
   const getTemplateSectors = () => {
+    // dispatch(templateActions.clearTemplate());
     setIsLoading(true);
     setErrorStatus(false);
     axios.all([
@@ -101,16 +102,17 @@ function EditTemplate() {
   }, [template]);
 
 
-  // Actions for updating sector type name 
+  // Actions for updating sector type name
+  // params: { sectorTypeID: allSectors[activeTemplateTab].typeID, title: newName } 
 
   const saveSectorTypeName = (newName) => {
     if (!firstRender) {
       setIsLoading(true);
       setErrorStatus(false);
-      axios.put('/Admin/EditSectorTypeTitle', {
+      axios.put('/Admin/EditSectorTypeTitle', null, {
         params: { sectorTypeID: allSectors[activeTemplateTab].typeID, title: newName }
       }).then(() => {
-        setIsLoading(false);
+        getTemplateSectors();
       }).catch((error) => {
         setIsLoading(false);
         setErrorStatus(error.response);
@@ -127,20 +129,30 @@ function EditTemplate() {
   const addSelectedSectorTypes = (index) => {
     const typeID = allSectors[index].typeID;
     if (selectedSectors.includes(typeID)) {
-      console.log('included');
       dispatch(templateActions.removeTemplateSector(typeID));
     } else {
-      console.log('not included');
       dispatch(templateActions.addTemplateSector(typeID));
     }
-
-
   }
 
   const saveSelectedSectorTypes = () => {
-
+    setIsLoading(true);
+    setErrorStatus(false);
+    axios.put('/Admin/AssignSectorTypes', selectedSectors, {
+      params: {
+        templateID: templateId
+      }
+    }).then(() => {
+      setIsLoading(false);
+    }).catch((error) => {
+      setIsLoading(false);
+      setErrorStatus(error.response);
+      setOpenCompleteMessage({
+        type: 'error',
+        text: `An error occurred while saving sector types. (${error.response.status} ${error.response.statusText})`
+      });
+    });
   }
-
 
 
 
@@ -165,7 +177,7 @@ function EditTemplate() {
               <SideBarResumeTemplate entries={entries} setTab={(index) => { setActiveTemplateTab(index) }} color='primary' onCheck={addSelectedSectorTypes} />
               <Box m={2}>
                 <AddButton text='Add sector type' onClick={() => setShowAddDialog(true)} />
-                <Button fullWidth variant='contained' onClick={() => { }} >Save Template Sectors</Button>
+                <Button fullWidth variant='contained' onClick={() => saveSelectedSectorTypes()} >Save Template Sectors</Button>
               </Box>
             </Box>
             {entries.length > 0 &&
