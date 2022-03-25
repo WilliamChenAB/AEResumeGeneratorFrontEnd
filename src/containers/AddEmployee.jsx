@@ -3,6 +3,7 @@ import { Button, IconButton, Dialog, DialogTitle, DialogContent, Box } from '@mu
 import { Close } from '@mui/icons-material';
 import WorkSpaceEmployeeTable from '../components/Table/WorkspaceEmployeeTable';
 import SearchBar from '../components/SearchBar';
+import Dropdown from '../components/Dropdown';
 import AlertPopup from '../components/AlertPopup';
 import ResumeSelection from '../containers/ResumeSelection.jsx';
 import Loading from '../components/Loading';
@@ -18,27 +19,44 @@ function AddEmployee({ open, onClose, wid, wname }) {
   const [data, setData] = useState([])
   const [rows, setRows] = useState([]);
   const [openResumeSelection, setOpenResumeSelection] = useState(false);
+  const [templates, setTemplates] = useState([]);
+  const [chosenTemplate, setChosenTemplate] = useState('');
 
 
   useEffect(() => {
     setIsLoading(true);
     setErrorStatus(false);
-    axios.get('/Admin/GetAllEmployees').then((response) => {
-      const responseData = response.data.map((employee) => {
-        return {
-          id: employee.eid,
-          name: `${employee.name}`, // force name to be string
-          role: employee.access //Change to role
-        };
+    axios.get('/Admin/GetAllEmployees').then((employeeResponse) => {
+      axios.get('/Facade/GetAllTemplates').then((response) => {
+        setTemplates(response.data.map((template) => {
+          return {
+            id: template.templateID,
+            name: template.title || 'untitled',
+            description: template.description,
+          };
+        }));
+        const responseData = employeeResponse.data.map((employee) => {
+          return {
+            id: employee.eid,
+            name: `${employee.name}`, // force name to be string
+            role: employee.access //Change to role
+          };
+        });
+        setData(responseData);
+        setRows(responseData);
+        setIsLoading(false);
+      }).catch((error) => {
+        setIsLoading(false);
+        setErrorStatus(error.response);
       });
-      setData(responseData);
-      setRows(responseData);
-      setIsLoading(false);
+      
     }).catch((error) => {
       setIsLoading(false);
       setErrorStatus(error.response);
     });
   }, []);
+
+  
 
   const tableFilter = (searchVal) => {
     const filteredRows = data.filter((row) => {
@@ -49,6 +67,7 @@ function AddEmployee({ open, onClose, wid, wname }) {
 
   const handleClose = (success) => {
     setEmployeeId('');
+    setChosenTemplate('');
     onClose(success);
   }
 
@@ -65,8 +84,9 @@ function AddEmployee({ open, onClose, wid, wname }) {
     axios.post('/Attributes/AddEmptyResumeToWorkspace', null, {
       params: {
         WID: wid,
+        TID: chosenTemplate,
         EID: employeeId,
-        name: wname.concat(': ').concat(employeeName)
+        resumeName: wname.concat(': ').concat(employeeName)
       }
     }).then((response) => {
       setIsLoading(false);
@@ -123,7 +143,6 @@ function AddEmployee({ open, onClose, wid, wname }) {
   }
 
   const handleSubmitCopiedResume = (rid) => {
-    console.log(rid);
     axios.post('/Attributes/CopyResume', null, {
       params: {
         // TODO - replace with actual template
@@ -168,12 +187,15 @@ function AddEmployee({ open, onClose, wid, wname }) {
           {!isLoading && errorStatus && <Error text='Error.' response={errorStatus}></Error>}
           {!isLoading && !errorStatus &&
             <>
+              <Box sx={{mt:1, mb:2, width: '40%'}}>
+                <Dropdown required label='Resume Template' options={templates} name='template' onChange={(ev) => {setChosenTemplate(ev.target.value)}}></Dropdown>
+              </Box>
               <SearchBar defaultValue='' placeholder='Search Table...'  onChange={(searchVal) => { tableFilter(searchVal); }} />
-              <WorkSpaceEmployeeTable rows={rows} onSelect={(index) => { setEmployeeName(rows[index[0] - 1]?.name); setEmployeeId(rows[index[0] - 1]?.id); }} />
+              <WorkSpaceEmployeeTable rows={rows} onSelect={(id) => { setEmployeeName(rows.filter((row) => row.id === id[0])[0].name); setEmployeeId(id[0])}} />
               <Box my={1} mx={2} sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around'}}>
-                <Button variant='contained' onClick={handleNewResumeRequest} disabled={employeeId === '' ? true : false}>Request New Resume</Button>
-                <Button variant='contained' onClick={handleFromResume} disabled={employeeId === '' ? true : false}>Import Existing Resume</Button>
-                <Button variant='contained' onClick={handleNew} disabled={employeeId === '' ? true : false}>Import By Sector</Button>
+                <Button variant='contained' onClick={handleNewResumeRequest} disabled={(employeeId === '' || chosenTemplate === '')? true : false}>Request New Resume</Button>
+                <Button variant='contained' onClick={handleFromResume} disabled={(employeeId === '' || chosenTemplate === '')? true : false}>Import Existing Resume</Button>
+                <Button variant='contained' onClick={handleNew} disabled={(employeeId === '' || chosenTemplate === '')? true : false}>Import By Sector</Button>
               </Box>
             </>}
         </DialogContent>

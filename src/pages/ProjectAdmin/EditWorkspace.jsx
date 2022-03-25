@@ -201,7 +201,8 @@ function EditWorkspace() {
       const template = templates[activeEmployeeTab];
       if(template !== undefined && template !== null){
         template.map((sector) => {
-          if (template.filter(entry => entry.id === sector.id).length === 0) {
+          const filtered = retArray.filter(entry => entry.id === sector.typeID);
+          if (filtered.length === 0) {
             retArray.push({ name: sector.title, error: true, id: sector.typeID });
           }
         }); 
@@ -250,7 +251,7 @@ function EditWorkspace() {
     if (resume === undefined || resume === null) {
       return null;
     }
-    const requested = resume.status !== 0 ? true : false;
+    const requested = resume.status === null ? true : false; //Fix this once status is up
 
     if (requested) {
       return (
