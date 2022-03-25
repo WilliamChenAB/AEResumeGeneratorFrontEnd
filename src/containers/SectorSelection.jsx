@@ -27,14 +27,12 @@ function SectorSelection({ title, open, onClose, onSubmit, targetEid = false, su
 
   useEffect(() => {
     if (open && !singleSectorTypeObj) {
+      const endpoint =  targetEid ? '/Facade/GetAllSectorsForEmployee': '/Facade/GetAllSectors';
+      const params = targetEid ? {params: {EID: targetEid }} : null;
       setIsLoading(true);
       setErrorStatus(false);
-      axios.get('/Facade/GetAllSectorsForEmployee', {
-        params: {
-          // TODO - replace with EID of logged in user
-          EID: targetEid ? targetEid : '1',
-        }
-      }).then((responseSectors) => {
+      axios.get(endpoint, params
+      ).then((responseSectors) => {
         axios.get('/Facade/GetAllSectorTypes').then((responseTypes) => {
           setSectorTypes(responseTypes.data.map((type) => {
             return {
@@ -66,15 +64,12 @@ function SectorSelection({ title, open, onClose, onSubmit, targetEid = false, su
         setErrorStatus(error.response);
       });
     } else if (open && singleSectorTypeObj) {
+      const endpoint =  targetEid ? '/Facade/GetAllSectorsForEmployeeByType': '/Facade/GetAllSectorsByType';
+      const params = targetEid ? {params: {EID: targetEid, TypeID: singleSectorTypeObj.id}} : {params: {TypeID: singleSectorTypeObj.id }};
       setIsLoading(true);
       setErrorStatus(false);
-      axios.get('/Facade/GetAllSectorsForEmployeeByType', {
-        params: {
-          // TODO - replace with EID of logged in user
-          EID: targetEid ? targetEid : '1',
-          TypeID: singleSectorTypeObj.id,
-        }
-      }).then((response) => {
+      axios.get(endpoint, params
+      ).then((response) => {
         setSectorTypes([{
           id: singleSectorTypeObj.id,
           name: singleSectorTypeObj.name,

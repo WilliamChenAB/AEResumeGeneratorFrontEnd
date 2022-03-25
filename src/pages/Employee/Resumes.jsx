@@ -29,12 +29,8 @@ function Resumes() {
   const getAllResumes = () => {
     setIsLoading(true);
     setErrorStatus(false);
-    axios.get('/Facade/GetResumesForEmployee', {
-      params: {
-        // TODO - replace with EID of logged in user
-        EID: '1',
-      }
-    }).then((response) => {
+    axios.get('/Facade/GetPersonalResumes'
+    ).then((response) => {
       const responseData = response.data.map((resume) => {
         return {
           id: resume.rid,

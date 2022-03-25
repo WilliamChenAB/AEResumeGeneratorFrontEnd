@@ -59,12 +59,11 @@ function AddResume({ open, onClose }) {
   const handleSubmit = (ev) => {
     setIsLoading(true);
     setSubmitDisabled(true);
-    axios.post('/Facade/NewResume', null, {
+    axios.post('/Facade/NewPersonalResume', null, {
       params: {
         // TODO - replace with user EID
         templateID: formValues.template,
         resumeName: formValues.name,
-        EID: 1,
       }
     }).then((response) => {
       setIsLoading(false);

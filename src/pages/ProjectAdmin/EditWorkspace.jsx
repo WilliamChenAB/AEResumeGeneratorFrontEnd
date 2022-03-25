@@ -35,6 +35,7 @@ function EditWorkspace() {
   const [workSpace, setWorkspace] = useState({});
   const [entries, setEntries] = useState([]);
   const [resumes, setResumes] = useState([]);
+  const [templates, setTemplates] = useState([]);
   const [openCompleteMessage, setOpenCompleteMessage] = useState(false);
   const [workSpaceName, setWorkSpaceName] = useState('');
   const [showChooseSectorTypeDialog, setShowChooseSectorTypeDialog] = useState(false);
@@ -67,14 +68,29 @@ function EditWorkspace() {
         })
       );
       setResumes(response.data.resumes);
-      setIsLoading(false);
+      const requests = response.data.resumes.map(resume =>{
+        return(axios.get('/Admin/GetSectorsInTemplate', {
+          params: {
+            templateID: resume.templateID,
+          }
+        }));
+      });
+      
+      setIsLoading(true);
+      Promise.all(requests).then((results) => {
+        setIsLoading(false);
+        setTemplates(results.map((res) => {return(res.data)}));
+      }).catch((error) => {
+        setIsLoading(false);
+        setErrorStatus(error.response);
+      });
     }).catch((error) => {
       setIsLoading(false);
       setErrorStatus(error.response);
     });
   }
 
-  // Get resume
+  // Get workspace
   useEffect(() => {
     getWorkspace();
   }, []);
@@ -182,6 +198,16 @@ function EditWorkspace() {
         }
       });
 
+      const template = templates[activeEmployeeTab];
+      if(template !== undefined && template !== null){
+        template.map((sector) => {
+          if (template.filter(entry => entry.id === sector.id).length === 0) {
+            retArray.push({ name: sector.title, error: true, id: sector.typeID });
+          }
+        }); 
+      }
+
+
       //TODO: add templates here
       return retArray;
     }
@@ -287,7 +313,7 @@ function EditWorkspace() {
       <ConfirmDelete nameToDelete={`the sector from this resume`} open={showDeleteDialog} onClose={() => { setShowDeleteDialog(false) }} onConfirm={() => { deleteSector() }} isDeleting={isDeleting} />
       <Box sx={{ display: 'flex', flexDirection: 'row', height: '100%', width: '100%'}}>
         {isLoading && <Box sx={{flexGrow:1, height: '100%', widht: '100%'}}><Loading text='Loading Workspace...' /></Box>}
-        {!isLoading && errorStatus && <Error text='Error retrieving resume.' response={errorStatus}></Error>}
+        {!isLoading && errorStatus && <Box sx={{flexGrow:1, height: '100%', widht: '100%'}}><Error text='Error retrieving workspace.' response={errorStatus}></Error></Box>}
         {!isLoading && !errorStatus &&
           <>
             <SideBar title={workSpaceName} entries={entries} setTab={(index) => { setActiveEmployeeTab(index); setActiveSectorTypeTab(0) }} subtitle='' color='primary' useButton={true} buttonText='Add Employee' buttonClick={() => { setOpenAddEmployee(true) }} />

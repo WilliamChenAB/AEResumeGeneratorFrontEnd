@@ -56,12 +56,8 @@ function ProjectWorkspaces() {
   const getWorkspaces = () => {
     setIsLoading(true);
     setErrorStatus(false);
-    axios.get('/Attributes/GetAllWorkspacesForEmployee', {
-      params: {
-        // TODO - replace with EID of logged in user
-        EID: eid,
-      }
-    }).then((response) => {
+    axios.get('/Attributes/GetAllWorkspaces'
+    ).then((response) => {
       const responseData = response.data.map((workspace) => {
         const name = workspace.name === '' ? 'name' : workspace.name;
         return {
@@ -74,6 +70,22 @@ function ProjectWorkspaces() {
       });
       setData(responseData);
       setRows(responseData);
+      setIsLoading(false);
+    }).catch((error) => {
+      setIsLoading(false);
+      setErrorStatus(error.response);
+    });
+  }
+
+  const exportResume = (workspaceObj) => {
+    console.log(workspaceObj);
+    setIsLoading(true);
+    setErrorStatus(false);
+    axios.get('/Facade/ExportResumesInWorkspace', {
+      params: {
+        WID: workspaceObj.key,
+      }
+    }).then((response) => {
       setIsLoading(false);
     }).catch((error) => {
       setIsLoading(false);
@@ -117,7 +129,7 @@ function ProjectWorkspaces() {
           </Box>
           <AddButton text='Add Workspace' onClick={() => setShowWorkspaceDialog(true)} />
           <AddWorkspace eid={eid} open={showWorkspaceDialog} onClose={() => setShowWorkspaceDialog(false)}></AddWorkspace>
-          <WorkspaceTable onDeleteClick={(workspaceObj) => { handleDeleteClick(workspaceObj) }} rows={rows} onSelectClick={() => { }} workSpaceExpanded={(id) => { navigate('/project/workspaces/'.concat(id)) }} />
+          <WorkspaceTable onExportClicked={(workspaceObj) => {exportResume(workspaceObj)}} onDeleteClick={(workspaceObj) => { handleDeleteClick(workspaceObj) }} rows={rows} onSelectClick={() => { }} workSpaceExpanded={(id) => { navigate('/project/workspaces/'.concat(id)) }} />
         </>}
 
     </Box>

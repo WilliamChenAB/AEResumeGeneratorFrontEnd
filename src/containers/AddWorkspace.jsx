@@ -10,8 +10,6 @@ const defaultFormValues = {
   name: '',
   number: '',
   division: '',
-  image: '',
-  template: '',
 };
 
 /**
@@ -78,16 +76,13 @@ function AddWorkspace({ open, onClose, eid }) {
   const handleSubmit = (ev) => {
     setIsLoading(true);
     setSubmitDisabled(true);
-    console.log(formValues);
     axios.post('/Attributes/NewWorkspace', null, {
       params: {
         proposalNumber: formValues.number,
         division: formValues.division,
-        name: formValues.name,
-        eid: 1
+        name: formValues.name
       }
     }).then((response) => {
-      console.log(response);
       setIsLoading(false);
       setOpenCompleteMessage({
         type: 'success',
@@ -134,12 +129,6 @@ function AddWorkspace({ open, onClose, eid }) {
             <br />
             <br />
             <TextField fullWidth required label='Division' variant='standard' name='division' onChange={handleFormChange}></TextField>
-            <br />
-            <br />
-            <TextField fullWidth label='Image Link' variant='standard' name='image' onChange={handleFormChange}></TextField>
-            <br />
-            <br />
-            <Dropdown required label='Resume Template' options={templates} name='template' onChange={handleDropdownChange}></Dropdown>
             <br />
             <br />
             <Grid container justifyContent='flex-end'>

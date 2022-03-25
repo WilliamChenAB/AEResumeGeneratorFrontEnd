@@ -47,8 +47,7 @@ function AddSectorType({ open, onClose, onSave }) {
     axios.post('Admin/NewSectorType', {
       typeID: 3,
       title: formValues.name,
-      description: "string",
-      eid: 1
+      description: "string"
     }).then(() => {
       setOpenCompleteMessage({
         type: 'success',

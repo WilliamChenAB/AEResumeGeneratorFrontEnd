@@ -8,7 +8,7 @@ import Tooltip from '@mui/material/Tooltip'
 
 // TODO: trigger pop-up on click
 
-export default function WorkspaceTable({ rows, onSelectClick, workSpaceExpanded, onDeleteClick }) {
+export default function WorkspaceTable({ rows, onSelectClick, workSpaceExpanded, onDeleteClick, onExportClicked}) {
   const columns = [
     {
       field: 'workspaceName',
@@ -32,7 +32,7 @@ export default function WorkspaceTable({ rows, onSelectClick, workSpaceExpanded,
       renderCell: (params) => {
         return (
           <Tooltip title='Click to export all resumes in workspace'>
-            <IconButton onClick={() => { }}>
+            <IconButton onClick={() => {onExportClicked(params.row)}}>
               <ExportIcon />
             </IconButton>
           </Tooltip>

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Button, Divider, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, Box, Typography } from '@mui/material';
 import { Close } from '@mui/icons-material';
 import SideBarTabs from '../components/SideBarTabs'
+import SearchBar from '../components/SearchBar';
 import ExperienceTextBox from '../components/TextBox/ExperienceTextBox';
 import { colorToken } from '../theme/colorToken';
 import Loading from '../components/Loading';
@@ -26,13 +27,15 @@ function ResumeSelection({ employeeName, open, eid ,onClose, onSubmit, submittab
   const [submitDisabled, setSubmitDisabled] = useState(true);
   const [resumes, setResumes] = useState([]);
   const [currentSectors, setCurrentSectors] = useState([]);
+  const [search, setSearch] = useState('');
 
-  useEffect(() => {
-    if (open) {
+  const searchResumes = () => {
+    if(search !== ''){
       setIsLoading(true);
       setErrorStatus(false);
-      axios.get('/Facade/GetResumesForEmployee', {
+      axios.get('/Facade/SearchAllEmployeeResumes', {
         params: {
+          filter: search,
           EID: eid,
         }
       }).then((response) => {
@@ -46,9 +49,35 @@ function ResumeSelection({ employeeName, open, eid ,onClose, onSubmit, submittab
         setErrorStatus(error.response);
       });
     }
+  }
+
+  const getResumes = () => {
+    setIsLoading(true);
+    setErrorStatus(false);
+    axios.get('/Facade/GetResumesForEmployee', {
+      params: {
+        EID: eid,
+      }
+    }).then((response) => {
+      setResumes(response.data);
+      if(resumes.length > 0){
+        handleResumeClicked(0);
+      }
+      setIsLoading(false);
+    }).catch((error) => {
+      setIsLoading(false);
+      setErrorStatus(error.response);
+    });
+  }
+
+  useEffect(() => {
+    if (open) {
+      getResumes();
+    }
   }, [open]);
 
   const handleClose = (success) => {
+    setSearch('');
     setSubmitDisabled(true);
     setCurrentSectors([]);
     onClose(success);
@@ -96,6 +125,15 @@ function ResumeSelection({ employeeName, open, eid ,onClose, onSubmit, submittab
             <Close />
           </IconButton>
         </DialogTitle>
+        <Box sx={{pb:1, pl:2, display:'flex', flexDirection: 'row'}}>
+            <Box sx={{ width: '50%' }}>
+              <SearchBar defaultValue='' placeholder='Search Resumes' onChange={(value) => {setSearch(value)}}></SearchBar>
+            </Box>
+          <Box sx={{pl:2, width:'20%', display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
+            <Button variant="contained" onClick={searchResumes}>Search</Button>
+            <Button variant="contained" onClick={() => {getResumes()}}>Clear</Button>
+          </Box>
+        </Box>
         <Divider color='primary' />
         <DialogContent style={{ height: '600px', padding: '0px 0px 0px 0px' }}>
           {isLoading && <Loading text='Loading Resumes...' />}
@@ -121,8 +159,8 @@ function ResumeSelection({ employeeName, open, eid ,onClose, onSubmit, submittab
                     {
                       currentSectors.filter((sector) => sector.typeTitle === sectorTypeName).map((sector) => {
                         return( 
-                        <Box mb={5} key={sector.id}>
-                          <ExperienceTextBox imageLinkIn={sector.image} divisionIn={sector.division} key={sector.id} sid={sector.id} text={sector.content} footer={`Date Edited: ${sector.lastEditedDate}`} hideEdit />
+                        <Box mb={5} key={`box_${sector.sid}`}>
+                          <ExperienceTextBox imageLinkIn={sector.image} divisionIn={sector.division} key={sector.sid} sid={sector.sid} text={sector.content} footer={`Date Edited: ${sector.lastEditedDate}`} hideEdit />
                         </Box>);
                       })
                     }
