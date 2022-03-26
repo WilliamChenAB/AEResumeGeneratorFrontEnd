@@ -12,6 +12,7 @@ import AlertPopup from '../../components/AlertPopup';
 import ConfirmDelete from '../../containers/ConfirmDelete';
 import ChooseSectorTypes from '../../containers/ChooseSectorTypes';
 import axios from 'axios';
+import SortButton from '../../components/SortButton';
 
 function Resume() {
   let { resumeId } = useParams();
@@ -28,6 +29,7 @@ function Resume() {
   const [deleteSectorId, setDeleteSectorId] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
   const [showChooseSectorTypeDialog, setShowChooseSectorTypeDialog] = useState(false);
+  const [sortState, setSortState] = useState(0);
 
   const getResume = () => {
     setIsLoading(true);
@@ -179,6 +181,19 @@ function Resume() {
     });
   }
 
+
+  const sorting = (a,b) => {
+    if(sortState === 1){
+      return a.updateDate < b.updateDate? 1 : -1;
+    }
+    else if(sortState === 2){
+      return b.updateDate < a.updateDate? 1 : -1;
+    }
+    else {
+      return 0;
+    }
+  }
+
   const handleSectorTypeSelectionSubmit = (selectedTypes) => {
     const requests = selectedTypes.map(type =>
       axios.post('/Facade/AddSectorToResume', null, {
@@ -237,13 +252,17 @@ function Resume() {
                 <br />
                 <AddButton text='Add Blank Sector' onClick={() => { addNewBlankSector() }} />
                 <AddButton text='Duplicate Previous Sector' onClick={() => { setShowSectorSelectionDialog(true) }} />
+                <Box sx={{pb:1, pr: 5, display:'flex', justifyContent:'flex-end'}}>
+                  <SortButton text='Sort: Last_Updated' sortState={sortState} onClick={() => {setSortState((sortState + 1) % 3)}}/>
+                </Box>
                 {sectors.filter((sector) => {
-                  return sector.type === sectorTypes[activeTab]?.id;
-                }).map((sector) =>
-                  <Box mb={5} key={sector.id}>
-                    <ExperienceTextBox imageLinkIn={sector.image} divisionIn={sector.division} key={sector.id} sid={sector.id} text={sector.content} onDelete={() => { handleDeleteSectorClick(sector.id) }} footer={`Last Updated: ${sector.updateDate}`} />
-                  </Box>
-                )}
+                   return sector.type === sectorTypes[activeTab]?.id;
+                }).sort(sorting).map((sector) =>{
+                  return(
+                    <Box mb={5} key={sector.id}>
+                      <ExperienceTextBox imageLinkIn={sector.image} divisionIn={sector.division} key={sector.id} sid={sector.id} text={sector.content} onDelete={() => { handleDeleteSectorClick(sector.id) }} footer={`Last Updated: ${sector.updateDate}`} />
+                    </Box>)
+                })}
               </>
             }
             {sectorTypes.length === 0 &&

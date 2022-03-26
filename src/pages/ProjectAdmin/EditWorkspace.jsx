@@ -10,6 +10,7 @@ import AddButton from '../../components/AddButton';
 import SideBar from '../../containers/SideBar';
 import ChooseSectorTypes from '../../containers/ChooseSectorTypes';
 import AddEmployee from '../../containers/AddEmployee';
+import SortButton from '../../components/SortButton';
 import ErrorOutlineOutlined from '@mui/icons-material/ErrorOutlineOutlined';
 import AlertPopup from '../../components/AlertPopup';
 import Loading from '../../components/Loading';
@@ -39,9 +40,22 @@ function EditWorkspace() {
   const [openCompleteMessage, setOpenCompleteMessage] = useState(false);
   const [workSpaceName, setWorkSpaceName] = useState('');
   const [showChooseSectorTypeDialog, setShowChooseSectorTypeDialog] = useState(false);
+  const [sortState, setSortState] = useState(0);
 
 
   let { workspaceId } = useParams();
+
+  const sorting = (a,b) => {
+    if(sortState === 1){
+      return a.lastEditedDate < b.lastEditedDate? 1 : -1;
+    }
+    else if(sortState === 2){
+      return b.lastEditedDate < a.lastEditedDate? 1 : -1;
+    }
+    else {
+      return 0;
+    }
+  }
 
   const getWorkspace = () => {
     setIsLoading(true);
@@ -251,7 +265,7 @@ function EditWorkspace() {
     if (resume === undefined || resume === null) {
       return null;
     }
-    const requested = resume.status === null ? true : false; //Fix this once status is up
+    const requested = resume.status !== 0 ? true : false;
 
     if (requested) {
       return (
@@ -297,8 +311,11 @@ function EditWorkspace() {
             <br />
             <AddButton onClick={() => { addNewBlankSector(resume.rid) }} text="Add Blank Sector" />
             <AddButton text='Duplicate Previous Sector' onClick={() => { setShowSelectionDialog(true) }} />
+            <Box sx={{pb:1, pr: 5, display:'flex', justifyContent:'flex-end'}}>
+                  <SortButton text='Sort: Last_Updated' sortState={sortState} onClick={() => {setSortState((sortState + 1) % 3)}}/>
+            </Box>
           </Box>
-          {sectors.map((sector) => { return (<Box mb={5} key={sector.sid}><ExperienceTextBox key={sector.sid} imageLinkIn={sector.image} divisionIn={sector.division} sid={sector.sid} text={sector.content} onDelete={() => { handleDeleteSectorClick(sector.sid) }} footer={`Last Updated: ${sector.lastEditedDate}`} /></Box>) })}
+          {sectors.sort(sorting).map((sector) => { return (<Box mb={5} key={sector.sid}><ExperienceTextBox key={sector.sid} imageLinkIn={sector.image} divisionIn={sector.division} sid={sector.sid} text={sector.content} onDelete={() => { handleDeleteSectorClick(sector.sid) }} footer={`Last Updated: ${sector.lastEditedDate}`} /></Box>) })}
         </Box>
       );
     }

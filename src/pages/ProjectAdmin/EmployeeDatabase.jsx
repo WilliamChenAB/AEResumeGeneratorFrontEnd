@@ -26,7 +26,7 @@ function EmployeeDatabase() {
         return {
           id: employee.eid,
           name: `${employee.name}`, // force name to be string
-          role: employee.access //change to role
+          role: employee.jobTitle //change to role
         };
       });
       setData(responseData);

@@ -2,10 +2,12 @@ import { useEffect, useState } from 'react';
 import { Button, Divider, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, Box, Typography } from '@mui/material';
 import { Close } from '@mui/icons-material';
 import SideBarTabs from '../components/SideBarTabs'
+import SearchBar from '../components/SearchBar';
 import ExperienceTextBox from '../components/TextBox/ExperienceTextBox';
 import { colorToken } from '../theme/colorToken';
 import Loading from '../components/Loading';
 import Error from '../components/Error';
+import SortButton from '../components/SortButton';
 import axios from 'axios';
 
 /**
@@ -22,7 +24,10 @@ function SectorSelection({ title, open, onClose, onSubmit, targetEid = false, su
   const [activeTab, setActiveTab] = useState(0);
   const [submitDisabled, setSubmitDisabled] = useState(true);
   const [sectors, setSectors] = useState([]);
+  const [filteredSectors, setFilteredSectors] = useState([]);
   const [sectorTypes, setSectorTypes] = useState([]);
+  const [sortState, setSortState] = useState(0);
+  const [search, setSearch] = useState('');
 
   useEffect(() => {
     if (open && !singleSectorTypeObj) {
@@ -53,6 +58,7 @@ function SectorSelection({ title, open, onClose, onSubmit, targetEid = false, su
               selected: false,
             }
           }));
+          setFilteredSectors(false);
           setIsLoading(false);
         }).catch((error) => {
           setIsLoading(false);
@@ -85,6 +91,7 @@ function SectorSelection({ title, open, onClose, onSubmit, targetEid = false, su
             selected: false,
           }
         }));
+        setFilteredSectors(false);
         setIsLoading(false);
       }).catch((error) => {
         setIsLoading(false);
@@ -93,8 +100,42 @@ function SectorSelection({ title, open, onClose, onSubmit, targetEid = false, su
     }
   }, [open]);
 
+  const sorting = (a,b) => {
+    if(sortState === 1){
+      return a.updateDate < b.updateDate? 1 : -1;
+    }
+    else if(sortState === 2){
+      return b.updateDate < a.updateDate? 1 : -1;
+    }
+    else {
+      return 0;
+    }
+  }
+
+  const searchSectors = () => {
+    if(search !== ''){
+      setIsLoading(true);
+      setErrorStatus(false);
+      axios.get('/Facade/SearchEmployeeSectors', {
+        params: {
+          filter: search,
+          EID: targetEid,
+        }
+      }).then((response) => {
+        console.log(response.data);
+        setFilteredSectors(response.data);
+        setIsLoading(false);
+      }).catch((error) => {
+        setIsLoading(false);
+        setErrorStatus(error.response);
+      });
+    }
+  }
+
   const handleClose = (success) => {
+    setSearch('');
     setSubmitDisabled(true);
+    setSortState(0);
     onClose(success);
   }
 
@@ -115,6 +156,17 @@ function SectorSelection({ title, open, onClose, onSubmit, targetEid = false, su
             <Close />
           </IconButton>
         </DialogTitle>
+        { targetEid &&
+          <Box sx={{pb:1, pl:2, display:'flex', flexDirection: 'row'}}>
+            <Box sx={{ width: '50%' }}>
+              <SearchBar defaultValue='' placeholder='Search Sectors' onChange={(value) => {setSearch(value)}}></SearchBar>
+            </Box>
+            <Box sx={{pl:2, width:'20%', display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
+              <Button variant="contained" onClick={searchSectors}>Search</Button>
+              <Button variant="contained" onClick={() => {setFilteredSectors(false)}}>Clear</Button>
+            </Box>
+          </Box>
+        }
         <Divider color='primary' />
         <DialogContent style={{ height: '600px', padding: '0px 0px 0px 0px' }}>
           {isLoading && <Loading text='Loading Sectors...' />}
@@ -136,12 +188,21 @@ function SectorSelection({ title, open, onClose, onSubmit, targetEid = false, su
                 </>
               }
               <Box sx={{ ml: 5, mr: 5, mt: 2, width: '100%', maxHeight: '100%', overflow: 'auto' }}>
+                <Box sx={{pb:1, pr: 5, display:'flex', justifyContent:'flex-end'}}>
+                  <SortButton text='Sort: Last_Updated' sortState={sortState} onClick={() => {setSortState((sortState + 1) % 3)}}/>
+                </Box>
                 {sectors.filter((sector) => {
                   return sector.type === sectorTypes[activeTab]?.id;
-                }).map((sector) =>
-                  <Box mb={5} key={sector.id}>
-                    <ExperienceTextBox imageLinkIn={sector.image} divisionIn={sector.division} key={sector.id} sid={sector.id} text={sector.content} selectState={sector.selected} onSelect={() => { sector.selected = !sector.selected }} header={`Resume: ${sector.resumeName}`} footer={`Date Created: ${sector.createDate}`} hideEdit selectable={submittable} />
-                  </Box>
+                }).sort(sorting).map((sector) =>
+                  {
+                    if(filteredSectors === false || filteredSectors.filter((filterSector) => sector.id == filterSector.sid).length > 0){
+                      return(
+                        <Box mb={5} key={sector.id}>
+                          <ExperienceTextBox imageLinkIn={sector.image} divisionIn={sector.division} key={sector.id} sid={sector.id} text={sector.content} selectState={sector.selected} onSelect={() => { sector.selected = !sector.selected }} header={`Resume: ${sector.resumeName}`} footer={`Date Created: ${sector.createDate}`} hideEdit selectable={submittable} />
+                        </Box>)
+                    }
+                    return(null);
+                  }
                 )}
               </Box>
             </Box>
