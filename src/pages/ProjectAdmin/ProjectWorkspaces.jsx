@@ -76,7 +76,6 @@ function ProjectWorkspaces() {
   }
 
   const exportResume = (workspaceObj) => {
-    console.log(workspaceObj);
     setIsLoading(true);
     setErrorStatus(false);
     axios.get('/Facade/ExportResumesInWorkspace', {
