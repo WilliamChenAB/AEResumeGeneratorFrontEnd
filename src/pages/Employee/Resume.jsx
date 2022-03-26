@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { Box, Button, Typography } from '@mui/material';
 import { ArrowBack } from '@mui/icons-material';
 import { Link, useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { userSelectors } from '../../slices/userSlice';
 import SideBar from '../../containers/SideBar';
 import AddButton from '../../components/AddButton';
 import ExperienceTextBox from '../../components/TextBox/ExperienceTextBox';
@@ -30,6 +32,9 @@ function Resume() {
   const [isDeleting, setIsDeleting] = useState(false);
   const [showChooseSectorTypeDialog, setShowChooseSectorTypeDialog] = useState(false);
   const [sortState, setSortState] = useState(0);
+
+  const userName = useSelector(userSelectors.getName);
+  const userTitle = useSelector(userSelectors.getTitle);
 
   const getResume = () => {
     setIsLoading(true);
@@ -232,7 +237,7 @@ function Resume() {
       <ConfirmDelete nameToDelete={`the sector from this resume`} open={showDeleteDialog} onClose={() => { setShowDeleteDialog(false) }} onConfirm={() => { deleteSector() }} isDeleting={isDeleting} />
       <ChooseSectorTypes open={showChooseSectorTypeDialog} onSubmit={(types) => { handleSectorTypeSelectionSubmit(types) }} onClose={() => { setShowChooseSectorTypeDialog(false) }} />
       <Box>
-        <SideBar title='John Doe' subtitle='Utility Coordinator' entries={sectorTypes} setTab={setActiveTab} color='primary' useButton buttonText='Add Sector Types' buttonClick={() => { setShowChooseSectorTypeDialog(true) }} />
+        <SideBar title={userName} subtitle={userTitle} entries={sectorTypes} setTab={setActiveTab} color='primary' useButton buttonText='Add Sector Types' buttonClick={() => { setShowChooseSectorTypeDialog(true) }} />
       </Box>
       <Box sx={{ flexGrow: 1 }} className='content-section-margins'>
         {isLoading && <Loading text='Loading Resume...' />}

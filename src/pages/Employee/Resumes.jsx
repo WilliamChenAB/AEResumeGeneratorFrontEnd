@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
-import ResumeTable from '../../components/Table/ResumeTable';
 import { Box, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { userSelectors } from '../../slices/userSlice';
+import ResumeTable from '../../components/Table/ResumeTable';
 import SideBar from '../../containers/SideBar';
 import AddResume from '../../containers/AddResume';
 import SearchBar from '../../components/SearchBar';
@@ -24,6 +26,9 @@ function Resumes() {
   const [isDeleting, setIsDeleting] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [deleteResumeObj, setDeleteResumeObj] = useState({});
+
+  const userName = useSelector(userSelectors.getName);
+  const userTitle = useSelector(userSelectors.getTitle);
 
   const getAllResumes = () => {
     setIsLoading(true);
@@ -96,7 +101,7 @@ function Resumes() {
       }
       <ConfirmDelete nameToDelete={`resume ${deleteResumeObj?.resumeName}`} open={showDeleteDialog} onClose={() => { setShowDeleteDialog(false) }} onConfirm={() => { deleteResume() }} isDeleting={isDeleting} />
       <Box>
-        <SideBar title='John Doe' subtitle='Utility Coordinator' color='primary' />
+        <SideBar title={userName} subtitle={userTitle} color='primary' />
       </Box>
       <Box sx={{ flexGrow: 1 }} className='content-section-margins'>
         {isLoading && <Loading text='Loading Resumes...' />}

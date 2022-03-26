@@ -4,19 +4,33 @@ import AELogoCrop from '../assets/images/ae_logo_blue_cropped.png';
 import { Person } from '@mui/icons-material';
 import { Link } from 'react-router-dom';
 import { useAuth } from 'react-oidc-context';
+import { useSelector } from 'react-redux';
+import { userSelectors } from '../slices/userSlice';
 import IconButton from '@mui/material/IconButton';
 import DensityMedium from '@mui/icons-material/DensityMedium';
 import Menu from '@mui/material/Menu';
 
+const allRoles = [{
+  text: 'Employee',
+  url: '/employee',
+},
+{
+  text: 'Project Admin',
+  url: '/project',
+},
+{
+  text: 'System Admin',
+  url: '/system',
+}];
+
 /**
  * TopBar component for top navigation bar.
  * @param buttons Array of button objects with properties text, url
- * @param roles Array of role objects for dropdown with properties text, url 
  * @param selectedRole String for text of selected role
  * @param logoLink Path for when logo is clicked
  * @returns TopBar component.
  */
-function TopBar({ buttons, roles, selectedRole, logoLink }) {
+function TopBar({ buttons, selectedRole, logoLink }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
 
@@ -34,6 +48,24 @@ function TopBar({ buttons, roles, selectedRole, logoLink }) {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  const role = useSelector(userSelectors.getAccess);
+  let roles = [];
+
+  if (role >= 0) {
+    // Employee
+    roles = [...roles, allRoles[0]]
+  }
+
+  if (role >= 1) {
+    // PA
+    roles = [...roles, allRoles[1]]
+  }
+
+  if (role >= 2) {
+    // SA
+    roles = [...roles, allRoles[2]]
+  }
 
   return (
     <div>

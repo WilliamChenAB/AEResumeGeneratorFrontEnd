@@ -11,24 +11,11 @@ const topBarButtons = [{
   url: '/system/employees',
 }];
 
-const topBarRoles = [{
-  text: 'Employee',
-  url: '/employee',
-},
-{
-  text: 'Project Admin',
-  url: '/project',
-},
-{
-  text: 'System Admin',
-  url: '/system',
-}];
-
 export default function SystemAdminPage() {
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
       <Box sx={{ flexGrow: 0, flexShrink: 1 }}>
-        <TopBar buttons={topBarButtons} roles={topBarRoles} selectedRole='System Admin' logoLink='/system' />
+        <TopBar buttons={topBarButtons} selectedRole='System Admin' logoLink='/system' />
       </Box>
       <Box sx={{ flexGrow: 1, flexShrink: 1 }}>
         <Outlet />

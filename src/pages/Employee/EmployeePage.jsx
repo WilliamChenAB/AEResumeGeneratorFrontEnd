@@ -7,24 +7,11 @@ const topBarButtons = [{
   url: '/employee/resumes',
 }];
 
-const topBarRoles = [{
-  text: 'Employee',
-  url: '/employee',
-},
-{
-  text: 'Project Admin',
-  url: '/project',
-},
-{
-  text: 'System Admin',
-  url: '/system',
-}];
-
 export default function EmployeePage() {
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
       <Box sx={{ flexGrow: 0, flexShrink: 1 }}>
-        <TopBar buttons={topBarButtons} roles={topBarRoles} selectedRole='Employee' logoLink='/employee' />
+        <TopBar buttons={topBarButtons} selectedRole='Employee' logoLink='/employee' />
       </Box>
       <Box sx={{ flexGrow: 1, flexShrink: 1 }}>
         <Outlet />
