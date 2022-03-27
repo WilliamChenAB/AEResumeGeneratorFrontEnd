@@ -25,7 +25,8 @@ const textStyle = {
 
 export default function ExperienceTextBox({sid, text, divisionIn, imageLinkIn, picture, selectState, selectable, onSelect, hideEdit, onDelete, header, footer}) {
   const [dialogOpen, setOpenDialog] = useState(false);
-  const [truncateDescription, setTruncateDescription] = useState(true);
+  const [truncatable, setTruncateable] = useState(true);
+  const [truncate, setTruncate] = useState(true);
   const [selected, setSelected] = useState(selectState);
   const [disabled, setDisabled] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -40,11 +41,11 @@ export default function ExperienceTextBox({sid, text, divisionIn, imageLinkIn, p
 
   useEffect(()=>{
     if(descriptionRef.current?.offsetHeight < descriptionRef.current?.scrollHeight){
-      setTruncateDescription(true);
+      setTruncateable(true);
     }else {
-      setTruncateDescription(false);
+      setTruncateable(false);
     }
-  });
+  }, [content]);
 
   const handleEdit = (newDivision, newImageLink, newDescription) => {
     console.log([newDivision, newImageLink, newDescription])
@@ -96,8 +97,9 @@ export default function ExperienceTextBox({sid, text, divisionIn, imageLinkIn, p
         <Box sx={{display: 'flex', flexDirection: 'row' }}>
           <Box sx={{display: 'flex', flexDirection: 'column', width: '100%'}}>
             <Box>
-              <Typography ref={descriptionRef} sx={truncateDescription? textStyle : {display:'inline-block'}}>{content}</Typography>
-              {truncateDescription &&<Typography component='span' color='primary' sx={{fontWeight: 'bold'}} onClick={() => {setTruncateDescription(false)}}>Read More</Typography>}
+              <Typography ref={descriptionRef} sx={(truncatable && truncate)? textStyle : {display:'inline-block'}}>{content}</Typography>
+              {truncatable && truncate && <Typography component='span' color='primary' sx={{fontWeight: 'bold'}} onClick={() => {setTruncate(false)}}>Read More...</Typography>}
+              {truncatable && !truncate && <Typography component='span' color='primary' sx={{fontWeight: 'bold'}} onClick={() => {setTruncate(true)}}>Read Less...</Typography>}
             </Box>
             <br />
             {!(division === null || division === undefined || division === '') && <Typography component='div' sx={{ fontWeight: 'bold' }}>{`Division: ${division}`}</Typography>}
@@ -108,6 +110,7 @@ export default function ExperienceTextBox({sid, text, divisionIn, imageLinkIn, p
   }
 
   const backgroundColor = selected? colorToken.brand.aeGreenLight : colorToken.greyPalette.lightGrey;
+  const borderColor = selected? 'green' : colorToken.greyPalette.lightGrey;
   return (
     <Box sx={{minHeight: 170, display: 'flex', flexDirection: 'row'}}>
       {openCompleteMessage &&
@@ -119,11 +122,11 @@ export default function ExperienceTextBox({sid, text, divisionIn, imageLinkIn, p
         <Typography variant='subtitle2'>{header}</Typography>
         <Card sx={{ height: '100%', width: '100%'}}>
           {selectable &&
-          <CardActionArea sx={{ height: '100%', background: backgroundColor}} onClick={() => {handleClick()}}>
+          <CardActionArea sx={{ height: '100%', border:2, borderColor: borderColor, background: backgroundColor}} onClick={() => {handleClick()}}>
             {drawContent()}
           </CardActionArea>}
           {!selectable &&
-          <CardActionArea sx={{height: '100%'}}>
+          <CardActionArea sx={{height: '100%', border:2, borderColor: colorToken.greyPalette.lightGrey}}>
             {isSubmitting &&
               <Box sx={{ position: 'absolute', top: '20px', left: '50%', marginLeft: '-70px' }}>
                 <CircularProgress size={24} />

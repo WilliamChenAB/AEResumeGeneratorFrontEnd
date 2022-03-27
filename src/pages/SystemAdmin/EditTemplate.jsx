@@ -174,7 +174,7 @@ function EditTemplate() {
           <Divider />
           <Box sx={{ display: 'flex', flexDirection: 'row', height: '83vh', overflow: 'auto' }} >
             <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-              <SideBarResumeTemplate entries={entries} setTab={(index) => { setActiveTemplateTab(index) }} color='primary' onCheck={addSelectedSectorTypes} />
+              <SideBarResumeTemplate selected={activeTemplateTab} entries={entries} setTab={(index) => { setActiveTemplateTab(index) }} color='primary' onCheck={addSelectedSectorTypes} />
               <Box m={2}>
                 <AddButton text='Add sector type' onClick={() => setShowAddDialog(true)} />
                 <Button fullWidth variant='contained' onClick={() => saveSelectedSectorTypes()} >Save Template Sectors</Button>

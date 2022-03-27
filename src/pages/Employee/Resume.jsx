@@ -87,6 +87,9 @@ function Resume() {
             type: sector.typeID,
           }
         }));
+        if(typesUnique[activeTab] === null || typesUnique[activeTab] === undefined){
+          setActiveTab(0);
+        }
         setIsLoading(false);
       }).catch((error) => {
         setIsLoading(false);
@@ -237,7 +240,7 @@ function Resume() {
       <ConfirmDelete nameToDelete={`the sector from this resume`} open={showDeleteDialog} onClose={() => { setShowDeleteDialog(false) }} onConfirm={() => { deleteSector() }} isDeleting={isDeleting} />
       <ChooseSectorTypes open={showChooseSectorTypeDialog} onSubmit={(types) => { handleSectorTypeSelectionSubmit(types) }} onClose={() => { setShowChooseSectorTypeDialog(false) }} />
       <Box>
-        <SideBar title={userName} subtitle={userTitle} entries={sectorTypes} setTab={setActiveTab} color='primary' useButton buttonText='Add Sector Types' buttonClick={() => { setShowChooseSectorTypeDialog(true) }} />
+        <SideBar title={userName} subtitle={userTitle} entries={sectorTypes} setTab={setActiveTab} color='primary' useButton buttonText='Add Sector Types' buttonClick={() => { setShowChooseSectorTypeDialog(true) }} selected={activeTab}/>
       </Box>
       <Box sx={{ flexGrow: 1 }} className='content-section-margins'>
         {isLoading && <Loading text='Loading Resume...' />}

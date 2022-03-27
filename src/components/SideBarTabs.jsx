@@ -14,8 +14,7 @@ import { Error } from '@mui/icons-material';
  * @param onCheckmarkClicked onSelected hanlder for checkboxes
  * @returns SideBarTabs component
  */
-function SideBarTabs({ entries, showCheckBoxes, color, selectedColor, textColor, onEntryClick, onCheckmarkClicked }) {
-  const [selectedEntry, setSelectedEntry] = useState(0);
+function SideBarTabs({ entries, showCheckBoxes, color, selectedColor, textColor, onEntryClick, onCheckmarkClicked, selected }) {
   return (
     <List sx={{maxHeight: '100%', overflow: 'auto' }}>
       {
@@ -25,11 +24,10 @@ function SideBarTabs({ entries, showCheckBoxes, color, selectedColor, textColor,
               color: textColor,
             }}
           />;
-        const usedColor = index === selectedEntry ? selectedColor : color;
+        const usedColor = index === selected ? selectedColor : color;
         return (
           <ListItem key={`item${index}`} sx={{ background: usedColor, marginBottom: 0.1 }} disablePadding>
             <ListItemButton onClick={(ev) => {
-              setSelectedEntry(index);
               onEntryClick(index);
             }}>
               {checkbox}

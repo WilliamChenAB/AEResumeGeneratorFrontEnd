@@ -7,7 +7,7 @@ import AddButton from '../components/AddButton';
 
 const width = 240;
 
-export default function SideBar({ entries, setTab, color, title, subtitle, useButton, buttonText, buttonClick }) {
+export default function SideBar({ entries, setTab, color, title, subtitle, useButton, buttonText, buttonClick, selected}) {
   return (
     <Box sx={{ display: 'flex', flexDirection: 'row', height: '100%' }}>
       <Box
@@ -31,7 +31,8 @@ export default function SideBar({ entries, setTab, color, title, subtitle, useBu
             selectedColor={color === 'primary' ? colorToken.brand.aeGreen : colorToken.brand.aeBlueMid}
             textColor={color === 'primary' ? colorToken.greyPalette.iconGrey : colorToken.brand.aeBlue}
             onEntryClick={setTab}
-            onCheckmarkClicked={() => { }} />
+            onCheckmarkClicked={() => { }} 
+            selected={selected}/>
         }
         {useButton &&
           <Box item sx={{ flexGrow: 2, display: 'flex', justifyContent: 'center', alignItems: 'flex-start' }}>

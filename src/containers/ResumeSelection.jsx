@@ -147,7 +147,8 @@ function ResumeSelection({ employeeName, open, eid ,onClose, onSubmit, submittab
                   color={colorToken.brand.aeBlueLight}
                   selectedColor={colorToken.brand.aeBlueMid}
                   textColor={colorToken.greyPalette.aeBlue}
-                  onEntryClick={(tabNum) => {handleResumeClicked(tabNum)}} />
+                  onEntryClick={(tabNum) => {handleResumeClicked(tabNum)}}
+                  selected={activeTab} />
               </Box>
               <Divider color='primary' orientation='vertical' flexItem />
               <Box sx={{ ml: 5, mr: 5, mt: 2, width: '100%', maxHeight: '100%', overflow: 'auto' }}>

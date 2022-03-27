@@ -182,7 +182,8 @@ function SectorSelection({ title, open, onClose, onSubmit, targetEid = false, su
                       color={colorToken.brand.aeBlueLight}
                       selectedColor={colorToken.brand.aeBlueMid}
                       textColor={colorToken.greyPalette.aeBlue}
-                      onEntryClick={setActiveTab} />
+                      onEntryClick={setActiveTab} 
+                      selected={activeTab} />
                   </Box>
                   <Divider color='primary' orientation='vertical' flexItem />
                 </>

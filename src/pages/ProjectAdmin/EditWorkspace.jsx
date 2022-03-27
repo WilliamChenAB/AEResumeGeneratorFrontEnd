@@ -82,6 +82,9 @@ function EditWorkspace() {
         })
       );
       setResumes(response.data.resumes);
+      if(response.data.resumes[activeEmployeeTab] === null || response.data.resumes[activeEmployeeTab] === undefined){
+        setActiveEmployeeTab(0);
+      }
       const requests = response.data.resumes.map(resume =>{
         return(axios.get('/Admin/GetSectorsInTemplate', {
           params: {
@@ -222,6 +225,9 @@ function EditWorkspace() {
         }); 
       }
 
+      if(retArray[activeSectorTypeTab] === null || retArray[activeSectorTypeTab] === undefined){
+        setActiveSectorTypeTab(0);
+      }
 
       //TODO: add templates here
       return retArray;
@@ -334,9 +340,9 @@ function EditWorkspace() {
         {!isLoading && errorStatus && <Box sx={{flexGrow:1, height: '100%', widht: '100%'}}><Error text='Error retrieving workspace.' response={errorStatus}></Error></Box>}
         {!isLoading && !errorStatus &&
           <>
-            <SideBar title={workSpaceName} entries={entries} setTab={(index) => { setActiveEmployeeTab(index); setActiveSectorTypeTab(0) }} subtitle='' color='primary' useButton={true} buttonText='Add Employee' buttonClick={() => { setOpenAddEmployee(true) }} />
+            <SideBar selected={activeEmployeeTab} title={workSpaceName} entries={entries} setTab={(index) => { setActiveEmployeeTab(index); setActiveSectorTypeTab(0) }} subtitle='' color='primary' useButton={true} buttonText='Add Employee' buttonClick={() => { setOpenAddEmployee(true) }} />
             {
-              activeEmployeeTab !== -1 && workSpace && entries[activeEmployeeTab] && <SideBar title={entries[activeEmployeeTab].name} color='secondary' setTab={setActiveSectorTypeTab} useButton={true} buttonText='Add Sector Type' buttonClick={() => { setShowChooseSectorTypeDialog(true) }} entries={getResumeEntries()}></SideBar>
+              activeEmployeeTab !== -1 && workSpace && entries[activeEmployeeTab] && <SideBar selected={activeSectorTypeTab} title={entries[activeEmployeeTab].name} color='secondary' setTab={setActiveSectorTypeTab} useButton={true} buttonText='Add Sector Type' buttonClick={() => { setShowChooseSectorTypeDialog(true) }} entries={getResumeEntries()}></SideBar>
             }
             <Box sx={{width: '100%'}}>
               <Box sx={{margin:2}}>

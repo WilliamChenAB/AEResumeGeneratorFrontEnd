@@ -6,7 +6,7 @@ import AddButton from '../components/AddButton';
 
 const width = 240;
 
-export default function SideBarResumeTemplate({ entries, setTab, color, useButton, buttonText, buttonClick, onCheck }) {
+export default function SideBarResumeTemplate({ entries, setTab, color, useButton, buttonText, buttonClick, onCheck, selected}) {
   return (
     <Box sx={{ display: 'flex', flexDirection: 'row', height: '100%', overflow: 'auto' }}>
       <Box
@@ -25,7 +25,8 @@ export default function SideBarResumeTemplate({ entries, setTab, color, useButto
             selectedColor={color === 'primary' ? colorToken.brand.aeBlue : colorToken.brand.aeBlueMid}
             textColor={color === 'primary' ? colorToken.greyPalette.white : colorToken.brand.aeBlue}
             onEntryClick={setTab}
-            onCheckmarkClicked={onCheck} />
+            onCheckmarkClicked={onCheck} 
+            selected={selected}/>
         }
         {useButton &&
           <Box item sx={{ flexGrow: 2, display: 'flex', justifyContent: 'center', alignItems: 'flex-end' }}>
