@@ -24,9 +24,6 @@ function ProjectWorkspaces() {
 
   const navigate = useNavigate();
 
-  const eid = 1;
-
-
   const deleteWorkspace = () => {
     setIsDeleting(true);
     axios.delete('/Attributes/DeleteWorkspace', {
@@ -108,28 +105,30 @@ function ProjectWorkspaces() {
   }
 
   return (
-    <Box sx={{ flexGrow: 1, height:'100%' }} className='content-section-margins'>
+    <Box sx={{ flexGrow: 1, height: '100%' }} className='content-section-margins'>
       {openCompleteMessage &&
         <AlertPopup type={openCompleteMessage.type} open onClose={() => { setOpenCompleteMessage(false) }}>
           {openCompleteMessage.text}
         </AlertPopup>
       }
       <ConfirmDelete nameToDelete={`workspace ${deleteWorkspaceOBJ?.workspaceName}`} open={showDeleteDialog} onClose={() => { setShowDeleteDialog(false) }} onConfirm={() => { deleteWorkspace() }} isDeleting={isDeleting} />
-      {isLoading && <Box sx={{height:'100%', alignItems:"center", justifyContent:"center"}}><Loading text='Loading Workspaces...' /></Box>}
+      {isLoading && <Box sx={{ height: '100%', alignItems: "center", justifyContent: "center" }}><Loading text='Loading Workspaces...' /></Box>}
       {!isLoading && errorStatus && <Error text='Error retrieving workspaces.' response={errorStatus}></Error>}
       {!isLoading && !errorStatus &&
         <>
-          <Box mb={4} sx={{ display: 'flex', flexDirection: 'row' }}>
-            <Box sx={{ flexGrow: 1, alignItems: 'flex-end' }}>
-              <Typography variant='h3'>PROPOSAL WORKSPACES</Typography>
+          <Typography variant='h3'>PROPOSAL WORKSPACES</Typography>
+          <br />
+          <br />
+          <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+            <Box sx={{ width: '40%' }}>
+              <SearchBar placeholder='Search Workspaces' onChange={(value) => { tableFilter(value) }}></SearchBar>
             </Box>
-            <SearchBar placeholder='Search Workspaces' onChange={(value) => { tableFilter(value) }}></SearchBar>
+            <AddButton text='Add Workspace' onClick={() => setShowWorkspaceDialog(true)} />
           </Box>
-          <AddButton text='Add Workspace' onClick={() => setShowWorkspaceDialog(true)} />
-          <AddWorkspace eid={eid} open={showWorkspaceDialog} onClose={() => setShowWorkspaceDialog(false)}></AddWorkspace>
-          <WorkspaceTable onExportClicked={(workspaceObj) => {exportResume(workspaceObj)}} onDeleteClick={(workspaceObj) => { handleDeleteClick(workspaceObj) }} rows={rows} workSpaceExpanded={(id) => { navigate('/project/workspaces/'.concat(id)) }} />
-        </>}
-
+          <AddWorkspace open={showWorkspaceDialog} onClose={() => setShowWorkspaceDialog(false)}></AddWorkspace>
+          <WorkspaceTable onExportClicked={(workspaceObj) => { exportResume(workspaceObj) }} onDeleteClick={(workspaceObj) => { handleDeleteClick(workspaceObj) }} rows={rows} workSpaceExpanded={(id) => { navigate('/project/workspaces/'.concat(id)) }} />
+        </>
+      }
     </Box>
   )
 }

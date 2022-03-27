@@ -69,7 +69,7 @@ function ResumeTemplates() {
   }
 
   useEffect(() => {
-      getAllTemplates();
+    getAllTemplates();
   }, []);
 
 
@@ -89,14 +89,16 @@ function ResumeTemplates() {
         {isLoading && <Loading text='Loading Templates...' />}
         {!isLoading && errorStatus && <Error text='Error retrieving templates.' response={errorStatus}></Error>}
         {!isLoading && !errorStatus && <>
-          <Box mb={4} sx={{ display: 'flex', flexDirection: 'row' }}>
-            <Box sx={{ flexGrow: 1, alignItems: 'flex-end' }}>
-              <Typography variant='h3'>RESUME TEMPLATES</Typography>
+          <Typography variant='h3'>RESUME TEMPLATES</Typography>
+          <br />
+          <br />
+          <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+            <Box sx={{ width: '40%' }}>
+              <SearchBar placeholder='Search Templates' onChange={() => { }}></SearchBar>
             </Box>
-            <SearchBar placeholder='Search Templates' onChange={() => { }}></SearchBar>
+            <AddButton text='Add Template' onClick={() => setShowAddDialog(!showAddDialog)} />
           </Box>
-          <AddButton text='Add Template' onClick={() => setShowAddDialog(!showAddDialog)} />
-          <TemplateTable rows={templates} handleSelect={(id) => { navigate('/system/templates/'.concat(id)); }} onDeleteClick={(templateObj) => { handleDeleteClick(templateObj) }}/>
+          <TemplateTable rows={templates} handleSelect={(id) => { navigate('/system/templates/'.concat(id)); }} onDeleteClick={(templateObj) => { handleDeleteClick(templateObj) }} />
           {showAddDialog &&
             <AddTemplate templates={templates} open={showAddDialog} onClose={() => setShowAddDialog(!showAddDialog)} />
           }

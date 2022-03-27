@@ -4,9 +4,9 @@ import { Box } from '@mui/system';
 
 export default function EmployeeSearchTable({ rows, resumesClicked, sectorsClicked }) {
   const columns = [
-    { field: 'name', headerName: 'Name', flex: 0.5, minWidth: 200 },
-    { field: 'id', headerName: 'Employee ID', flex: 0.4, minWidth: 125 },
-    { field: 'role', headerName: 'Role', flex: 0.2, minWidth: 200 },
+    { field: 'name', headerName: 'Name', flex: 0.5, minWidth: 180 },
+    { field: 'email', headerName: 'Email Address', flex: 0.5, minWidth: 200 },
+    { field: 'role', headerName: 'Role', flex: 0.2, minWidth: 150 },
     {
       field: 'resumeAction',
       headerName: 'Action',

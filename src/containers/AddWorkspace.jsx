@@ -18,7 +18,7 @@ const defaultFormValues = {
  * @param onClose Handler for when dialog should be closed
  * @returns AddWorkspace container
  */
-function AddWorkspace({ open, onClose, eid }) {
+function AddWorkspace({ open, onClose }) {
   const [isLoading, setIsLoading] = useState(false);
   const [errorStatus, setErrorStatus] = useState(false);
   const [formValues, setFormValues] = useState(defaultFormValues);

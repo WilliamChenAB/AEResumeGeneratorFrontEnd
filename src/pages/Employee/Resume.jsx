@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Box, Button, Typography } from '@mui/material';
 import { ArrowBack } from '@mui/icons-material';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { userSelectors } from '../../slices/userSlice';
 import SideBar from '../../containers/SideBar';
@@ -15,9 +15,11 @@ import ConfirmDelete from '../../containers/ConfirmDelete';
 import ChooseSectorTypes from '../../containers/ChooseSectorTypes';
 import axios from 'axios';
 import SortButton from '../../components/SortButton';
+import ConfirmResumeSubmit from '../../containers/ConfirmResumeSubmit';
 
 function Resume() {
-  let { resumeId } = useParams();
+  const { resumeId } = useParams();
+  const navigate = useNavigate();
 
   const [isLoading, setIsLoading] = useState(false);
   const [errorStatus, setErrorStatus] = useState(false);
@@ -26,12 +28,14 @@ function Resume() {
   const [openCompleteMessage, setOpenCompleteMessage] = useState(false);
   const [sectors, setSectors] = useState([]);
   const [sectorTypes, setSectorTypes] = useState([]);
-  const [resumeName, setResumeName] = useState('');
+  const [resumeDetails, setResumeDetails] = useState({});
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [deleteSectorId, setDeleteSectorId] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
   const [showChooseSectorTypeDialog, setShowChooseSectorTypeDialog] = useState(false);
   const [sortState, setSortState] = useState(0);
+  const [showSubmitConfirmDialog, setShowSubmitConfirmDialog] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const userName = useSelector(userSelectors.getName);
   const userTitle = useSelector(userSelectors.getTitle);
@@ -49,7 +53,14 @@ function Resume() {
           templateID: resumeResponse.data.templateID,
         }
       }).then((templateResponse) => {
-        setResumeName(resumeResponse.data.name || 'untitled');
+        setResumeDetails({
+          name: resumeResponse.data.name || 'untitled',
+          status: resumeResponse.data.status,
+          wid: resumeResponse.data.wid,
+          templateId: resumeResponse.data.templateID,
+          createdDate: resumeResponse.data.creationDate,
+          updatedDate: resumeResponse.data.lastEditedDate,
+        });
         const typesTemplate = templateResponse.data.map((type) => {
           return {
             id: type.typeID,
@@ -87,7 +98,7 @@ function Resume() {
             type: sector.typeID,
           }
         }));
-        if(typesUnique[activeTab] === null || typesUnique[activeTab] === undefined){
+        if (typesUnique[activeTab] === null || typesUnique[activeTab] === undefined) {
           setActiveTab(0);
         }
         setIsLoading(false);
@@ -189,13 +200,12 @@ function Resume() {
     });
   }
 
-
-  const sorting = (a,b) => {
-    if(sortState === 1){
-      return a.updateDate < b.updateDate? 1 : -1;
+  const sorting = (a, b) => {
+    if (sortState === 1) {
+      return a.updateDate < b.updateDate ? 1 : -1;
     }
-    else if(sortState === 2){
-      return b.updateDate < a.updateDate? 1 : -1;
+    else if (sortState === 2) {
+      return b.updateDate < a.updateDate ? 1 : -1;
     }
     else {
       return 0;
@@ -229,6 +239,29 @@ function Resume() {
     });
   }
 
+  const handleSubmitResume = () => {
+    setIsSubmitting(true);
+    axios.post('/Attributes/SubmitResumeToWorkspace', null, {
+      params: {
+        RID: resumeId,
+        WID: resumeDetails.wid,
+      }
+    }).then((response) => {
+      setIsSubmitting(false);
+      setOpenCompleteMessage({
+        type: 'success',
+        text: `Resume ${resumeDetails.name} has been successfully submitted.`
+      });
+      navigate('/employee/resumes');
+    }).catch((error) => {
+      setIsSubmitting(false);
+      setOpenCompleteMessage({
+        type: 'error',
+        text: `An error occurred while submitting resume. (${error.response.status} ${error.response.statusText})`
+      });
+    });
+  }
+
   return (
     <Box sx={{ display: 'flex', height: '100%' }}>
       {openCompleteMessage &&
@@ -240,7 +273,7 @@ function Resume() {
       <ConfirmDelete nameToDelete={`the sector from this resume`} open={showDeleteDialog} onClose={() => { setShowDeleteDialog(false) }} onConfirm={() => { deleteSector() }} isDeleting={isDeleting} />
       <ChooseSectorTypes open={showChooseSectorTypeDialog} onSubmit={(types) => { handleSectorTypeSelectionSubmit(types) }} onClose={() => { setShowChooseSectorTypeDialog(false) }} />
       <Box>
-        <SideBar title={userName} subtitle={userTitle} entries={sectorTypes} setTab={setActiveTab} color='primary' useButton buttonText='Add Sector Types' buttonClick={() => { setShowChooseSectorTypeDialog(true) }} selected={activeTab}/>
+        <SideBar title={userName} subtitle={userTitle} entries={sectorTypes} setTab={setActiveTab} color='primary' useButton buttonText='Add Sector Types' buttonClick={() => { setShowChooseSectorTypeDialog(true) }} selected={activeTab} />
       </Box>
       <Box sx={{ flexGrow: 1 }} className='content-section-margins'>
         {isLoading && <Loading text='Loading Resume...' />}
@@ -252,7 +285,7 @@ function Resume() {
             </Link>
             <br />
             <br />
-            <Typography variant='subtitle2'>{resumeName}</Typography>
+            <Typography variant='subtitle2'>{resumeDetails.name}</Typography>
             <br />
             {sectorTypes.length > 0 &&
               <>
@@ -260,13 +293,13 @@ function Resume() {
                 <br />
                 <AddButton text='Add Blank Sector' onClick={() => { addNewBlankSector() }} />
                 <AddButton text='Duplicate Previous Sector' onClick={() => { setShowSectorSelectionDialog(true) }} />
-                <Box sx={{pb:1, pr: 5, display:'flex', justifyContent:'flex-end'}}>
-                  <SortButton text='Sort: Last_Updated' sortState={sortState} onClick={() => {setSortState((sortState + 1) % 3)}}/>
+                <Box sx={{ pb: 1, pr: 5, display: 'flex', justifyContent: 'flex-end' }}>
+                  <SortButton text='Sort: Last_Updated' sortState={sortState} onClick={() => { setSortState((sortState + 1) % 3) }} />
                 </Box>
                 {sectors.filter((sector) => {
-                   return sector.type === sectorTypes[activeTab]?.id;
-                }).sort(sorting).map((sector) =>{
-                  return(
+                  return sector.type === sectorTypes[activeTab]?.id;
+                }).sort(sorting).map((sector) => {
+                  return (
                     <Box mb={5} key={sector.id}>
                       <ExperienceTextBox imageLinkIn={sector.image} divisionIn={sector.division} key={sector.id} sid={sector.id} text={sector.content} onDelete={() => { handleDeleteSectorClick(sector.id) }} footer={`Last Updated: ${sector.updateDate}`} />
                     </Box>)
@@ -275,6 +308,14 @@ function Resume() {
             }
             {sectorTypes.length === 0 &&
               <Typography variant='body1'>To begin constructing your resume, click the Add Sector button on the bottom left.</Typography>
+            }
+            {resumeDetails.status === 1 &&
+              <>
+                <ConfirmResumeSubmit open={showSubmitConfirmDialog} resumeName={resumeDetails.name} onClose={() => { setShowSubmitConfirmDialog(false) }} onConfirm={() => { handleSubmitResume() }} isSubmitting={isSubmitting} />
+                <Box sx={{ display: 'flex', justifyContent: 'flex-end', position: 'fixed', bottom: 10, right: 10 }}>
+                  <Button variant='contained' color='secondary' sx={{ color: 'white' }} onClick={() => { setShowSubmitConfirmDialog(true) }}>Submit Resume</Button>
+                </Box>
+              </>
             }
           </>
         }

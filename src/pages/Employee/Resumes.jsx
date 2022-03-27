@@ -14,6 +14,12 @@ import AlertPopup from '../../components/AlertPopup';
 import ConfirmDelete from '../../containers/ConfirmDelete';
 import axios from 'axios';
 
+const RESUME_STATUS = {
+  0: 'Regular',
+  1: 'Requested',
+  2: 'Exported',
+}
+
 function Resumes() {
   const navigate = useNavigate();
 
@@ -33,14 +39,13 @@ function Resumes() {
   const getAllResumes = () => {
     setIsLoading(true);
     setErrorStatus(false);
-    axios.get('/Facade/GetPersonalResumes'
-    ).then((response) => {
+    axios.get('/Facade/GetPersonalResumes').then((response) => {
       const responseData = response.data.map((resume) => {
         return {
           id: resume.rid,
           resumeName: resume.name || 'untitled',
           updateDate: resume.lastEditedDate,
-          status: resume.status,
+          status: RESUME_STATUS[resume.status],
         };
       });
       setData(responseData);

@@ -25,8 +25,9 @@ function EmployeeDatabase() {
       const responseData = response.data.map((employee) => {
         return {
           id: employee.eid,
-          name: `${employee.name}`, // force name to be string
-          role: employee.jobTitle //change to role
+          name: employee.name,
+          role: employee.jobTitle,
+          email: employee.email,
         };
       });
       setData(responseData);
@@ -51,15 +52,17 @@ function EmployeeDatabase() {
       {!isLoading && errorStatus && <Error text='Error retrieving employee info.' response={errorStatus}></Error>}
       {!isLoading && !errorStatus &&
         <>
-          {selectedEmployee && <ResumeSeleciton submittable={false} open={openResumeSelection} employeeName={selectedEmployee.name} eid={selectedEmployee.eid} onSubmit={(rid) => {}} onClose={() => { setOpenResumeSelection(false) }} />}
-          {selectedEmployee && <SectorSelection submittable={false} targetEid={selectedEmployee.eid} title={selectedEmployee.name} open={openSectorSelection} onClose={() => { setOpenSectorSelection(false) }} onSubmit={() => {}} />}
-          <Box mb={4} sx={{ display: 'flex', flexDirection: 'row' }}>
-            <Box sx={{ flexGrow: 1, alignItems: 'flex-end' }}>
-              <Typography variant='h3'>EMPLOYEE DATABASE</Typography>
+          {selectedEmployee && <ResumeSeleciton submittable={false} open={openResumeSelection} employeeName={selectedEmployee.name} eid={selectedEmployee.eid} onSubmit={(rid) => { }} onClose={() => { setOpenResumeSelection(false) }} />}
+          {selectedEmployee && <SectorSelection submittable={false} targetEid={selectedEmployee.eid} title={selectedEmployee.name} open={openSectorSelection} onClose={() => { setOpenSectorSelection(false) }} onSubmit={() => { }} />}
+          <Typography variant='h3'>EMPLOYEE DATABASE</Typography>
+          <br />
+          <br />
+          <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+            <Box sx={{ width: '40%' }}>
+              <SearchBar placeholder='Search Employee Database' onChange={(value) => { tableFilter(value) }}></SearchBar>
             </Box>
-            <SearchBar placeholder='Search Employee Database' onChange={(value) => { tableFilter(value) }}></SearchBar>
           </Box>
-          <EmployeeSearchTable rows={rows} sectorsClicked={(eid, name) =>{setSelectedEmployee({eid: eid, name: name}); setOpenSectorSelection(true)}} resumesClicked={(eid, name) =>{setSelectedEmployee({eid: eid, name: name}); setOpenResumeSelection(true)}}/>
+          <EmployeeSearchTable rows={rows} sectorsClicked={(eid, name) => { setSelectedEmployee({ eid: eid, name: name }); setOpenSectorSelection(true) }} resumesClicked={(eid, name) => { setSelectedEmployee({ eid: eid, name: name }); setOpenResumeSelection(true) }} />
         </>
       }
     </Box>

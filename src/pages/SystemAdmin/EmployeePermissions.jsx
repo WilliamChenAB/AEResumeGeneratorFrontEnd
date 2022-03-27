@@ -8,9 +8,8 @@ import Error from '../../components/Error';
 import ConfirmAccessChange from '../../containers/ConfirmAccessChange';
 import AlertPopup from '../../components/AlertPopup';
 
-
 const createRow = (data) => {
-  return { name: data.name, id: data.eid, role: data.jobTitle, access: data.access }
+  return { name: data.name, id: data.eid, role: data.jobTitle, access: data.access, email: data.email }
 }
 
 function EmployeePermissions() {
@@ -22,7 +21,6 @@ function EmployeePermissions() {
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [newAccess, setNewAccess] = useState(0);
-  // 
 
   const getAllUserPermissions = () => {
     setIsLoading(true);
@@ -76,11 +74,13 @@ function EmployeePermissions() {
         {isLoading && <Loading text='Loading Templates...' />}
         {!isLoading && errorStatus && <Error text='Error retrieving templates.' response={errorStatus}></Error>}
         {!isLoading && !errorStatus && <>
-          <Box mb={4} sx={{ display: 'flex', flexDirection: 'row' }}>
-            <Box sx={{ flexGrow: 1, alignItems: 'flex-end' }}>
-              <Typography variant='h3'>EMPLOYEE PERMISSIONS</Typography>
+          <Typography variant='h3'>EMPLOYEE PERMISSIONS</Typography>
+          <br />
+          <br />
+          <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+            <Box sx={{ width: '40%' }}>
+              <SearchBar placeholder='Search Employees' onChange={() => { }}></SearchBar>
             </Box>
-            <SearchBar placeholder='Search Database' onChange={() => { }}></SearchBar>
           </Box>
           <PermissionsTable rows={employees} onEditPermission={editEmployeeAccess} />
         </>}
