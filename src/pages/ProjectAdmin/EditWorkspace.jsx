@@ -225,9 +225,9 @@ function EditWorkspace() {
         }); 
       }
 
-      if(retArray[activeSectorTypeTab] === null || retArray[activeSectorTypeTab] === undefined){
-        setActiveSectorTypeTab(0);
-      }
+      // if(retArray[activeSectorTypeTab] === null || retArray[activeSectorTypeTab] === undefined){
+      //   setActiveSectorTypeTab(0);
+      // }
 
       //TODO: add templates here
       return retArray;
