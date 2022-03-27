@@ -20,7 +20,8 @@ function EditTemplate() {
   const dispatch = useDispatch();
 
   const [activeTemplateTab, setActiveTemplateTab] = useState(0);
-  const [template, setTemplate] = useState([]);
+  const [templateName, setTemplateName] = useState('');
+  const [templateDescription, setTemplateDescription] =useState('');
   const [entries, setEntries] = useState([]);
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -50,7 +51,8 @@ function EditTemplate() {
       axios.get('Admin/GetSectorsInTemplate', { params: { templateID: templateId } })
     ]).then(
       axios.spread((allSectors, template, templateSectors) => {
-        setTemplate(template.data);
+        setTemplateName(template.data.title);
+        setTemplateDescription(template.data.description);
         setAllSectors(allSectors.data);
         dispatch(templateActions.setTemplateSectors(templateSectors.data.map(({ typeID }) => typeID)));
         setFirstRender(false);
@@ -72,12 +74,13 @@ function EditTemplate() {
 
   // Actions for updating template name
 
-  const saveTemplateName = () => {
+
+  useEffect(() => {
     if (!firstRender) {
       setIsLoading(true);
       setErrorStatus(false);
-      axios.put('/Admin/EditTemplate', template, {
-        params: { templateID: templateId }
+      axios.put('/Admin/EditTemplate', null, {
+        params: { templateID: templateId, title: templateName, description: templateDescription }
       }).then(() => {
         setIsLoading(false);
       }).catch((error) => {
@@ -89,21 +92,10 @@ function EditTemplate() {
         });
       });
     }
-  }
-
-  // params: title, description
-
-  const setTemplateName = (newName) => {
-    setTemplate({ ...template, title: newName });
-  }
-
-  useEffect(() => {
-    saveTemplateName();
-  }, [template]);
+  }, [templateName]);
 
 
   // Actions for updating sector type name
-  // params: { sectorTypeID: allSectors[activeTemplateTab].typeID, title: newName } 
 
   const saveSectorTypeName = (newName) => {
     if (!firstRender) {
@@ -138,7 +130,7 @@ function EditTemplate() {
   const saveSelectedSectorTypes = () => {
     setIsLoading(true);
     setErrorStatus(false);
-    axios.put('/Admin/AssignSectorTypes', selectedSectors, {
+    axios.post('/Admin/AssignSectorType', selectedSectors, {
       params: {
         templateID: templateId
       }
@@ -164,12 +156,12 @@ function EditTemplate() {
           {openCompleteMessage.text}
         </AlertPopup>
       }
-      {isLoading && <Loading text='Loading Template...' />}
+      {/* {isLoading && <Loading text='Loading Template...' />}
       {!isLoading && errorStatus && <Error text='Error retrieving resume.' response={errorStatus}></Error>}
-      {!isLoading && !errorStatus &&
+      {!isLoading && !errorStatus && */}
         <>
           <Box m={1.5} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <EditableTextField templateText={template.title ? template.title : ''} setTemplateText={setTemplateName} tabClicked={activeTemplateTab} />
+            <EditableTextField templateText={templateName} setTemplateText={setTemplateName} tabClicked={activeTemplateTab} />
           </Box>
           <Divider />
           <Box sx={{ display: 'flex', flexDirection: 'row', height: '83vh', overflow: 'auto' }} >
@@ -193,7 +185,7 @@ function EditTemplate() {
             <AddSectorType open={showAddDialog} onClose={() => setShowAddDialog(!showAddDialog)} onSave={() => getTemplateSectors()} />
           }
         </>
-      }
+      {/* } */}
     </Box>
   );
 
