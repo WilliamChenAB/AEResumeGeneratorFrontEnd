@@ -125,7 +125,7 @@ function AddWorkspace({ open, onClose }) {
             <TextField fullWidth required label='Project Name' variant='standard' name='name' onChange={handleFormChange} autoComplete='off'></TextField>
             <br />
             <br />
-            <TextField fullWidth type='number' required label='Project Number' variant='standard' name='number' onChange={handleFormChange} autoComplete='off'></TextField>
+            <TextField fullWidth required label='Project Number' variant='standard' name='number' onChange={handleFormChange} autoComplete='off'></TextField>
             <br />
             <br />
             <TextField fullWidth required label='Division' variant='standard' name='division' onChange={handleFormChange} autoComplete='off'></TextField>
