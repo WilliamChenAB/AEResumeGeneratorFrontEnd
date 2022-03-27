@@ -116,12 +116,9 @@ function SectorSelection({ title, open, onClose, onSubmit, targetEid = false, su
     if(search !== ''){
       setIsLoading(true);
       setErrorStatus(false);
-      axios.get('/Facade/SearchEmployeeSectors', {
-        params: {
-          filter: search,
-          EID: targetEid,
-        }
-      }).then((response) => {
+      const url = targetEid? '/Facade/SearchEmployeeSectors': '/Facade/SearchOwnSectors';
+      const params = targetEid?  {params: {filter: search, EID: targetEid,}} : {params: {filter: search}};
+      axios.get(url, params).then((response) => {
         console.log(response.data);
         setFilteredSectors(response.data);
         setIsLoading(false);
@@ -156,17 +153,15 @@ function SectorSelection({ title, open, onClose, onSubmit, targetEid = false, su
             <Close />
           </IconButton>
         </DialogTitle>
-        { targetEid &&
-          <Box sx={{pb:1, pl:2, display:'flex', flexDirection: 'row'}}>
-            <Box sx={{ width: '50%' }}>
-              <SearchBar defaultValue='' placeholder='Search Sectors' onChange={(value) => {setSearch(value)}}></SearchBar>
-            </Box>
-            <Box sx={{pl:2, width:'20%', display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
-              <Button variant="contained" onClick={searchSectors}>Search</Button>
-              <Button variant="contained" onClick={() => {setFilteredSectors(false)}}>Clear</Button>
-            </Box>
+        <Box sx={{pb:1, pl:2, display:'flex', flexDirection: 'row'}}>
+          <Box sx={{ width: '50%' }}>
+            <SearchBar defaultValue='' placeholder='Search Sectors' onChange={(value) => {setSearch(value)}}></SearchBar>
           </Box>
-        }
+          <Box sx={{pl:2, width:'20%', display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
+            <Button variant="contained" onClick={searchSectors}>Search</Button>
+            <Button variant="contained" onClick={() => {setFilteredSectors(false)}}>Clear</Button>
+          </Box>
+        </Box>
         <Divider color='primary' />
         <DialogContent style={{ height: '600px', padding: '0px 0px 0px 0px' }}>
           {isLoading && <Loading text='Loading Sectors...' />}
