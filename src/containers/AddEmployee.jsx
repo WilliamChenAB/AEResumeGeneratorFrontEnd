@@ -84,7 +84,7 @@ function AddEmployee({ open, onClose, workspaceId, wname }) {
     axios.post('/Workspace/AddEmptyResume', null, {
       params: {
         workspaceId: workspaceId,
-        TID: chosenTemplate,
+        templateId: chosenTemplate,
         employeeId: employeeId,
         resumeName: wname.concat(': ').concat(employeeName)
       }

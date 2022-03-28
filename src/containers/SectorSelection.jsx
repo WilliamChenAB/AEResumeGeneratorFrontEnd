@@ -117,7 +117,7 @@ function SectorSelection({ title, open, onClose, onSubmit, targetEid = false, su
       setIsLoading(true);
       setErrorStatus(false);
       const url = targetEid? '/Search/EmployeeSectors': '/Search/OwnSectors';
-      const params = targetEid?  {params: {filter: search, EID: targetEid,}} : {params: {filter: search}};
+      const params = targetEid?  {params: {filter: search, EmployeeId: targetEid,}} : {params: {filter: search}};
       axios.get(url, params).then((response) => {
         console.log(response.data);
         setFilteredSectors(response.data);

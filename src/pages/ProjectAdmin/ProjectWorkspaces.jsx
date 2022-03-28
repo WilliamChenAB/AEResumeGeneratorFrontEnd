@@ -10,6 +10,7 @@ import AlertPopup from '../../components/AlertPopup';
 import ConfirmDelete from '../../containers/ConfirmDelete';
 import Error from '../../components/Error';
 import axios from 'axios';
+import { saveAs } from 'file-saver';
 
 function ProjectWorkspaces() {
   const [showWorkspaceDialog, setShowWorkspaceDialog] = useState(false);
@@ -73,7 +74,6 @@ function ProjectWorkspaces() {
   }
 
   const exportResume = (workspaceObj) => {
-    console.log(workspaceObj);
     setIsLoading(true);
     setErrorStatus(false);
     axios.get('/Export/ResumesInWorkspace', {
@@ -82,6 +82,12 @@ function ProjectWorkspaces() {
       }
     }).then((response) => {
       setIsLoading(false);
+      console.log(response.data);
+      const file = new Blob([response.data], { type: 'text/plain;charset=utf-8' })
+      return new Promise(resolve => {
+       saveAs(file, "resumes.zip")
+       resolve(true)
+      })
     }).catch((error) => {
       setIsLoading(false);
       setErrorStatus(error.response);
