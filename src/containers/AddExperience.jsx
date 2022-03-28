@@ -1,18 +1,19 @@
 import { useEffect, useState, useRef } from 'react';
 import { Button, IconButton, Dialog, DialogTitle, DialogContent, TextField, DialogActions } from '@mui/material';
 import { Close } from '@mui/icons-material';
-import AlertPopup from '../components/AlertPopup';
 
 /**
  * Add Experience Sector pop-up.
  * @param open Boolean for if dialog is open
  * @param onClose Handler for when dialog should be closed
- * @returns AddExperience container
+ * @param startingDiv Division text
+ * @param startingImage Image URL
+ * @param startingContent Content text
+ * @returns AddExperience dialog
  */
 function AddExperience({ open, onClose, startingDiv, startingImage, startingContent }) {
   const [formValues, setFormValues] = useState({ division: startingDiv, image: startingImage, content: startingContent });
   const [submitDisabled, setSubmitDisabled] = useState(true);
-  const [openCompleteMessage, setOpenCompleteMessage] = useState(false);
 
   const formRef = useRef();
 
@@ -37,21 +38,11 @@ function AddExperience({ open, onClose, startingDiv, startingImage, startingCont
   }
 
   const handleSubmit = (ev) => {
-    console.log('creating Experience sector with values:');
-    console.log(formValues);
-
-    // TODO - display complete message based on submit success status
-    setOpenCompleteMessage(true);
     handleClose(true);
-  }
-
-  const handleCloseCompleteMessage = (ev) => {
-    setOpenCompleteMessage(false)
   }
 
   return (
     <div>
-      <AlertPopup type='success' open={openCompleteMessage} onClose={handleCloseCompleteMessage}>Experience Sector for project {formValues.name} has been successfully created.</AlertPopup>
       <Dialog maxWidth='lg' fullWidth open={open}>
         <DialogTitle>
           Edit Sector

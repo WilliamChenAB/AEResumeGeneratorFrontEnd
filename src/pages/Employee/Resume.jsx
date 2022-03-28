@@ -166,6 +166,31 @@ function Resume() {
     });
   };
 
+  const editSector = (sectorId, newDivision, newImageLink, newDescription) => {
+    setIsLoading(true);
+    axios.put('/Sector/Edit', null, {
+      params: {
+        sectorId: sectorId,
+        content: newDescription,
+        division: newDivision || '',
+        image: newImageLink || '',
+      }
+    }).then((response) => {
+      setIsLoading(false);
+      setOpenCompleteMessage({
+        type: 'success',
+        text: `Sector has been successfully edited.`
+      });
+      getResume();
+    }).catch((error) => {
+      setIsLoading(false);
+      setOpenCompleteMessage({
+        type: 'error',
+        text: `An error occurred while editing sector. (${error.response.status} ${error.response.statusText})`
+      });
+    });
+  }
+
   const handleDeleteSectorClick = (sectorId) => {
     setDeleteSectorId(sectorId);
     setShowDeleteDialog(true);
@@ -294,14 +319,22 @@ function Resume() {
                 <AddButton text='Add Blank Sector' onClick={() => { addNewBlankSector() }} />
                 <AddButton text='Duplicate Previous Sector' onClick={() => { setShowSectorSelectionDialog(true) }} />
                 <Box sx={{ pb: 1, pr: 5, display: 'flex', justifyContent: 'flex-end' }}>
-                  <SortButton text='Sort: Last_Updated' sortState={sortState} onClick={() => { setSortState((sortState + 1) % 3) }} />
+                  <SortButton text='Sort: Last Updated' sortState={sortState} onClick={() => { setSortState((sortState + 1) % 3) }} />
                 </Box>
                 {sectors.filter((sector) => {
                   return sector.type === sectorTypes[activeTab]?.id;
                 }).sort(sorting).map((sector) => {
                   return (
                     <Box mb={5} key={sector.id}>
-                      <ExperienceTextBox imageLinkIn={sector.image} divisionIn={sector.division} key={sector.id} sectorId={sector.id} text={sector.content} onDelete={() => { handleDeleteSectorClick(sector.id) }} footer={`Last Updated: ${sector.updateDate}`} />
+                      <ExperienceTextBox
+                        imageLinkIn={sector.image}
+                        divisionIn={sector.division}
+                        key={sector.id}
+                        sectorId={sector.id}
+                        text={sector.content}
+                        onDelete={() => { handleDeleteSectorClick(sector.id) }}
+                        footer={`Last Updated: ${sector.updateDate}`}
+                        onEdit={(sectorId, newDivision, newImageLink, newDescription) => { editSector(sectorId, newDivision, newImageLink, newDescription) }} />
                     </Box>)
                 })}
               </>
