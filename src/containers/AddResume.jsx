@@ -59,10 +59,10 @@ function AddResume({ open, onClose }) {
   const handleSubmit = (ev) => {
     setIsLoading(true);
     setSubmitDisabled(true);
-    axios.post('/Facade/NewPersonalResume', null, {
+    axios.post('/Resume/NewPersonal', null, {
       params: {
-        // TODO - replace with user EID
-        templateID: formValues.template,
+        // TODO - replace with user employeeId
+        templateId: formValues.template,
         resumeName: formValues.name,
       }
     }).then((response) => {
@@ -72,7 +72,7 @@ function AddResume({ open, onClose }) {
         text: `Resume ${formValues.name} has been successfully created.`
       });
       handleClose();
-      navigate(`/employee/resumes/${response.data.rid}`);
+      navigate(`/employee/resumes/${response.data.resumeId}`);
     }).catch((error) => {
       setIsLoading(false);
       setSubmitDisabled(false);
@@ -91,10 +91,10 @@ function AddResume({ open, onClose }) {
     if (open) {
       setIsLoading(true);
       setErrorStatus(false);
-      axios.get('/Facade/GetAllTemplates').then((response) => {
+      axios.get('/Template/GetAll').then((response) => {
         setTemplates(response.data.map((template) => {
           return {
-            id: template.templateID,
+            id: template.templateId,
             name: template.title || 'untitled',
             description: template.description,
           };

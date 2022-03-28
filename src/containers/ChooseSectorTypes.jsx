@@ -14,10 +14,10 @@ function ChooseSectorTypes({ open, onSubmit, onClose }) {
     if (open) {
       setIsLoading(true);
       setErrorStatus(false);
-      axios.get('/Facade/GetAllSectorTypes').then((response) => {
+      axios.get('/SectorType/GetAll').then((response) => {
         setSectorTypes(response.data.map((type) => {
           return {
-            id: type.typeID,
+            id: type.typeId,
             name: type.title || 'untitled',
             description: type.description,
             selected: false,

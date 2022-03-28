@@ -41,10 +41,10 @@ function AddWorkspace({ open, onClose }) {
     if (open) {
       setIsLoading(true);
       setErrorStatus(false);
-      axios.get('/Facade/GetAllTemplates').then((response) => {
+      axios.get('/Template/GetAll').then((response) => {
         setTemplates(response.data.map((template) => {
           return {
-            id: template.templateID,
+            id: template.templateId,
             name: template.title || 'untitled',
             description: template.description,
           };
@@ -76,7 +76,7 @@ function AddWorkspace({ open, onClose }) {
   const handleSubmit = (ev) => {
     setIsLoading(true);
     setSubmitDisabled(true);
-    axios.post('/Attributes/NewWorkspace', null, {
+    axios.post('/Workspace/New', null, {
       params: {
         proposalNumber: formValues.number,
         division: formValues.division,
@@ -89,7 +89,7 @@ function AddWorkspace({ open, onClose }) {
         text: `Workspace ${formValues.name} has been successfully created.`
       });
       handleClose();
-      navigate(`/project/workspaces/${response.data.wid}`);
+      navigate(`/project/workspaces/${response.data.workspaceId}`);
     }).catch((error) => {
       setIsLoading(false);
       setSubmitDisabled(false);

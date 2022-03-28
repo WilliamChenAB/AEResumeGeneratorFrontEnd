@@ -12,7 +12,7 @@ import AlertPopup from '../../components/AlertPopup';
 import axios from 'axios';
 
 const createRow = (data) => {
-  return { id: data.templateID, name: data.title, updateDate: data.lastEdited }
+  return { id: data.templateId, name: data.title, updateDate: data.lastEdited }
 }
 
 function ResumeTemplates() {
@@ -29,7 +29,7 @@ function ResumeTemplates() {
   const getAllTemplates = () => {
     setIsLoading(true);
     setErrorStatus(false);
-    axios.get('/Facade/GetAllTemplates').then((response) => {
+    axios.get('/Template/GetAll').then((response) => {
       setTemplates(response.data.map((data) => createRow(data)));
       setIsLoading(false);
     }).catch((error) => {
@@ -40,9 +40,9 @@ function ResumeTemplates() {
 
   const deleteTemplate = () => {
     setIsDeleting(true);
-    axios.delete('/Admin/DeleteTemplate', {
+    axios.delete('/Template/Delete', {
       params: {
-        templateID: deleteTemplateObj.id,
+        templateId: deleteTemplateObj.id,
       }
     }).then(() => {
       setIsDeleting(false);

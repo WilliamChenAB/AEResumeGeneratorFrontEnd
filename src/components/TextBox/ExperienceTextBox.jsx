@@ -23,7 +23,7 @@ const textStyle = {
 // TODO: add prop for onSubmit -> save to BE, update actions
 //       also add update for picture possibly
 
-export default function ExperienceTextBox({sid, text, divisionIn, imageLinkIn, picture, selectState, selectable, onSelect, hideEdit, onDelete, header, footer}) {
+export default function ExperienceTextBox({sectorId, text, divisionIn, imageLinkIn, picture, selectState, selectable, onSelect, hideEdit, onDelete, header, footer}) {
   const [dialogOpen, setOpenDialog] = useState(false);
   const [truncatable, setTruncateable] = useState(true);
   const [truncate, setTruncate] = useState(true);
@@ -52,9 +52,9 @@ export default function ExperienceTextBox({sid, text, divisionIn, imageLinkIn, p
     setIsSubmitting(true);
     setDisabled(true);
     setEditable(false);
-    axios.put('/Facade/EditSector', null, {
+    axios.put('/Sector/Edit', null, {
       params: {
-        SID: sid,
+        sectorId: sectorId,
         content: newDescription,
         division: newDivision? newDivision: '',
         image: newImageLink? newImageLink: '',

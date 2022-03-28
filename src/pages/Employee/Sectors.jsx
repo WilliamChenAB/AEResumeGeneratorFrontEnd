@@ -22,15 +22,15 @@ function Sectors() {
   const getAllSectors = () => {
     setIsLoading(true);
     setErrorStatus(false);
-    axios.get('/Facade/GetAllSectorsForEmployee', {
+    axios.get('/Sector/GetAllForEmployee', {
       params: {
-        // TODO - replace with EID of logged in user
-        EID: '1',
+        // TODO - replace with employeeId of logged in user
+        employeeId: '1',
       }
     }).then((response) => {
       const typesAll = response.data.map((sector) => {
         return {
-          id: sector.typeID,
+          id: sector.typeId,
           name: sector.typeTitle || 'untitled',
           error: false,
         };
@@ -39,11 +39,11 @@ function Sectors() {
       setSectorTypes(typesUnique);
       setSectors(response.data.map((sector) => {
         return {
-          id: sector.sid,
+          id: sector.sectorId,
           createDate: sector.creationDate,
           updateDate: sector.lastEditedDate,
           content: sector.content,
-          type: sector.typeID,
+          type: sector.typeId,
           resumeName: sector.resumeName,
         }
       }));
@@ -60,9 +60,9 @@ function Sectors() {
 
   const deleteSector = () => {
     setIsDeleting(true);
-    axios.delete('/Facade/DeleteSector', {
+    axios.delete('/Sector/Delete', {
       params: {
-        SID: deleteSectorId,
+        sectorId: deleteSectorId,
       }
     }).then((response) => {
       setIsDeleting(false);

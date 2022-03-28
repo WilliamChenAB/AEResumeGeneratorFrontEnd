@@ -40,7 +40,7 @@ export const resumeSlice = createSlice({
     },
     removeSelectedSection(state, action) {
       const updatedSector = Object.assign({}, state);
-      delete updatedSector[action.payload.sector][action.payload.sid];
+      delete updatedSector[action.payload.sector][action.payload.sectorId];
       state[action.payload.sector] = updatedSector;
     },
   }

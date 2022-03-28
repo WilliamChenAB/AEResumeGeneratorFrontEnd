@@ -9,7 +9,7 @@ import ConfirmAccessChange from '../../containers/ConfirmAccessChange';
 import AlertPopup from '../../components/AlertPopup';
 
 const createRow = (data) => {
-  return { name: data.name, id: data.eid, role: data.jobTitle, access: data.access, email: data.email }
+  return { name: data.name, id: data.employeeId, role: data.jobTitle, access: data.access, email: data.email }
 }
 
 function EmployeePermissions() {
@@ -25,7 +25,7 @@ function EmployeePermissions() {
   const getAllUserPermissions = () => {
     setIsLoading(true);
     setErrorStatus(false);
-    axios.get('/Admin/GetAllEmployees').then((response) => {
+    axios.get('/Employee/GetAll').then((response) => {
       setEmployees(response.data.map((data) => createRow(data)));
       setIsLoading(false);
     }).catch((error) => {
@@ -43,9 +43,9 @@ function EmployeePermissions() {
     setIsLoading(true);
     setErrorStatus(false);
 
-    axios.post('/Admin/AssignAccess', null, {
+    axios.post('/Employee/AssignAccess', null, {
       params: {
-        EID: id,
+        employeeId: id,
         access: accessNum,
       }
     }).then((response) => {

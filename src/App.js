@@ -46,9 +46,9 @@ function App() {
     if (auth.isAuthenticated) {
       setIsLoading(true);
       setErrorStatus(false);
-      axios.get('/Admin/GetOwnEmployee').then((response) => {
+      axios.get('/Employee/GetSelf').then((response) => {
         const userObj = {
-          eid: response.data.eid,
+          employeeId: response.data.employeeId,
           access: response.data.access,
           name: response.data.name,
           title: response.data.jobTitle,

@@ -21,10 +21,10 @@ function EmployeeDatabase() {
   useEffect(() => {
     setIsLoading(true);
     setErrorStatus(false);
-    axios.get('/Admin/GetAllEmployees').then((response) => {
+    axios.get('/Employee/GetAll').then((response) => {
       const responseData = response.data.map((employee) => {
         return {
-          id: employee.eid,
+          id: employee.employeeId,
           name: employee.name,
           role: employee.jobTitle,
           email: employee.email,
@@ -52,8 +52,8 @@ function EmployeeDatabase() {
       {!isLoading && errorStatus && <Error text='Error retrieving employee info.' response={errorStatus}></Error>}
       {!isLoading && !errorStatus &&
         <>
-          {selectedEmployee && <ResumeSeleciton submittable={false} open={openResumeSelection} employeeName={selectedEmployee.name} eid={selectedEmployee.eid} onSubmit={(rid) => { }} onClose={() => { setOpenResumeSelection(false) }} />}
-          {selectedEmployee && <SectorSelection submittable={false} targetEid={selectedEmployee.eid} title={selectedEmployee.name} open={openSectorSelection} onClose={() => { setOpenSectorSelection(false) }} onSubmit={() => { }} />}
+          {selectedEmployee && <ResumeSeleciton submittable={false} open={openResumeSelection} employeeName={selectedEmployee.name} employeeId={selectedEmployee.employeeId} onSubmit={(resumeId) => { }} onClose={() => { setOpenResumeSelection(false) }} />}
+          {selectedEmployee && <SectorSelection submittable={false} targetEid={selectedEmployee.employeeId} title={selectedEmployee.name} open={openSectorSelection} onClose={() => { setOpenSectorSelection(false) }} onSubmit={() => { }} />}
           <Typography variant='h3'>EMPLOYEE DATABASE</Typography>
           <br />
           <br />
@@ -62,7 +62,7 @@ function EmployeeDatabase() {
               <SearchBar placeholder='Search Employee Database' onChange={(value) => { tableFilter(value) }}></SearchBar>
             </Box>
           </Box>
-          <EmployeeSearchTable rows={rows} sectorsClicked={(eid, name) => { setSelectedEmployee({ eid: eid, name: name }); setOpenSectorSelection(true) }} resumesClicked={(eid, name) => { setSelectedEmployee({ eid: eid, name: name }); setOpenResumeSelection(true) }} />
+          <EmployeeSearchTable rows={rows} sectorsClicked={(employeeId, name) => { setSelectedEmployee({ employeeId: employeeId, name: name }); setOpenSectorSelection(true) }} resumesClicked={(employeeId, name) => { setSelectedEmployee({ employeeId: employeeId, name: name }); setOpenResumeSelection(true) }} />
         </>
       }
     </Box>

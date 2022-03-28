@@ -1,4 +1,4 @@
-export const getEid = (state) => state.user.eid;
+export const getEid = (state) => state.user.employeeId;
 
 export const getAccess = (state) => state.user.access;
 

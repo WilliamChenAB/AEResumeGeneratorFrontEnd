@@ -60,9 +60,9 @@ function EditWorkspace() {
   const getWorkspace = () => {
     setIsLoading(true);
     setErrorStatus(false);
-    axios.get('/Attributes/GetWorkspace', {
+    axios.get('/Workspace/Get', {
       params: {
-        WID: workspaceId,
+        workspaceId: workspaceId,
       }
     }).then((response) => {
       setWorkSpaceName(response.data.name);
@@ -86,9 +86,9 @@ function EditWorkspace() {
         setActiveEmployeeTab(0);
       }
       const requests = response.data.resumes.map(resume =>{
-        return(axios.get('/Admin/GetSectorsInTemplate', {
+        return(axios.get('/Template/GetSectors', {
           params: {
-            templateID: resume.templateID,
+            templateId: resume.templateId,
           }
         }));
       });
@@ -112,15 +112,15 @@ function EditWorkspace() {
     getWorkspace();
   }, []);
 
-  const addNewBlankSector = (rid) => {
+  const addNewBlankSector = (resumeId) => {
     setIsLoading(true);
     const entries = getResumeEntries();
     const typeId = entries[activeSectorTypeTab].id;
-    axios.post('/Facade/AddSectorToResume', null, {
+    axios.post('/Sector/AddToResume', null, {
       params: {
-        RID: rid,
+        resumeId: resumeId,
         content: '',
-        typeID: typeId,
+        typeId: typeId,
         division: '',
         image: '',
       }
@@ -148,9 +148,9 @@ function EditWorkspace() {
 
   const deleteSector = () => {
     setIsDeleting(true);
-    axios.delete('/Facade/DeleteSector', {
+    axios.delete('/Sector/Delete', {
       params: {
-        SID: deleteSectorId,
+        sectorId: deleteSectorId,
       }
     }).then((response) => {
       setIsDeleting(false);
@@ -174,11 +174,11 @@ function EditWorkspace() {
 
   const handleSectorSelectionSubmit = (selectedSectors) => {
     let requests = selectedSectors.map(sector =>
-      axios.post('/Facade/AddSectorToResume', null, {
+      axios.post('/Sector/AddToResume', null, {
         params: {
-          RID: resumes[activeEmployeeTab].rid,
+          resumeId: resumes[activeEmployeeTab].resumeId,
           content: sector.content,
-          typeID: sector.type,
+          typeId: sector.type,
           division: sector.division,
           image: sector.image,
         }
@@ -211,16 +211,16 @@ function EditWorkspace() {
       let retArray = [];
       resume.sectorList.map((sector) => {
         if (retArray.filter(entry => entry.name === sector.typeTitle).length === 0) {
-          retArray.push({ name: sector.typeTitle, error: false, id: sector.typeID });
+          retArray.push({ name: sector.typeTitle, error: false, id: sector.typeId });
         }
       });
 
       const template = templates[activeEmployeeTab];
       if(template !== undefined && template !== null){
         template.map((sector) => {
-          const filtered = retArray.filter(entry => entry.id === sector.typeID);
+          const filtered = retArray.filter(entry => entry.id === sector.typeId);
           if (filtered.length === 0) {
-            retArray.push({ name: sector.title, error: true, id: sector.typeID });
+            retArray.push({ name: sector.title, error: true, id: sector.typeId });
           }
         }); 
       }
@@ -237,11 +237,11 @@ function EditWorkspace() {
 
   const handleSectorTypeSelectionSubmit = (selectedTypes) => {
     const requests = selectedTypes.map(type =>
-      axios.post('/Facade/AddSectorToResume', null, {
+      axios.post('/Sector/AddToResume', null, {
         params: {
-          RID: resumes[activeEmployeeTab].rid,
+          resumeId: resumes[activeEmployeeTab].resumeId,
           content: '',
-          typeID: type.id,
+          typeId: type.id,
         }
       }));
 
@@ -303,7 +303,7 @@ function EditWorkspace() {
               <Typography variant='h3'>{sectorName.toUpperCase()}</Typography>
               <br />
               <br />
-              <AddButton onClick={() => { addNewBlankSector(resume.rid) }} text="Add Blank Sector" />
+              <AddButton onClick={() => { addNewBlankSector(resume.resumeId) }} text="Add Blank Sector" />
               <AddButton text='Duplicate Previous Sector' onClick={() => { setShowSelectionDialog(true) }} />
             </Box>
           </Box>
@@ -315,13 +315,13 @@ function EditWorkspace() {
             <Typography variant='h3'>{sectorName.toUpperCase()}</Typography>
             <br />
             <br />
-            <AddButton onClick={() => { addNewBlankSector(resume.rid) }} text="Add Blank Sector" />
+            <AddButton onClick={() => { addNewBlankSector(resume.resumeId) }} text="Add Blank Sector" />
             <AddButton text='Duplicate Previous Sector' onClick={() => { setShowSelectionDialog(true) }} />
             <Box sx={{pb:1, pr: 5, display:'flex', justifyContent:'flex-end'}}>
                   <SortButton text='Sort: Last_Updated' sortState={sortState} onClick={() => {setSortState((sortState + 1) % 3)}}/>
             </Box>
           </Box>
-          {sectors.sort(sorting).map((sector) => { return (<Box mb={5} key={sector.sid}><ExperienceTextBox key={sector.sid} imageLinkIn={sector.image} divisionIn={sector.division} sid={sector.sid} text={sector.content} onDelete={() => { handleDeleteSectorClick(sector.sid) }} footer={`Last Updated: ${sector.lastEditedDate}`} /></Box>) })}
+          {sectors.sort(sorting).map((sector) => { return (<Box mb={5} key={sector.sectorId}><ExperienceTextBox key={sector.sectorId} imageLinkIn={sector.image} divisionIn={sector.division} sectorId={sector.sectorId} text={sector.content} onDelete={() => { handleDeleteSectorClick(sector.sectorId) }} footer={`Last Updated: ${sector.lastEditedDate}`} /></Box>) })}
         </Box>
       );
     }
@@ -358,7 +358,7 @@ function EditWorkspace() {
         }
       </Box>
       <ChooseSectorTypes open={showChooseSectorTypeDialog} onSubmit={(types) => { handleSectorTypeSelectionSubmit(types) }} onClose={() => { setShowChooseSectorTypeDialog(false) }} />
-      <AddEmployee wname={workSpaceName} wid={workspaceId} open={openAddEmployee} onClose={() => { setOpenAddEmployee(false); getWorkspace(); }}></AddEmployee>
+      <AddEmployee wname={workSpaceName} workspaceId={workspaceId} open={openAddEmployee} onClose={() => { setOpenAddEmployee(false); getWorkspace(); }}></AddEmployee>
       {
         activeEmployeeTab !== -1 && workSpace && <SectorSelection title={`${getResumeEntries()? getResumeEntries()[activeSectorTypeTab]?.name : ''} Sectors`} open={showSelectionDialog} onClose={() => { setShowSelectionDialog(false) }} onSubmit={(sectors) => { handleSectorSelectionSubmit(sectors) }} singleSectorTypeObj={getResumeEntries()? getResumeEntries()[activeSectorTypeTab]: null}/>
       }

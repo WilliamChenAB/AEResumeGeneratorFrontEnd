@@ -69,7 +69,7 @@ function AddTemplate({ templates, open, onClose }) {
 
   const handleNoBaseTemplateSubmit = (ev) => {
     setSubmitDisabled(true);
-    axios.post('/Admin/CreateTemplate', {
+    axios.post('/Template/Create', {
       title: formValues.name,
       description: formValues.description,
       sectorTypes: [],
@@ -79,7 +79,7 @@ function AddTemplate({ templates, open, onClose }) {
         text: `Template ${formValues.name} has been successfully created.`
       });
       handleClose();
-      navigate(`/system/templates/${response.data.templateID}`);
+      navigate(`/system/templates/${response.data.templateId}`);
     }).catch((error) => {
       setSubmitDisabled(false);
       setOpenCompleteMessage({
@@ -91,13 +91,13 @@ function AddTemplate({ templates, open, onClose }) {
 
   const handleSubmit = (ev) => {
     setSubmitDisabled(true);
-    axios.get('Admin/GetSectorsInTemplate', {
+    axios.get('Template/GetSectors', {
       params: {
-        templateID: formValues.baseTemplate
+        templateId: formValues.baseTemplate
       }
     }).then((response) => {
       console.log(response);
-      axios.post('/Admin/CreateTemplate', {
+      axios.post('/Template/Create', {
         title: formValues.name,
         description: formValues.description,
         sectorTypes: response.data,
@@ -107,7 +107,7 @@ function AddTemplate({ templates, open, onClose }) {
           text: `Template ${formValues.name} has been successfully created.`
         });
         handleClose();
-        navigate(`/system/templates/${response.data.templateID}`);
+        navigate(`/system/templates/${response.data.templateId}`);
       }).catch((error) => {
         setSubmitDisabled(false);
         setOpenCompleteMessage({

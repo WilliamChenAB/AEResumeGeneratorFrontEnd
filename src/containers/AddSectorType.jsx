@@ -44,12 +44,11 @@ function AddSectorType({ open, onClose, onSave }) {
 
   const handleSubmit = (ev) => {
     setSubmitDisabled(true);
-    axios.post('Admin/NewSectorType', null, {
+    axios.post('/SectorType/New', null, {
       params: {
-        title: formValues.name,
-        description: "",
-      }
-    }).then(() => {
+      title: formValues.name,
+      description: "string"
+    }}).then(() => {
       setOpenCompleteMessage({
         type: 'success',
         text: `Sector type ${formValues.name} has been successfully created.`

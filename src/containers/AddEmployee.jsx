@@ -10,7 +10,7 @@ import Loading from '../components/Loading';
 import Error from '../components/Error';
 import axios from 'axios';
 
-function AddEmployee({ open, onClose, wid, wname }) {
+function AddEmployee({ open, onClose, workspaceId, wname }) {
   const [isLoading, setIsLoading] = useState(false);
   const [errorStatus, setErrorStatus] = useState(false);
   const [openCompleteMessage, setOpenCompleteMessage] = useState(false);
@@ -26,18 +26,18 @@ function AddEmployee({ open, onClose, wid, wname }) {
   useEffect(() => {
     setIsLoading(true);
     setErrorStatus(false);
-    axios.get('/Admin/GetAllEmployees').then((employeeResponse) => {
-      axios.get('/Facade/GetAllTemplates').then((response) => {
+    axios.get('/Employee/GetAll').then((employeeResponse) => {
+      axios.get('/Template/GetAll').then((response) => {
         setTemplates(response.data.map((template) => {
           return {
-            id: template.templateID,
+            id: template.templateId,
             name: template.title || 'untitled',
             description: template.description,
           };
         }));
         const responseData = employeeResponse.data.map((employee) => {
           return {
-            id: employee.eid,
+            id: employee.employeeId,
             name: `${employee.name}`, // force name to be string
             role: employee.access //Change to role
           };
@@ -77,15 +77,15 @@ function AddEmployee({ open, onClose, wid, wname }) {
 
   const handleNew = (ev) => {
     console.log('requesting employee:');
-    console.log(wid);
+    console.log(workspaceId);
     console.log(employeeId);
 
     setIsLoading(true);
-    axios.post('/Attributes/AddEmptyResumeToWorkspace', null, {
+    axios.post('/Workspace/AddEmptyResume', null, {
       params: {
-        WID: wid,
+        workspaceId: workspaceId,
         TID: chosenTemplate,
-        EID: employeeId,
+        employeeId: employeeId,
         resumeName: wname.concat(': ').concat(employeeName)
       }
     }).then((response) => {
@@ -110,12 +110,12 @@ function AddEmployee({ open, onClose, wid, wname }) {
   const handleNewResumeRequest = (ev) => {
     console.log('requesting employee:');
     setIsLoading(true);
-    axios.post('/Attributes/CreateTemplateRequest', null, {
+    axios.post('/Workspace/CreateTemplateRequest', null, {
       params: {
         // TODO - replace with actual template
-        TemplateID: 1,
-        EID: employeeId,
-        WID: wid
+        templateId: 1,
+        employeeId: employeeId,
+        workspaceId: workspaceId
       }
     }).then((response) => {
       setIsLoading(false);
@@ -142,12 +142,12 @@ function AddEmployee({ open, onClose, wid, wname }) {
     setOpenCompleteMessage(false)
   }
 
-  const handleSubmitCopiedResume = (rid) => {
-    axios.post('/Attributes/CopyResume', null, {
+  const handleSubmitCopiedResume = (resumeId) => {
+    axios.post('/Workspace/CopyResume', null, {
       params: {
         // TODO - replace with actual template
-        RID: rid,
-        WID: wid,
+        resumeId: resumeId,
+        workspaceId: workspaceId,
       }
     }).then((response) => {
       setIsLoading(false);
@@ -175,7 +175,7 @@ function AddEmployee({ open, onClose, wid, wname }) {
           {openCompleteMessage.text}
         </AlertPopup>
       }
-      <ResumeSelection open={openResumeSelection} employeeName={employeeName} eid={employeeId} onSubmit={(rid) => { handleSubmitCopiedResume(rid) }} onClose={() => { setOpenResumeSelection(false) }}></ResumeSelection>
+      <ResumeSelection open={openResumeSelection} employeeName={employeeName} employeeId={employeeId} onSubmit={(resumeId) => { handleSubmitCopiedResume(resumeId) }} onClose={() => { setOpenResumeSelection(false) }}></ResumeSelection>
       <Dialog maxWidth='lg' fullWidth open={open}>
         <DialogTitle>
           <IconButton sx={{ position: 'absolute', right: 8, top: 8 }} onClick={() => { handleClose(false) }}>

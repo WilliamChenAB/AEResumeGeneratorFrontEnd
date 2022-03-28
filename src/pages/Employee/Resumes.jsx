@@ -39,10 +39,10 @@ function Resumes() {
   const getAllResumes = () => {
     setIsLoading(true);
     setErrorStatus(false);
-    axios.get('/Facade/GetPersonalResumes').then((response) => {
+    axios.get('/Resume/GetPersonal').then((response) => {
       const responseData = response.data.map((resume) => {
         return {
-          id: resume.rid,
+          id: resume.resumeId,
           resumeName: resume.name || 'untitled',
           updateDate: resume.lastEditedDate,
           status: RESUME_STATUS[resume.status],
@@ -59,9 +59,9 @@ function Resumes() {
 
   const deleteResume = () => {
     setIsDeleting(true);
-    axios.delete('/Facade/DeleteResume', {
+    axios.delete('/Resume/Delete', {
       params: {
-        RID: deleteResumeObj.id,
+        resumeId: deleteResumeObj.id,
       }
     }).then((response) => {
       setIsDeleting(false);

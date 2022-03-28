@@ -31,9 +31,9 @@ export default function TextBox({ id, text, selectState, selectable, onSelect, r
     setIsSubmitting(true);
     setDisabled(true);
     setEditable(false);
-    axios.put('/Facade/EditSector', null, {
+    axios.put('/Sector/Edit', null, {
       params: {
-        SID: id,
+        sectorId: id,
         content: textFieldRef.current.value,
       }
     }).then((response) => {

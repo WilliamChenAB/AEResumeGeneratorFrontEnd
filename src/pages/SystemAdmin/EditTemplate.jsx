@@ -33,7 +33,7 @@ function EditTemplate() {
   const selectedSectors = useSelector(templateSelectors.getSelectedSectorTypes);
 
   const createEntries = (selected) => {
-    const entries = allSectors.map((entry) => { return ({ name: entry.title, error: false, checked: selected.includes(entry.typeID) }) })
+    const entries = allSectors.map((entry) => { return ({ name: entry.title, error: false, checked: selected.includes(entry.typeId) }) })
     setEntries(entries);
     if (selectedSectors.length > 0) {
       setIsLoading(false);
@@ -46,15 +46,15 @@ function EditTemplate() {
     setIsLoading(true);
     setErrorStatus(false);
     axios.all([
-      axios.get('/Facade/GetAllSectorTypes'),
-      axios.get('/Admin/GetTemplate', { params: { templateID: templateId } }),
-      axios.get('Admin/GetSectorsInTemplate', { params: { templateID: templateId } })
+      axios.get('/SectorType/GetAll'),
+      axios.get('/Template/Get', { params: { templateId: templateId } }),
+      axios.get('/Template/GetSectors', { params: { templateId: templateId } })
     ]).then(
       axios.spread((allSectors, template, templateSectors) => {
         setTemplateName(template.data.title);
         setTemplateDescription(template.data.description);
         setAllSectors(allSectors.data);
-        dispatch(templateActions.setTemplateSectors(templateSectors.data.map(({ typeID }) => typeID)));
+        dispatch(templateActions.setTemplateSectors(templateSectors.data.map(({ typeId }) => typeId)));
         setFirstRender(false);
       })
     ).catch((error) => {
@@ -79,7 +79,7 @@ function EditTemplate() {
     if (!firstRender) {
       setIsLoading(true);
       setErrorStatus(false);
-      axios.put('/Admin/EditTemplate', null, {
+      axios.put('/Template/Edit', null, {
         params: { templateID: templateId, title: templateName, description: templateDescription }
       }).then(() => {
         setIsLoading(false);
@@ -101,8 +101,8 @@ function EditTemplate() {
     if (!firstRender) {
       setIsLoading(true);
       setErrorStatus(false);
-      axios.put('/Admin/EditSectorTypeTitle', null, {
-        params: { sectorTypeID: allSectors[activeTemplateTab].typeID, title: newName }
+      axios.put('/SectorType/EditTitle', null, {
+        params: { sectorTypeId: allSectors[activeTemplateTab].typeId, title: newName }
       }).then(() => {
         getTemplateSectors();
       }).catch((error) => {
@@ -119,20 +119,20 @@ function EditTemplate() {
   // Action for updating selected sector types
 
   const addSelectedSectorTypes = (index) => {
-    const typeID = allSectors[index].typeID;
-    if (selectedSectors.includes(typeID)) {
-      dispatch(templateActions.removeTemplateSector(typeID));
+    const typeId = allSectors[index].typeId;
+    if (selectedSectors.includes(typeId)) {
+      dispatch(templateActions.removeTemplateSector(typeId));
     } else {
-      dispatch(templateActions.addTemplateSector(typeID));
+      dispatch(templateActions.addTemplateSector(typeId));
     }
   }
 
   const saveSelectedSectorTypes = () => {
     setIsLoading(true);
     setErrorStatus(false);
-    axios.post('/Admin/AssignSectorType', selectedSectors, {
+    axios.post('/Template/AssignSectorType', selectedSectors, {
       params: {
-        templateID: templateId
+        templateId: templateId,
       }
     }).then(() => {
       setIsLoading(false);

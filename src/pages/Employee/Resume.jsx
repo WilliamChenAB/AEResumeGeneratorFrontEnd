@@ -43,27 +43,27 @@ function Resume() {
   const getResume = () => {
     setIsLoading(true);
     setErrorStatus(false);
-    axios.get('/Facade/GetResume', {
+    axios.get('/Resume/Get', {
       params: {
-        RID: resumeId,
+        resumeId: resumeId,
       }
     }).then((resumeResponse) => {
-      axios.get('/Admin/GetSectorsInTemplate', {
+      axios.get('/Template/GetSectors', {
         params: {
-          templateID: resumeResponse.data.templateID,
+          templateId: resumeResponse.data.templateId,
         }
       }).then((templateResponse) => {
         setResumeDetails({
           name: resumeResponse.data.name || 'untitled',
           status: resumeResponse.data.status,
-          wid: resumeResponse.data.wid,
-          templateId: resumeResponse.data.templateID,
+          workspaceId: resumeResponse.data.workspaceId,
+          templateId: resumeResponse.data.templateId,
           createdDate: resumeResponse.data.creationDate,
           updatedDate: resumeResponse.data.lastEditedDate,
         });
         const typesTemplate = templateResponse.data.map((type) => {
           return {
-            id: type.typeID,
+            id: type.typeId,
             name: type.title || 'untitled',
             template: true,
             error: true,
@@ -71,7 +71,7 @@ function Resume() {
         });
         const typesResume = resumeResponse.data.sectorList.map((sector) => {
           return {
-            id: sector.typeID,
+            id: sector.typeId,
             name: sector.typeTitle || 'untitled',
             template: false,
             error: false,
@@ -89,13 +89,13 @@ function Resume() {
         setSectorTypes(typesUnique);
         setSectors(resumeResponse.data.sectorList.map((sector) => {
           return {
-            id: sector.sid,
+            id: sector.sectorId,
             createDate: sector.creationDate,
             updateDate: sector.lastEditedDate,
             content: sector.content,
             division: sector.division,
             image: sector.image,
-            type: sector.typeID,
+            type: sector.typeId,
           }
         }));
         if (typesUnique[activeTab] === null || typesUnique[activeTab] === undefined) {
@@ -118,11 +118,11 @@ function Resume() {
 
   const addNewBlankSector = () => {
     setIsLoading(true);
-    axios.post('/Facade/AddSectorToResume', null, {
+    axios.post('/Sector/AddToResume', null, {
       params: {
-        RID: resumeId,
+        resumeId: resumeId,
         content: '',
-        typeID: sectorTypes[activeTab]?.id,
+        typeId: sectorTypes[activeTab]?.id,
         division: '',
         image: '',
       }
@@ -144,9 +144,9 @@ function Resume() {
 
   const deleteSector = () => {
     setIsDeleting(true);
-    axios.delete('/Facade/DeleteSector', {
+    axios.delete('/Sector/Delete', {
       params: {
-        SID: deleteSectorId,
+        sectorId: deleteSectorId,
       }
     }).then((response) => {
       setIsDeleting(false);
@@ -173,11 +173,11 @@ function Resume() {
 
   const handleSectorSelectionSubmit = (selectedSectors) => {
     const requests = selectedSectors.map(sector =>
-      axios.post('/Facade/AddSectorToResume', null, {
+      axios.post('/Sector/AddToResume', null, {
         params: {
-          RID: resumeId,
+          resumeId: resumeId,
           content: sector.content,
-          typeID: sector.type,
+          typeId: sector.type,
           division: sector.division,
           image: sector.image,
         }
@@ -214,11 +214,11 @@ function Resume() {
 
   const handleSectorTypeSelectionSubmit = (selectedTypes) => {
     const requests = selectedTypes.map(type =>
-      axios.post('/Facade/AddSectorToResume', null, {
+      axios.post('/Sector/AddToResume', null, {
         params: {
-          RID: resumeId,
+          resumeId: resumeId,
           content: '',
-          typeID: type.id,
+          typeId: type.id,
         }
       }));
 
@@ -241,10 +241,10 @@ function Resume() {
 
   const handleSubmitResume = () => {
     setIsSubmitting(true);
-    axios.post('/Attributes/SubmitResumeToWorkspace', null, {
+    axios.post('/Workspace/SubmitResume', null, {
       params: {
-        RID: resumeId,
-        WID: resumeDetails.wid,
+        resumeId: resumeId,
+        workspaceId: resumeDetails.workspaceId,
       }
     }).then((response) => {
       setIsSubmitting(false);
@@ -301,7 +301,7 @@ function Resume() {
                 }).sort(sorting).map((sector) => {
                   return (
                     <Box mb={5} key={sector.id}>
-                      <ExperienceTextBox imageLinkIn={sector.image} divisionIn={sector.division} key={sector.id} sid={sector.id} text={sector.content} onDelete={() => { handleDeleteSectorClick(sector.id) }} footer={`Last Updated: ${sector.updateDate}`} />
+                      <ExperienceTextBox imageLinkIn={sector.image} divisionIn={sector.division} key={sector.id} sectorId={sector.id} text={sector.content} onDelete={() => { handleDeleteSectorClick(sector.id) }} footer={`Last Updated: ${sector.updateDate}`} />
                     </Box>)
                 })}
               </>

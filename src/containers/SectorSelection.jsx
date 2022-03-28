@@ -31,29 +31,29 @@ function SectorSelection({ title, open, onClose, onSubmit, targetEid = false, su
 
   useEffect(() => {
     if (open && !singleSectorTypeObj) {
-      const endpoint = targetEid ? '/Facade/GetAllSectorsForEmployee' : '/Facade/GetAllSectors';
-      const params = targetEid ? { params: { EID: targetEid } } : null;
+      const endpoint = targetEid ? '/Sector/GetAllForEmployee' : '/Sector/GetAll';
+      const params = targetEid ? { params: { employeeId: targetEid } } : null;
       setIsLoading(true);
       setErrorStatus(false);
       axios.get(endpoint, params
       ).then((responseSectors) => {
-        axios.get('/Facade/GetAllSectorTypes').then((responseTypes) => {
+        axios.get('/SectorType/GetAll').then((responseTypes) => {
           setSectorTypes(responseTypes.data.map((type) => {
             return {
-              id: type.typeID,
+              id: type.typeId,
               name: type.title || 'untitled',
               description: type.description,
             };
           }));
           setSectors(responseSectors.data.map((sector) => {
             return {
-              id: sector.sid,
+              id: sector.sectorId,
               createDate: sector.creationDate,
               updateDate: sector.lastEditedDate,
               content: sector.content,
               division: sector.division,
               image: sector.image,
-              type: sector.typeID,
+              type: sector.typeId,
               resumeName: sector.resumeName,
               selected: false,
             }
@@ -69,8 +69,8 @@ function SectorSelection({ title, open, onClose, onSubmit, targetEid = false, su
         setErrorStatus(error.response);
       });
     } else if (open && singleSectorTypeObj) {
-      const endpoint = targetEid ? '/Facade/GetAllSectorsForEmployeeByType' : '/Facade/GetAllSectorsByType';
-      const params = targetEid ? { params: { EID: targetEid, TypeID: singleSectorTypeObj.id } } : { params: { TypeID: singleSectorTypeObj.id } };
+      const endpoint = targetEid ? '/Sector/GetAllForEmployeeByType' : '/Sector/GetAllByType';
+      const params = targetEid ? { params: { employeeId: targetEid, typeId: singleSectorTypeObj.id } } : { params: { typeId: singleSectorTypeObj.id } };
       setIsLoading(true);
       setErrorStatus(false);
       axios.get(endpoint, params
@@ -82,11 +82,11 @@ function SectorSelection({ title, open, onClose, onSubmit, targetEid = false, su
         }]);
         setSectors(response.data.map((sector) => {
           return {
-            id: sector.sid,
+            id: sector.sectorId,
             createDate: sector.creationDate,
             updateDate: sector.lastEditedDate,
             content: sector.content,
-            type: sector.typeID,
+            type: sector.typeId,
             resumeName: sector.resumeName,
             selected: false,
           }
@@ -116,7 +116,7 @@ function SectorSelection({ title, open, onClose, onSubmit, targetEid = false, su
     if(search !== ''){
       setIsLoading(true);
       setErrorStatus(false);
-      const url = targetEid? '/Facade/SearchEmployeeSectors': '/Facade/SearchOwnSectors';
+      const url = targetEid? '/Search/EmployeeSectors': '/Search/OwnSectors';
       const params = targetEid?  {params: {filter: search, EID: targetEid,}} : {params: {filter: search}};
       axios.get(url, params).then((response) => {
         console.log(response.data);
@@ -177,7 +177,7 @@ function SectorSelection({ title, open, onClose, onSubmit, targetEid = false, su
                       color={colorToken.brand.aeBlueLight}
                       selectedColor={colorToken.brand.aeBlueMid}
                       textColor={colorToken.greyPalette.aeBlue}
-                      onEntryClick={setActiveTab} 
+                      onEntryClick={setActiveTab}
                       selected={activeTab} />
                   </Box>
                   <Divider color='primary' orientation='vertical' flexItem />
@@ -191,10 +191,10 @@ function SectorSelection({ title, open, onClose, onSubmit, targetEid = false, su
                   return sector.type === sectorTypes[activeTab]?.id;
                 }).sort(sorting).map((sector) =>
                   {
-                    if(filteredSectors === false || filteredSectors.filter((filterSector) => sector.id == filterSector.sid).length > 0){
+                    if(filteredSectors === false || filteredSectors.filter((filterSector) => sector.id == filterSector.sectorId).length > 0){
                       return(
                         <Box mb={5} key={sector.id}>
-                          <ExperienceTextBox imageLinkIn={sector.image} divisionIn={sector.division} key={sector.id} sid={sector.id} text={sector.content} selectState={sector.selected} onSelect={() => { sector.selected = !sector.selected }} header={`Resume: ${sector.resumeName}`} footer={`Date Created: ${sector.createDate}`} hideEdit selectable={submittable} />
+                          <ExperienceTextBox imageLinkIn={sector.image} divisionIn={sector.division} key={sector.id} sectorId={sector.id} text={sector.content} selectState={sector.selected} onSelect={() => { sector.selected = !sector.selected }} header={`Resume: ${sector.resumeName}`} footer={`Date Created: ${sector.createDate}`} hideEdit selectable={submittable} />
                         </Box>)
                     }
                     return(null);

@@ -15,11 +15,11 @@ import axios from 'axios';
  * @param open Boolean for if dialog is open
  * @param onClose Handler for when dialog should be closed
  * @param onSubmit Handler for when submit button is clicked
- * @param eid eid used
+ * @param employeeId employeeId used
  * @param submittable wether submit button is visible
  * @returns SelectSectorPopUp
  */
-function ResumeSelection({ employeeName, open, eid ,onClose, onSubmit, submittable=true}) {
+function ResumeSelection({ employeeName, open, employeeId ,onClose, onSubmit, submittable=true}) {
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingResume, setIsLoadingReusme] = useState(false);
   const [errorStatus, setErrorStatus] = useState(false);
@@ -33,10 +33,10 @@ function ResumeSelection({ employeeName, open, eid ,onClose, onSubmit, submittab
     if(search !== ''){
       setIsLoading(true);
       setErrorStatus(false);
-      axios.get('/Facade/SearchAllEmployeeResumes', {
+      axios.get('/Search/AllEmployeeResumes', {
         params: {
           filter: search,
-          EID: eid,
+          employeeId: employeeId,
         }
       }).then((response) => {
         setResumes(response.data);
@@ -54,9 +54,9 @@ function ResumeSelection({ employeeName, open, eid ,onClose, onSubmit, submittab
   const getResumes = () => {
     setIsLoading(true);
     setErrorStatus(false);
-    axios.get('/Facade/GetResumesForEmployee', {
+    axios.get('/Resume/GetAllForEmployee', {
       params: {
-        EID: eid,
+        employeeId: employeeId,
       }
     }).then((response) => {
       setResumes(response.data);
@@ -88,9 +88,9 @@ function ResumeSelection({ employeeName, open, eid ,onClose, onSubmit, submittab
     setActiveTab(tabNum);
     setIsLoadingReusme(true);
       setErrorStatus(false);
-      axios.get('/Facade/GetResume', {
+      axios.get('/Resume/Get', {
         params: {
-          RID: resumes[tabNum].rid,
+          resumeId: resumes[tabNum].resumeId,
         }
       }).then((response) => {
         setCurrentSectors(response.data.sectorList);
@@ -112,7 +112,7 @@ function ResumeSelection({ employeeName, open, eid ,onClose, onSubmit, submittab
   }
 
   const handleSubmit = (ev) => {
-    onSubmit(resumes[activeTab]?.rid);
+    onSubmit(resumes[activeTab]?.resumeId);
     handleClose(true);
   }
 
@@ -160,8 +160,8 @@ function ResumeSelection({ employeeName, open, eid ,onClose, onSubmit, submittab
                     {
                       currentSectors.filter((sector) => sector.typeTitle === sectorTypeName).map((sector) => {
                         return( 
-                        <Box mb={5} key={`box_${sector.sid}`}>
-                          <ExperienceTextBox imageLinkIn={sector.image} divisionIn={sector.division} key={sector.sid} sid={sector.sid} text={sector.content} footer={`Date Edited: ${sector.lastEditedDate}`} hideEdit />
+                        <Box mb={5} key={`box_${sector.sectorId}`}>
+                          <ExperienceTextBox imageLinkIn={sector.image} divisionIn={sector.division} key={sector.sectorId} sectorId={sector.sectorId} text={sector.content} footer={`Date Edited: ${sector.lastEditedDate}`} hideEdit />
                         </Box>);
                       })
                     }

@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import * as selectors from './selectors';
 
 export const initialState = {
-  eid: '',
+  employeeId: '',
   access: -1,
   name: '',
   title: '',

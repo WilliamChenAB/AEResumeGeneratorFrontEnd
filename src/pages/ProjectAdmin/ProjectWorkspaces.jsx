@@ -26,9 +26,9 @@ function ProjectWorkspaces() {
 
   const deleteWorkspace = () => {
     setIsDeleting(true);
-    axios.delete('/Attributes/DeleteWorkspace', {
+    axios.delete('/Workspace/Delete', {
       params: {
-        WID: deleteWorkspaceOBJ.key,
+        workspaceId: deleteWorkspaceOBJ.key,
       }
     }).then((response) => {
       setIsDeleting(false);
@@ -51,12 +51,12 @@ function ProjectWorkspaces() {
   const getWorkspaces = () => {
     setIsLoading(true);
     setErrorStatus(false);
-    axios.get('/Attributes/GetAllWorkspaces'
+    axios.get('/Workspace/GetPersonal'
     ).then((response) => {
       const responseData = response.data.map((workspace) => {
         const name = workspace.name === '' ? 'name' : workspace.name;
         return {
-          key: workspace.wid,
+          key: workspace.workspaceId,
           id: workspace.proposalNumber,
           workspaceName: name,
           creationDate: workspace.creationDate,
@@ -76,9 +76,9 @@ function ProjectWorkspaces() {
     console.log(workspaceObj);
     setIsLoading(true);
     setErrorStatus(false);
-    axios.get('/Facade/ExportResumesInWorkspace', {
+    axios.get('/Export/ResumesInWorkspace', {
       params: {
-        WID: workspaceObj.key,
+        workspaceId: workspaceObj.key,
       }
     }).then((response) => {
       setIsLoading(false);
