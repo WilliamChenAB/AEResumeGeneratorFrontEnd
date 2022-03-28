@@ -21,7 +21,7 @@ function EditTemplate() {
 
   const [activeTemplateTab, setActiveTemplateTab] = useState(0);
   const [templateName, setTemplateName] = useState('');
-  const [templateDescription, setTemplateDescription] =useState('');
+  const [templateDescription, setTemplateDescription] = useState('');
   const [entries, setEntries] = useState([]);
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -32,17 +32,9 @@ function EditTemplate() {
 
   const selectedSectors = useSelector(templateSelectors.getSelectedSectorTypes);
 
-  const createEntries = (selected) => {
-    const entries = allSectors.map((entry) => { return ({ name: entry.title, error: false, checked: selected.includes(entry.typeId) }) })
-    setEntries(entries);
-    if (selectedSectors.length > 0) {
-      setIsLoading(false);
-    }
-
-  }
+  // Get template
 
   const getTemplateSectors = () => {
-    // dispatch(templateActions.clearTemplate());
     setIsLoading(true);
     setErrorStatus(false);
     axios.all([
@@ -67,9 +59,23 @@ function EditTemplate() {
     getTemplateSectors();
   }, []);
 
+  // Create entries 
+
+  const mapEntries = new Promise((resolve) => {
+    resolve(allSectors.map((entry) => { return ({ name: entry.title, error: false, checked: selectedSectors.includes(entry.typeId) }) }))
+  })
+
+  const createEntries = () => {
+    mapEntries.then((entries) => {
+      setEntries(entries);
+      setIsLoading(false);
+    })
+  }
+
   useEffect(() => {
     createEntries(selectedSectors);
-  }, [selectedSectors])
+  }, [selectedSectors, allSectors])
+
 
 
   // Actions for updating template name
@@ -104,7 +110,16 @@ function EditTemplate() {
       axios.put('/SectorType/EditTitle', null, {
         params: { sectorTypeId: allSectors[activeTemplateTab].typeId, title: newName }
       }).then(() => {
-        getTemplateSectors();
+        axios.get('/SectorType/GetAll').then((allSectors) => {
+          setAllSectors(allSectors.data);
+        }).catch((error) => {
+          setIsLoading(false);
+          setErrorStatus(error.response);
+          setOpenCompleteMessage({
+            type: 'error',
+            text: `An error occurred while getting all sector types. (${error.response.status} ${error.response.statusText})`
+          });
+        })
       }).catch((error) => {
         setIsLoading(false);
         setErrorStatus(error.response);
@@ -128,22 +143,24 @@ function EditTemplate() {
   }
 
   const saveSelectedSectorTypes = () => {
-    setIsLoading(true);
-    setErrorStatus(false);
-    axios.post('/Template/AssignSectorType', selectedSectors, {
-      params: {
-        templateId: templateId,
-      }
-    }).then(() => {
-      setIsLoading(false);
-    }).catch((error) => {
-      setIsLoading(false);
-      setErrorStatus(error.response);
-      setOpenCompleteMessage({
-        type: 'error',
-        text: `An error occurred while saving sector types. (${error.response.status} ${error.response.statusText})`
+    if (!firstRender) {
+      setIsLoading(true);
+      setErrorStatus(false);
+      axios.post('/Template/AssignSectorType', selectedSectors, {
+        params: {
+          templateId: templateId,
+        }
+      }).then(() => {
+        setIsLoading(false);
+      }).catch((error) => {
+        setIsLoading(false);
+        setErrorStatus(error.response);
+        setOpenCompleteMessage({
+          type: 'error',
+          text: `An error occurred while saving sector types. (${error.response.status} ${error.response.statusText})`
+        });
       });
-    });
+    }
   }
 
 
@@ -156,9 +173,9 @@ function EditTemplate() {
           {openCompleteMessage.text}
         </AlertPopup>
       }
-      {/* {isLoading && <Loading text='Loading Template...' />}
+      {(isLoading || firstRender) && <Loading text='Loading Template...' />}
       {!isLoading && errorStatus && <Error text='Error retrieving resume.' response={errorStatus}></Error>}
-      {!isLoading && !errorStatus && */}
+      {!isLoading && !firstRender && !errorStatus &&
         <>
           <Box m={1.5} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <EditableTextField templateText={templateName} setTemplateText={setTemplateName} tabClicked={activeTemplateTab} />
@@ -185,7 +202,7 @@ function EditTemplate() {
             <AddSectorType open={showAddDialog} onClose={() => setShowAddDialog(!showAddDialog)} onSave={() => getTemplateSectors()} />
           }
         </>
-      {/* } */}
+      }
     </Box>
   );
 
