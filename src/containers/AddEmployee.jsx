@@ -189,7 +189,7 @@ function AddEmployee({ open, onClose, workspaceId, wname }) {
               <Box my={1} mx={2} sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around' }}>
                 <Button variant='contained' onClick={handleNewResumeRequest} disabled={(employeeId === '' || chosenTemplate === '') ? true : false}>Request New Resume</Button>
                 <Button variant='contained' onClick={handleFromResume} disabled={(employeeId === '') ? true : false}>Import Existing Resume</Button>
-                <Button variant='contained' onClick={handleNew} disabled={(employeeId === '' || chosenTemplate === '') ? true : false}>Import By Sector</Button>
+                <Button variant='contained' onClick={handleNew} disabled={(employeeId === '' || chosenTemplate === '') ? true : false}>Add New Empty Resume</Button>
               </Box>
             </>}
         </DialogContent>
