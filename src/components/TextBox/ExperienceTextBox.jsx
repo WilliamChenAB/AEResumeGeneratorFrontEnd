@@ -80,7 +80,7 @@ export default function ExperienceTextBox({ sectorId, text, divisionIn, imageLin
             </CardActionArea>
           }
           {!selectable &&
-            <CardActionArea sx={{ height: '100%', border: 2, borderColor: colorToken.greyPalette.lightGrey }} onClick={() => { setOpenDialog(true) }}>
+            <CardActionArea sx={{ height: '100%', border: 2, borderColor: colorToken.greyPalette.lightGrey }} onClick={() => { !hideEdit? setOpenDialog(true): setOpenDialog(false)}}>
               {drawContent()}
             </CardActionArea>
           }

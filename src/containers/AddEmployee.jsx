@@ -112,8 +112,7 @@ function AddEmployee({ open, onClose, workspaceId, wname }) {
     setIsLoading(true);
     axios.post('/Workspace/CreateTemplateRequest', null, {
       params: {
-        // TODO - replace with actual template
-        templateId: 1,
+        templateId: chosenTemplate,
         employeeId: employeeId,
         workspaceId: workspaceId
       }

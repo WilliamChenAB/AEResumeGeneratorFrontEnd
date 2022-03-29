@@ -31,7 +31,7 @@ function SectorSelection({ title, open, onClose, onSubmit, targetEid = false, su
 
   useEffect(() => {
     if (open && !singleSectorTypeObj) {
-      const endpoint = targetEid ? '/Sector/GetAllForEmployee' : '/Sector/GetAll';
+      const endpoint = targetEid ? '/Sector/GetAllForEmployee' : '/Sector/GetAllPersonal';
       const params = targetEid ? { params: { employeeId: targetEid } } : null;
       setIsLoading(true);
       setErrorStatus(false);
@@ -69,7 +69,7 @@ function SectorSelection({ title, open, onClose, onSubmit, targetEid = false, su
         setErrorStatus(error.response);
       });
     } else if (open && singleSectorTypeObj) {
-      const endpoint = targetEid ? '/Sector/GetAllForEmployeeByType' : '/Sector/GetAllByType';
+      const endpoint = targetEid ? '/Sector/GetAllForEmployeeByType' : '/Sector/GetAllPersonalByType';
       const params = targetEid ? { params: { employeeId: targetEid, typeId: singleSectorTypeObj.id } } : { params: { typeId: singleSectorTypeObj.id } };
       setIsLoading(true);
       setErrorStatus(false);
@@ -85,6 +85,8 @@ function SectorSelection({ title, open, onClose, onSubmit, targetEid = false, su
             id: sector.sectorId,
             createDate: sector.creationDate,
             updateDate: sector.lastEditedDate,
+            division: sector.division,
+            image: sector.image,
             content: sector.content,
             type: sector.typeId,
             resumeName: sector.resumeName,
@@ -119,7 +121,6 @@ function SectorSelection({ title, open, onClose, onSubmit, targetEid = false, su
       const url = targetEid? '/Search/EmployeeSectors': '/Search/OwnSectors';
       const params = targetEid?  {params: {filter: search, EmployeeId: targetEid,}} : {params: {filter: search}};
       axios.get(url, params).then((response) => {
-        console.log(response.data);
         setFilteredSectors(response.data);
         setIsLoading(false);
       }).catch((error) => {

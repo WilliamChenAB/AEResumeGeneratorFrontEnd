@@ -390,7 +390,7 @@ function EditWorkspace() {
       <ChooseSectorTypes open={showChooseSectorTypeDialog} onSubmit={(types) => { handleSectorTypeSelectionSubmit(types) }} onClose={() => { setShowChooseSectorTypeDialog(false) }} />
       <AddEmployee wname={workSpaceName} workspaceId={workspaceId} open={openAddEmployee} onClose={() => { setOpenAddEmployee(false); getWorkspace(); }}></AddEmployee>
       {
-        activeEmployeeTab !== -1 && workSpace && <SectorSelection title={`${getResumeEntries() ? getResumeEntries()[activeSectorTypeTab]?.name : ''} Sectors`} open={showSelectionDialog} onClose={() => { setShowSelectionDialog(false) }} onSubmit={(sectors) => { handleSectorSelectionSubmit(sectors) }} singleSectorTypeObj={getResumeEntries() ? getResumeEntries()[activeSectorTypeTab] : null} />
+        activeEmployeeTab !== -1 && workSpace && <SectorSelection targetEid={resumes[activeEmployeeTab]?.employeeId} title={`${getResumeEntries() ? getResumeEntries()[activeSectorTypeTab]?.name : ''} Sectors`} open={showSelectionDialog} onClose={() => { setShowSelectionDialog(false) }} onSubmit={(sectors) => { handleSectorSelectionSubmit(sectors) }} singleSectorTypeObj={getResumeEntries() ? getResumeEntries()[activeSectorTypeTab] : null} />
       }
     </>
   );
