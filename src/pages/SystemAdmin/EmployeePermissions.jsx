@@ -16,6 +16,7 @@ function EmployeePermissions() {
   const [isLoading, setIsLoading] = useState(false);
   const [errorStatus, setErrorStatus] = useState(false);
   const [employees, setEmployees] = useState([]);
+  const [rows, setRows] = useState([]);
   const [openCompleteMessage, setOpenCompleteMessage] = useState(false);
   const [employee, setEmployee] = useState('');
   const [showEditDialog, setShowEditDialog] = useState(false);
@@ -27,6 +28,7 @@ function EmployeePermissions() {
     setErrorStatus(false);
     axios.get('/Employee/GetAll').then((response) => {
       setEmployees(response.data.map((data) => createRow(data)));
+      setRows(response.data.map((data) => createRow(data)));
       setIsLoading(false);
     }).catch((error) => {
       setIsLoading(false);
@@ -62,6 +64,13 @@ function EmployeePermissions() {
     setShowEditDialog(true);
   }
 
+  const tableFilter = (value) => {
+    const filteredRows = employees.filter((row) => {
+      return String(row.name).toLowerCase().includes(value.toLowerCase()) || String(row.email).toLowerCase().includes(value.toLowerCase()) || String(row.role).toLowerCase().includes(value.toLowerCase());
+    });
+    setRows(filteredRows);
+  }
+
   return (
     <Box sx={{ display: 'flex', height: '100%' }}>
       {openCompleteMessage &&
@@ -79,10 +88,10 @@ function EmployeePermissions() {
           <br />
           <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
             <Box sx={{ width: '40%' }}>
-              <SearchBar placeholder='Search Employees' onChange={() => { }}></SearchBar>
+              <SearchBar placeholder='Search Employees' onChange={(value) => { tableFilter(value) }}></SearchBar>
             </Box>
           </Box>
-          <PermissionsTable rows={employees} onEditPermission={editEmployeeAccess} />
+          <PermissionsTable rows={rows} onEditPermission={editEmployeeAccess} />
         </>}
       </Box>
     </Box >
