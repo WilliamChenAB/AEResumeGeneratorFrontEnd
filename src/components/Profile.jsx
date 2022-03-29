@@ -1,7 +1,7 @@
 import { Avatar, Box, Typography } from '@mui/material';
 
 function getInitials(text) {
-  return text? text.split(' ').map(word => word[0]).join('').toUpperCase(): null;
+  return text ? text.split(' ').map(word => word[0]).join('').toUpperCase() : null;
 }
 
 /**
@@ -13,9 +13,6 @@ function getInitials(text) {
  * @returns Profile component
  */
 function Profile({ title, subtitle, picture, width = 150 }) {
-  // TODO - if we want the user to be able to change the picture, add an edit icon.
-  // Since this requirement and UI isn't fully flushed out, this is to do.
-
   return (
     <Box sx={{ width: width }}>
       <Box mb={1}>

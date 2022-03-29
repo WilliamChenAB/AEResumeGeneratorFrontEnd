@@ -297,14 +297,14 @@ function Resume() {
       <SectorSelection title={`${sectorTypes[activeTab]?.name} Sectors`} open={showSectorSelectionDialog} onClose={() => { setShowSectorSelectionDialog(false) }} onSubmit={(sectors) => { handleSectorSelectionSubmit(sectors) }} singleSectorTypeObj={sectorTypes[activeTab]} />
       <ConfirmDelete nameToDelete={`the sector from this resume`} open={showDeleteDialog} onClose={() => { setShowDeleteDialog(false) }} onConfirm={() => { deleteSector() }} isDeleting={isDeleting} />
       <ChooseSectorTypes open={showChooseSectorTypeDialog} onSubmit={(types) => { handleSectorTypeSelectionSubmit(types) }} onClose={() => { setShowChooseSectorTypeDialog(false) }} />
-      <Box>
-        <SideBar title={userName} subtitle={userTitle} entries={sectorTypes} setTab={setActiveTab} color='primary' useButton buttonText='Add Sector Types' buttonClick={() => { setShowChooseSectorTypeDialog(true) }} selected={activeTab} />
-      </Box>
-      <Box sx={{ flexGrow: 1 }} className='content-section-margins'>
-        {isLoading && <Loading text='Loading Resume...' />}
-        {!isLoading && errorStatus && <Error text='Error retrieving resume.' response={errorStatus}></Error>}
-        {!isLoading && !errorStatus &&
-          <>
+      {isLoading && <Box sx={{ width: '100%' }}><Loading text='Loading Resume...' /></Box>}
+      {!isLoading && errorStatus && <Box sx={{ width: '100%' }}><Error text='Error retrieving resume.' response={errorStatus} /></Box>}
+      {!isLoading && !errorStatus &&
+        <>
+          <Box>
+            <SideBar title={userName} subtitle={userTitle} entries={sectorTypes} setTab={setActiveTab} color='primary' useButton buttonText='Add Sector Types' buttonClick={() => { setShowChooseSectorTypeDialog(true) }} selected={activeTab} />
+          </Box>
+          <Box sx={{ flexGrow: 1 }} className='content-section-margins'>
             <Link to='/employee/resumes' style={{ textDecoration: 'none' }}>
               <Button startIcon={<ArrowBack />}>Back to Resumes</Button>
             </Link>
@@ -319,7 +319,7 @@ function Resume() {
                 <AddButton text='Add Blank Sector' onClick={() => { addNewBlankSector() }} />
                 <AddButton text='Duplicate Previous Sector' onClick={() => { setShowSectorSelectionDialog(true) }} />
                 <Box sx={{ pb: 1, pr: 5, display: 'flex', justifyContent: 'flex-end' }}>
-                  <SortButton text='Sort: Last Updated' sortState={sortState} onClick={() => { setSortState((sortState + 1) % 3) }} />
+                  <SortButton sortName='Last Updated' sortState={sortState} onClick={() => { setSortState((sortState + 1) % 3) }} />
                 </Box>
                 {sectors.filter((sector) => {
                   return sector.type === sectorTypes[activeTab]?.id;
@@ -350,9 +350,9 @@ function Resume() {
                 </Box>
               </>
             }
-          </>
-        }
-      </Box>
+          </Box>
+        </>
+      }
     </Box>
   )
 }

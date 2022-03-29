@@ -12,8 +12,6 @@ import { FormControl, Select, MenuItem, InputLabel } from '@mui/material';
  */
 function Dropdown({ label, required, options, name, onChange }) {
   const handleChange = (ev) => {
-    // This function should probably end up calling another function that's passed in as a prop.
-    console.log(`Dropdown option changed to ${ev.target.value}`);
     onChange(ev);
   }
 

@@ -8,7 +8,6 @@ import Error from '../../components/Error';
 import axios from 'axios';
 import SectorSelection from '../../containers/SectorSelection';
 
-
 function EmployeeDatabase() {
   const [isLoading, setIsLoading] = useState(false);
   const [errorStatus, setErrorStatus] = useState(false);
@@ -47,24 +46,26 @@ function EmployeeDatabase() {
   }
 
   return (
-    <Box className='content-section-margins'>
-      {isLoading && <Loading text='Loading Employees...' />}
-      {!isLoading && errorStatus && <Error text='Error retrieving employee info.' response={errorStatus}></Error>}
-      {!isLoading && !errorStatus &&
-        <>
-          {selectedEmployee && <ResumeSeleciton submittable={false} open={openResumeSelection} employeeName={selectedEmployee.name} employeeId={selectedEmployee.employeeId} onSubmit={(resumeId) => { }} onClose={() => { setOpenResumeSelection(false) }} />}
-          {selectedEmployee && <SectorSelection submittable={false} targetEid={selectedEmployee.employeeId} title={selectedEmployee.name} open={openSectorSelection} onClose={() => { setOpenSectorSelection(false) }} onSubmit={() => { }} />}
-          <Typography variant='h3'>EMPLOYEE DATABASE</Typography>
-          <br />
-          <br />
-          <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-            <Box sx={{ width: '40%' }}>
-              <SearchBar placeholder='Search Employee Database' onChange={(value) => { tableFilter(value) }}></SearchBar>
+    <Box sx={{ display: 'flex', height: '100%' }}>
+      <Box sx={{ flexGrow: 1 }} className='content-section-margins'>
+        {isLoading && <Loading text='Loading Employees...' />}
+        {!isLoading && errorStatus && <Error text='Error retrieving employee info.' response={errorStatus}></Error>}
+        {!isLoading && !errorStatus &&
+          <>
+            {selectedEmployee && <ResumeSeleciton submittable={false} open={openResumeSelection} employeeName={selectedEmployee.name} employeeId={selectedEmployee.employeeId} onSubmit={(resumeId) => { }} onClose={() => { setOpenResumeSelection(false) }} />}
+            {selectedEmployee && <SectorSelection submittable={false} targetEid={selectedEmployee.employeeId} title={selectedEmployee.name} open={openSectorSelection} onClose={() => { setOpenSectorSelection(false) }} onSubmit={() => { }} />}
+            <Typography variant='h3'>EMPLOYEE DATABASE</Typography>
+            <br />
+            <br />
+            <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+              <Box sx={{ width: '40%' }}>
+                <SearchBar placeholder='Search Employee Database' onChange={(value) => { tableFilter(value) }}></SearchBar>
+              </Box>
             </Box>
-          </Box>
-          <EmployeeSearchTable rows={rows} sectorsClicked={(employeeId, name) => { setSelectedEmployee({ employeeId: employeeId, name: name }); setOpenSectorSelection(true) }} resumesClicked={(employeeId, name) => { setSelectedEmployee({ employeeId: employeeId, name: name }); setOpenResumeSelection(true) }} />
-        </>
-      }
+            <EmployeeSearchTable rows={rows} sectorsClicked={(employeeId, name) => { setSelectedEmployee({ employeeId: employeeId, name: name }); setOpenSectorSelection(true) }} resumesClicked={(employeeId, name) => { setSelectedEmployee({ employeeId: employeeId, name: name }); setOpenResumeSelection(true) }} />
+          </>
+        }
+      </Box>
     </Box>
   )
 }

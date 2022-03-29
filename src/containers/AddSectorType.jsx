@@ -47,7 +47,7 @@ function AddSectorType({ open, onClose, onSave }) {
     axios.post('/SectorType/New', null, {
       params: {
       title: formValues.name,
-      description: "string"
+      description: '',
     }}).then(() => {
       setOpenCompleteMessage({
         type: 'success',

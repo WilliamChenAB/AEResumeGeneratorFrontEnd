@@ -10,27 +10,26 @@ import Error from '../components/Error';
 import axios from 'axios';
 
 /**
- * Select Sector popup
+ * Select Resume popup
  * @param employeeName name of associated resume we are selecting
  * @param open Boolean for if dialog is open
  * @param onClose Handler for when dialog should be closed
  * @param onSubmit Handler for when submit button is clicked
  * @param employeeId employeeId used
- * @param submittable wether submit button is visible
- * @returns SelectSectorPopUp
+ * @param submittable whether submit button is visible
+ * @returns ResumeSelection dialog
  */
-function ResumeSelection({ employeeName, open, employeeId ,onClose, onSubmit, submittable=true}) {
+function ResumeSelection({ employeeName, open, employeeId, onClose, onSubmit, submittable = true }) {
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingResume, setIsLoadingReusme] = useState(false);
   const [errorStatus, setErrorStatus] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
-  const [submitDisabled, setSubmitDisabled] = useState(true);
   const [resumes, setResumes] = useState([]);
   const [currentSectors, setCurrentSectors] = useState([]);
   const [search, setSearch] = useState('');
 
   const searchResumes = () => {
-    if(search !== ''){
+    if (search !== '') {
       setIsLoading(true);
       setErrorStatus(false);
       axios.get('/Search/AllEmployeeResumes', {
@@ -40,7 +39,7 @@ function ResumeSelection({ employeeName, open, employeeId ,onClose, onSubmit, su
         }
       }).then((response) => {
         setResumes(response.data);
-        if(resumes.length > 0){
+        if (resumes.length > 0) {
           handleResumeClicked(0);
         }
         setIsLoading(false);
@@ -60,7 +59,7 @@ function ResumeSelection({ employeeName, open, employeeId ,onClose, onSubmit, su
       }
     }).then((response) => {
       setResumes(response.data);
-      if(resumes.length > 0){
+      if (resumes.length > 0) {
         handleResumeClicked(0);
       }
       setIsLoading(false);
@@ -78,7 +77,6 @@ function ResumeSelection({ employeeName, open, employeeId ,onClose, onSubmit, su
 
   const handleClose = (success) => {
     setSearch('');
-    setSubmitDisabled(true);
     setCurrentSectors([]);
     onClose(success);
   }
@@ -87,24 +85,24 @@ function ResumeSelection({ employeeName, open, employeeId ,onClose, onSubmit, su
   const handleResumeClicked = (tabNum) => {
     setActiveTab(tabNum);
     setIsLoadingReusme(true);
-      setErrorStatus(false);
-      axios.get('/Resume/Get', {
-        params: {
-          resumeId: resumes[tabNum].resumeId,
-        }
-      }).then((response) => {
-        setCurrentSectors(response.data.sectorList);
-        setIsLoadingReusme(false);
-      }).catch((error) => {
-        setIsLoadingReusme(false);
-        setErrorStatus(error.response);
-      });
+    setErrorStatus(false);
+    axios.get('/Resume/Get', {
+      params: {
+        resumeId: resumes[tabNum].resumeId,
+      }
+    }).then((response) => {
+      setCurrentSectors(response.data.sectorList);
+      setIsLoadingReusme(false);
+    }).catch((error) => {
+      setIsLoadingReusme(false);
+      setErrorStatus(error.response);
+    });
   }
 
   const getActiveResumeSectorTypes = () => {
     let types = [];
     currentSectors.map((sector) => {
-      if(types.filter((entry) => entry===sector.typeTitle).length === 0){
+      if (types.filter((entry) => entry === sector.typeTitle).length === 0) {
         types.push(sector.typeTitle);
       }
     });
@@ -125,13 +123,13 @@ function ResumeSelection({ employeeName, open, employeeId ,onClose, onSubmit, su
             <Close />
           </IconButton>
         </DialogTitle>
-        <Box sx={{pb:1, pl:2, display:'flex', flexDirection: 'row'}}>
-            <Box sx={{ width: '50%' }}>
-              <SearchBar defaultValue='' placeholder='Search Resumes' onChange={(value) => {setSearch(value)}}></SearchBar>
-            </Box>
-          <Box sx={{pl:2, width:'20%', display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
-            <Button variant="contained" onClick={searchResumes}>Search</Button>
-            <Button variant="contained" onClick={() => {getResumes()}}>Clear</Button>
+        <Box sx={{ pb: 1, pl: 2, display: 'flex', flexDirection: 'row' }}>
+          <Box sx={{ width: '50%' }}>
+            <SearchBar defaultValue='' placeholder='Search Resumes' onChange={(value) => { setSearch(value) }}></SearchBar>
+          </Box>
+          <Box sx={{ pl: 2, width: '20%', display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+            <Button variant='outlined' onClick={searchResumes}>Search</Button>
+            <Button variant='outlined' onClick={() => { getResumes() }}>Clear</Button>
           </Box>
         </Box>
         <Divider color='primary' />
@@ -140,39 +138,38 @@ function ResumeSelection({ employeeName, open, employeeId ,onClose, onSubmit, su
           {!isLoading && errorStatus && <Error text='Error retrieving resumes.' response={errorStatus}></Error>}
           {!isLoading && !errorStatus &&
             <Box sx={{ display: 'flex', flexDirection: 'row' }}>
-              <Box sx={{ width: 300, height: '600px', display: 'flex', flexDirection: 'column'}}>
+              <Box sx={{ width: 300, height: '600px', display: 'flex', flexDirection: 'column' }}>
                 <SideBarTabs
                   entries={resumes}
                   showCheckBoxes={false}
                   color={colorToken.brand.aeBlueLight}
                   selectedColor={colorToken.brand.aeBlueMid}
                   textColor={colorToken.greyPalette.aeBlue}
-                  onEntryClick={(tabNum) => {handleResumeClicked(tabNum)}}
+                  onEntryClick={(tabNum) => { handleResumeClicked(tabNum) }}
                   selected={activeTab} />
               </Box>
               <Divider color='primary' orientation='vertical' flexItem />
               <Box sx={{ ml: 5, mr: 5, mt: 2, width: '100%', maxHeight: '100%', overflow: 'auto' }}>
                 {isLoadingResume && <Loading text={`Loading Resume ${resumes[activeTab]?.name}...`} />}
                 {!isLoading && getActiveResumeSectorTypes().map((sectorTypeName) => {
-                  return(
-                  <Box key={sectorTypeName}>
-                    <Typography key={sectorTypeName} color='primary' variant='h2'>{sectorTypeName}</Typography>
-                    {
-                      currentSectors.filter((sector) => sector.typeTitle === sectorTypeName).map((sector) => {
-                        return( 
-                        <Box mb={5} key={`box_${sector.sectorId}`}>
-                          <ExperienceTextBox imageLinkIn={sector.image} divisionIn={sector.division} key={sector.sectorId} sectorId={sector.sectorId} text={sector.content} footer={`Date Edited: ${sector.lastEditedDate}`} hideEdit />
-                        </Box>);
-                      })
-                    }
-                  </Box>);
+                  return (
+                    <Box key={sectorTypeName}>
+                      <Typography key={sectorTypeName} color='primary' variant='h2'>{sectorTypeName}</Typography>
+                      {
+                        currentSectors.filter((sector) => sector.typeTitle === sectorTypeName).map((sector) => {
+                          return (
+                            <Box mb={5} key={`box_${sector.sectorId}`}>
+                              <ExperienceTextBox imageLinkIn={sector.image} divisionIn={sector.division} key={sector.sectorId} sectorId={sector.sectorId} text={sector.content} footer={`Date Edited: ${sector.lastEditedDate}`} hideEdit />
+                            </Box>);
+                        })
+                      }
+                    </Box>);
                 })}
               </Box>
             </Box>
           }
         </DialogContent>
-        {
-          submittable &&
+        {submittable &&
           <>
             <Divider color='primary' />
             <DialogActions>
@@ -180,7 +177,6 @@ function ResumeSelection({ employeeName, open, employeeId ,onClose, onSubmit, su
             </DialogActions>
           </>
         }
-        
       </Dialog>
     </div>
   );

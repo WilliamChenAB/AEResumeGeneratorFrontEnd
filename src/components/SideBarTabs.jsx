@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { List, ListItem, ListItemText, Checkbox, ListItemButton, Tooltip } from '@mui/material';
 import { Error } from '@mui/icons-material';
 
@@ -16,14 +15,13 @@ import { Error } from '@mui/icons-material';
  */
 function SideBarTabs({ entries, showCheckBoxes, color, selectedColor, textColor, onEntryClick, onCheckmarkClicked, selected }) {
   return (
-    <List sx={{maxHeight: '100%', overflow: 'auto' }}>
-      {
-        entries.map((obj, index) => {
-          const checkbox = showCheckBoxes && <Checkbox key={obj.name} checked={obj.checked ? obj.checked : false } onChange={() => onCheckmarkClicked(index)} color='checkbox'
-            sx={{
-              color: textColor,
-            }}
-          />;
+    <List sx={{ maxHeight: '100%', overflow: 'auto' }}>
+      {entries.map((obj, index) => {
+        const checkbox = showCheckBoxes && <Checkbox key={obj.name} checked={obj.checked ? obj.checked : false} onChange={() => onCheckmarkClicked(index)} color='checkbox'
+          sx={{
+            color: textColor,
+          }}
+        />;
         const usedColor = index === selected ? selectedColor : color;
         return (
           <ListItem key={`item${index}`} sx={{ background: usedColor, marginBottom: 0.1 }} disablePadding>

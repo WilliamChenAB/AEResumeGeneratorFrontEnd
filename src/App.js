@@ -30,7 +30,7 @@ function App() {
   const auth = useAuth();
   const dispatch = useDispatch();
 
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [errorStatus, setErrorStatus] = useState(false);
 
   axios.defaults.baseURL = process.env.REACT_APP_API_BASE_URL;

@@ -29,6 +29,7 @@ function AddResume({ open, onClose }) {
   const [submitDisabled, setSubmitDisabled] = useState(true);
   const [openCompleteMessage, setOpenCompleteMessage] = useState(false);
   const [templates, setTemplates] = useState([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const formRef = useRef();
 
@@ -57,16 +58,15 @@ function AddResume({ open, onClose }) {
   }
 
   const handleSubmit = (ev) => {
-    setIsLoading(true);
+    setIsSubmitting(true);
     setSubmitDisabled(true);
     axios.post('/Resume/NewPersonal', null, {
       params: {
-        // TODO - replace with user employeeId
         templateId: formValues.template,
         resumeName: formValues.name,
       }
     }).then((response) => {
-      setIsLoading(false);
+      setIsSubmitting(false);
       setOpenCompleteMessage({
         type: 'success',
         text: `Resume ${formValues.name} has been successfully created.`
@@ -74,7 +74,7 @@ function AddResume({ open, onClose }) {
       handleClose();
       navigate(`/employee/resumes/${response.data.resumeId}`);
     }).catch((error) => {
-      setIsLoading(false);
+      setIsSubmitting(false);
       setSubmitDisabled(false);
       setOpenCompleteMessage({
         type: 'error',
@@ -134,7 +134,7 @@ function AddResume({ open, onClose }) {
           }
         </DialogContent>
         <DialogActions>
-          <LoadingButton variant='contained' isLoading={isLoading} onClick={handleSubmit} disabled={submitDisabled}>Create</LoadingButton>
+          <LoadingButton variant='contained' isLoading={isSubmitting} onClick={handleSubmit} disabled={submitDisabled}>Create</LoadingButton>
         </DialogActions>
       </Dialog>
     </div>

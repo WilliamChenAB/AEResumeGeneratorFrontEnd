@@ -334,7 +334,7 @@ function EditWorkspace() {
             <AddButton onClick={() => { addNewBlankSector(resume.resumeId) }} text='Add Blank Sector' />
             <AddButton text='Duplicate Previous Sector' onClick={() => { setShowSelectionDialog(true) }} />
             <Box sx={{ pb: 1, pr: 5, display: 'flex', justifyContent: 'flex-end' }}>
-              <SortButton text='Sort: Last Updated' sortState={sortState} onClick={() => { setSortState((sortState + 1) % 3) }} />
+              <SortButton sortName='Last Updated' sortState={sortState} onClick={() => { setSortState((sortState + 1) % 3) }} />
             </Box>
           </Box>
           {sectors.sort(sorting).map((sector) => {

@@ -16,13 +16,15 @@ import axios from 'axios';
  * @param open Boolean for if dialog is open
  * @param onClose Handler for when dialog should be closed
  * @param onSubmit Handler for when submit button is clicked
- * @returns SelectSectorPopUp
+ * @param targetEid Target employee ID
+ * @param Submittable Whether or not dialog is submittable
+ * @param singleSectorTypeObj Object of single sector type
+ * @returns SectorSelection dialog
  */
 function SectorSelection({ title, open, onClose, onSubmit, targetEid = false, submittable = true, singleSectorTypeObj }) {
   const [isLoading, setIsLoading] = useState(false);
   const [errorStatus, setErrorStatus] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
-  const [submitDisabled, setSubmitDisabled] = useState(true);
   const [sectors, setSectors] = useState([]);
   const [filteredSectors, setFilteredSectors] = useState([]);
   const [sectorTypes, setSectorTypes] = useState([]);
@@ -102,12 +104,12 @@ function SectorSelection({ title, open, onClose, onSubmit, targetEid = false, su
     }
   }, [open]);
 
-  const sorting = (a,b) => {
-    if(sortState === 1){
-      return a.updateDate < b.updateDate? 1 : -1;
+  const sorting = (a, b) => {
+    if (sortState === 1) {
+      return a.updateDate < b.updateDate ? 1 : -1;
     }
-    else if(sortState === 2){
-      return b.updateDate < a.updateDate? 1 : -1;
+    else if (sortState === 2) {
+      return b.updateDate < a.updateDate ? 1 : -1;
     }
     else {
       return 0;
@@ -115,11 +117,11 @@ function SectorSelection({ title, open, onClose, onSubmit, targetEid = false, su
   }
 
   const searchSectors = () => {
-    if(search !== ''){
+    if (search !== '') {
       setIsLoading(true);
       setErrorStatus(false);
-      const url = targetEid? '/Search/EmployeeSectors': '/Search/OwnSectors';
-      const params = targetEid?  {params: {filter: search, EmployeeId: targetEid,}} : {params: {filter: search}};
+      const url = targetEid ? '/Search/EmployeeSectors' : '/Search/OwnSectors';
+      const params = targetEid ? { params: { filter: search, EmployeeId: targetEid, } } : { params: { filter: search } };
       axios.get(url, params).then((response) => {
         setFilteredSectors(response.data);
         setIsLoading(false);
@@ -132,7 +134,6 @@ function SectorSelection({ title, open, onClose, onSubmit, targetEid = false, su
 
   const handleClose = (success) => {
     setSearch('');
-    setSubmitDisabled(true);
     setSortState(0);
     onClose(success);
   }
@@ -154,13 +155,13 @@ function SectorSelection({ title, open, onClose, onSubmit, targetEid = false, su
             <Close />
           </IconButton>
         </DialogTitle>
-        <Box sx={{pb:1, pl:2, display:'flex', flexDirection: 'row'}}>
+        <Box sx={{ pb: 1, pl: 2, display: 'flex', flexDirection: 'row' }}>
           <Box sx={{ width: '50%' }}>
-            <SearchBar defaultValue='' placeholder='Search Sectors' onChange={(value) => {setSearch(value)}}></SearchBar>
+            <SearchBar defaultValue='' placeholder='Search Sectors' onChange={(value) => { setSearch(value) }}></SearchBar>
           </Box>
-          <Box sx={{pl:2, width:'20%', display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
-            <Button variant="contained" onClick={searchSectors}>Search</Button>
-            <Button variant="contained" onClick={() => {setFilteredSectors(false)}}>Clear</Button>
+          <Box sx={{ pl: 2, width: '20%', display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+            <Button variant='outlined' onClick={searchSectors}>Search</Button>
+            <Button variant='outlined' onClick={() => { setFilteredSectors(false) }}>Clear</Button>
           </Box>
         </Box>
         <Divider color='primary' />
@@ -185,28 +186,26 @@ function SectorSelection({ title, open, onClose, onSubmit, targetEid = false, su
                 </>
               }
               <Box sx={{ ml: 5, mr: 5, mt: 2, width: '100%', maxHeight: '100%', overflow: 'auto' }}>
-                <Box sx={{pb:1, pr: 5, display:'flex', justifyContent:'flex-end'}}>
-                  <SortButton text='Sort: Last_Updated' sortState={sortState} onClick={() => {setSortState((sortState + 1) % 3)}}/>
+                <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                  <SortButton sortName='Last Updated' sortState={sortState} onClick={() => { setSortState((sortState + 1) % 3) }} />
                 </Box>
                 {sectors.filter((sector) => {
                   return sector.type === sectorTypes[activeTab]?.id;
-                }).sort(sorting).map((sector) =>
-                  {
-                    if(filteredSectors === false || filteredSectors.filter((filterSector) => sector.id == filterSector.sectorId).length > 0){
-                      return(
-                        <Box mb={5} key={sector.id}>
-                          <ExperienceTextBox imageLinkIn={sector.image} divisionIn={sector.division} key={sector.id} sectorId={sector.id} text={sector.content} selectState={sector.selected} onSelect={() => { sector.selected = !sector.selected }} header={`Resume: ${sector.resumeName}`} footer={`Date Created: ${sector.createDate}`} hideEdit selectable={submittable} />
-                        </Box>)
-                    }
-                    return(null);
+                }).sort(sorting).map((sector) => {
+                  if (filteredSectors === false || filteredSectors.filter((filterSector) => sector.id == filterSector.sectorId).length > 0) {
+                    return (
+                      <Box mb={5} key={sector.id}>
+                        <ExperienceTextBox imageLinkIn={sector.image} divisionIn={sector.division} key={sector.id} sectorId={sector.id} text={sector.content} selectState={sector.selected} onSelect={() => { sector.selected = !sector.selected }} header={`Resume: ${sector.resumeName}`} footer={`Date Created: ${sector.createDate}`} hideEdit selectable={submittable} />
+                      </Box>)
                   }
+                  return (null);
+                }
                 )}
               </Box>
             </Box>
           }
         </DialogContent>
-        {
-          submittable &&
+        {submittable &&
           <>
             <Divider color='primary' />
             <DialogActions>
@@ -214,7 +213,6 @@ function SectorSelection({ title, open, onClose, onSubmit, targetEid = false, su
             </DialogActions>
           </>
         }
-
       </Dialog>
     </div>
   );

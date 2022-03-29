@@ -22,7 +22,6 @@ function AddEmployee({ open, onClose, workspaceId, wname }) {
   const [templates, setTemplates] = useState([]);
   const [chosenTemplate, setChosenTemplate] = useState('');
 
-
   useEffect(() => {
     setIsLoading(true);
     setErrorStatus(false);
@@ -49,14 +48,12 @@ function AddEmployee({ open, onClose, workspaceId, wname }) {
         setIsLoading(false);
         setErrorStatus(error.response);
       });
-      
+
     }).catch((error) => {
       setIsLoading(false);
       setErrorStatus(error.response);
     });
   }, []);
-
-  
 
   const tableFilter = (searchVal) => {
     const filteredRows = data.filter((row) => {
@@ -130,8 +127,6 @@ function AddEmployee({ open, onClose, workspaceId, wname }) {
         type: 'error',
         text: `An error occurred while requesting Resume. (${error.response.status} ${error.response.statusText})`
       });
-
-
       setEmployeeId('');
       handleClose(true);
     });
@@ -186,15 +181,15 @@ function AddEmployee({ open, onClose, workspaceId, wname }) {
           {!isLoading && errorStatus && <Error text='Error.' response={errorStatus}></Error>}
           {!isLoading && !errorStatus &&
             <>
-              <Box sx={{mt:1, mb:2, width: '40%'}}>
-                <Dropdown required label='Resume Template' options={templates} name='template' onChange={(ev) => {setChosenTemplate(ev.target.value)}}></Dropdown>
+              <Box sx={{ mt: 1, mb: 2, width: '40%' }}>
+                <Dropdown required label='Resume Template' options={templates} name='template' onChange={(ev) => { setChosenTemplate(ev.target.value) }}></Dropdown>
               </Box>
-              <SearchBar defaultValue='' placeholder='Search Table...'  onChange={(searchVal) => { tableFilter(searchVal); }} />
-              <WorkSpaceEmployeeTable rows={rows} onSelect={(id) => { setEmployeeName(rows.filter((row) => row.id === id[0])[0].name); setEmployeeId(id[0])}} />
-              <Box my={1} mx={2} sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around'}}>
-                <Button variant='contained' onClick={handleNewResumeRequest} disabled={(employeeId === '' || chosenTemplate === '')? true : false}>Request New Resume</Button>
-                <Button variant='contained' onClick={handleFromResume} disabled={(employeeId === '')? true : false}>Import Existing Resume</Button>
-                <Button variant='contained' onClick={handleNew} disabled={(employeeId === '' || chosenTemplate === '')? true : false}>Import By Sector</Button>
+              <SearchBar defaultValue='' placeholder='Search Table...' onChange={(searchVal) => { tableFilter(searchVal); }} />
+              <WorkSpaceEmployeeTable rows={rows} onSelect={(id) => { setEmployeeName(rows.filter((row) => row.id === id[0])[0].name); setEmployeeId(id[0]) }} />
+              <Box my={1} mx={2} sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around' }}>
+                <Button variant='contained' onClick={handleNewResumeRequest} disabled={(employeeId === '' || chosenTemplate === '') ? true : false}>Request New Resume</Button>
+                <Button variant='contained' onClick={handleFromResume} disabled={(employeeId === '') ? true : false}>Import Existing Resume</Button>
+                <Button variant='contained' onClick={handleNew} disabled={(employeeId === '' || chosenTemplate === '') ? true : false}>Import By Sector</Button>
               </Box>
             </>}
         </DialogContent>

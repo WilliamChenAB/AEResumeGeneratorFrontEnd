@@ -4,7 +4,6 @@ import EditIcon from '@mui/icons-material/Edit';
 import CheckIcon from '@mui/icons-material/Check';
 import ClickAwayListener from '@mui/material/ClickAwayListener';
 
-
 export default function EditableTextField({ templateText, setTemplateText, tabClicked }) {
   const [edit, setEdit] = useState(false);
   const [text, setText] = useState(templateText);
@@ -22,28 +21,26 @@ export default function EditableTextField({ templateText, setTemplateText, tabCl
     setEdit(false);
   }
 
-
   useEffect(() => {
     setText(templateText);
     setEdit(false);
   }, [tabClicked, templateText])
 
   const isFieldEmpty = (fieldText) => {
-    return fieldText.replace(/\s+/g, '') === ''
+    return fieldText.replace(/\s+/g, '') === '';
   }
-
 
   return (
     <Box key={templateText} sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
       {edit ?
         <>
-          <ClickAwayListener mouseEvent="onMouseDown" touchEvent="onTouchStart" onClickAway={() => discardChange()}>
+          <ClickAwayListener mouseEvent='onMouseDown' touchEvent='onTouchStart' onClickAway={() => discardChange()}>
             <Box>
               <TextField
                 defaultValue={text}
                 error={isFieldEmpty(text) || text === null}
                 helperText={isFieldEmpty(text) ? 'Field cannot be empty' : ''}
-                variant="standard"
+                variant='standard'
                 onChange={(e) => handleChange(e)}
               />
               {text !== '' && <IconButton onClick={() => saveChange()}>

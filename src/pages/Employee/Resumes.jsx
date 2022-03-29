@@ -105,14 +105,14 @@ function Resumes() {
         </AlertPopup>
       }
       <ConfirmDelete nameToDelete={`resume ${deleteResumeObj?.resumeName}`} open={showDeleteDialog} onClose={() => { setShowDeleteDialog(false) }} onConfirm={() => { deleteResume() }} isDeleting={isDeleting} />
-      <Box>
-        <SideBar title={userName} subtitle={userTitle} color='primary' />
-      </Box>
-      <Box sx={{ flexGrow: 1 }} className='content-section-margins'>
-        {isLoading && <Loading text='Loading Resumes...' />}
-        {!isLoading && errorStatus && <Error text='Error retrieving resumes.' response={errorStatus}></Error>}
-        {!isLoading && !errorStatus &&
-          <>
+      {isLoading && <Box sx={{ width: '100%' }}><Loading text='Loading Resumes...' /></Box>}
+      {!isLoading && errorStatus && <Box sx={{ width: '100%' }}><Error text='Error retrieving resumes.' response={errorStatus} /></Box>}
+      {!isLoading && !errorStatus &&
+        <>
+          <Box>
+            <SideBar title={userName} subtitle={userTitle} color='primary' />
+          </Box>
+          <Box sx={{ flexGrow: 1 }} className='content-section-margins'>
             <Typography variant='h3'>RESUMES</Typography>
             <br />
             <br />
@@ -124,9 +124,9 @@ function Resumes() {
             </Box>
             <ResumeTable rows={rows} handleSelect={(id) => { navigate(`/employee/resumes/${id}`) }} onDeleteClick={(resumeObj) => { handleDeleteClick(resumeObj) }} />
             <AddResume open={showAddDialog} onClose={() => { setShowAddDialog(false) }}></AddResume>
-          </>
-        }
-      </Box>
+          </Box>
+        </>
+      }
     </Box >
   )
 }

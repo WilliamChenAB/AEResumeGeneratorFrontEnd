@@ -1,4 +1,4 @@
-import React from 'react';
+import { useState } from 'react';
 import { AppBar, Box, Button, Grid, MenuItem, Select, Toolbar } from '@mui/material';
 import AELogoCrop from '../assets/images/ae_logo_blue_cropped.png';
 import { Person } from '@mui/icons-material';
@@ -31,7 +31,7 @@ const allRoles = [{
  * @returns TopBar component.
  */
 function TopBar({ buttons, selectedRole, logoLink }) {
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
 
   const auth = useAuth();
@@ -126,7 +126,6 @@ function TopBar({ buttons, selectedRole, logoLink }) {
                     })
                   }
                 </Menu>
-
               </Box>
             </Grid>
             <Grid item xs={11} md={5}>
