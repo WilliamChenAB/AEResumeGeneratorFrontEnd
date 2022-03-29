@@ -10,7 +10,7 @@ function Callback() {
     return <div>Oops... there was an unexpected authentication error. Please try again later.</div>;
   });
 
-  return <div>We're logging you in... hang tight.</div>;
+  return <div>We're logging you in... hang tight. If you are not redirected within 10 seconds, <a href='/employee'>click here</a>.</div>;
 }
 
 export default Callback;

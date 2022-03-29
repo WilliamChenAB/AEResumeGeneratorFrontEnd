@@ -30,7 +30,7 @@ function App() {
   const auth = useAuth();
   const dispatch = useDispatch();
 
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [errorStatus, setErrorStatus] = useState(false);
 
   axios.defaults.baseURL = process.env.REACT_APP_API_BASE_URL;
@@ -129,11 +129,14 @@ function RequireAuth({ children, access = 0 }) {
   }
 
   if (auth.isAuthenticated) {
+    if (role === -1) {
+      return <div>Loading...</div>
+    }
+
     if ((access === 0 && role >= 0) || (access === 1 && role >= 1) || (access === 2 && role >= 2)) {
       return children;
-    } else {
-      return <PageNotFound />
     }
+    return <PageNotFound />
   }
 
   return <Navigate to='/login' state={{ from: location }} replace />;
