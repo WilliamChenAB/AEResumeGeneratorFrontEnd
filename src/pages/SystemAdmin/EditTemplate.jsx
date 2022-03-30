@@ -16,6 +16,7 @@ import axios from 'axios';
 import EditableTextField from '../../components/EditableTextField';
 import { useDispatch, useSelector } from 'react-redux';
 import { templateSelectors, templateActions } from '../../slices/templateSlice';
+import { colorToken } from '../../theme/colorToken';
 
 function EditTemplate() {
   let { templateId } = useParams();
@@ -206,7 +207,7 @@ function EditTemplate() {
               <SideBarResumeTemplate selected={activeTemplateTab} entries={entries} setTab={(index) => { setActiveTemplateTab(index) }} color='primary' onCheck={addSelectedSectorTypes} />
               <Box m={2}>
                 <AddButton text='Add sector type' onClick={() => setShowAddDialog(true)} />
-                <Button fullWidth variant='contained' onClick={() => saveSelectedSectorTypes()} >Save Template Sectors</Button>
+                <Button fullWidth sx={{color: colorToken.greyPalette.white, bgcolor: colorToken.brand.aeGreen}} variant='contained' onClick={() => saveSelectedSectorTypes()} >Save Template Sectors</Button>
               </Box>
             </Box>
             {entries.length > 0 &&

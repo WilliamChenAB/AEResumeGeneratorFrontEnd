@@ -27,9 +27,10 @@ export default function SideBar({ entries, setTab, color, title, subtitle, useBu
           <SideBarTabs
             entries={entries}
             showCheckBoxes={false}
-            color={color === 'primary' ? colorToken.brand.aeGreenLight : colorToken.brand.aeBlueLight}
-            selectedColor={color === 'primary' ? colorToken.brand.aeGreen : colorToken.brand.aeBlueMid}
-            textColor={color === 'primary' ? colorToken.greyPalette.iconGrey : colorToken.brand.aeBlue}
+            color={color === 'primary' ? colorToken.brand.aeBlueMid : colorToken.brand.aeGreenLight}
+            selectedColor={color === 'primary' ?  colorToken.brand.aeBlue: colorToken.brand.aeGreen}
+            textColor={color === 'primary' ? colorToken.brand.aeBlueDark : colorToken.brand.aeBlue}
+            selectedTextColor={colorToken.greyPalette.white }
             onEntryClick={setTab}
             onCheckmarkClicked={() => { }}
             selected={selected} />

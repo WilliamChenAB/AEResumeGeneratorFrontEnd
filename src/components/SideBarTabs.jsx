@@ -1,5 +1,6 @@
 import { List, ListItem, ListItemText, Checkbox, ListItemButton, Tooltip } from '@mui/material';
 import { Error } from '@mui/icons-material';
+import { colorToken } from '../theme/colorToken';
 
 /**
  * SideBar Tab component
@@ -13,23 +14,27 @@ import { Error } from '@mui/icons-material';
  * @param onCheckmarkClicked onSelected hanlder for checkboxes
  * @returns SideBarTabs component
  */
-function SideBarTabs({ entries, showCheckBoxes, color, selectedColor, textColor, onEntryClick, onCheckmarkClicked, selected }) {
+function SideBarTabs({ entries, showCheckBoxes, color, selectedColor, textColor, onEntryClick, onCheckmarkClicked, selected, selectedTextColor }) {
   return (
     <List sx={{ maxHeight: '100%', overflow: 'auto' }}>
       {entries.map((obj, index) => {
-        const checkbox = showCheckBoxes && <Checkbox key={obj.name} checked={obj.checked ? obj.checked : false} onChange={() => onCheckmarkClicked(index)} color='checkbox'
+        const checkbox = showCheckBoxes && <Checkbox key={obj.name} checked={obj.checked ? obj.checked : false} onChange={() => onCheckmarkClicked(index)} 
           sx={{
-            color: textColor,
+            color: colorToken.greyPalette.white,
+            '&.Mui-checked': {
+              color: colorToken.greyPalette.white,
+            },
           }}
         />;
         const usedColor = index === selected ? selectedColor : color;
+        const customTextColor = index === selected ? selectedTextColor : textColor;
         return (
           <ListItem key={`item${index}`} sx={{ background: usedColor, marginBottom: 0.1 }} disablePadding>
             <ListItemButton onClick={(ev) => {
               onEntryClick(index);
             }}>
               {checkbox}
-              <ListItemText sx={{ color: textColor, fontWeight: 'bold' }}>
+              <ListItemText sx={{ color: customTextColor, fontWeight: 'bold' }}>
                 {obj.name.toUpperCase()}
               </ListItemText>
               {obj.error &&

@@ -53,12 +53,13 @@ export default function ExperienceTextBox({ sectorId, text, divisionIn, imageLin
     return (
       <Box sx={{ margin: 2, height: '100%' }}>
         <Box sx={{ display: 'flex', flexDirection: 'row' }}>
-          <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%', justifyContent: 'center'}}>
+          <Box my={1} sx={{ display: 'flex', flexDirection: 'column', width: '100%', justifyContent: 'space-between'}}>
             <Box>
               <Typography style={{whiteSpace: 'pre-line'}} ref={descriptionRef} sx={(truncatable && truncate) ? textStyle : { display: 'inline-block' }}>{text}</Typography>
-            </Box>
+
             {truncatable && truncate && <Box mt={1}><Typography component='span' color='primary' sx={{ fontWeight: 'bold' }} onClick={(e) => { setTruncate(false); e.stopPropagation(); }}>Read More...</Typography></Box>}
             {truncatable && !truncate && <Box mt={1}><Typography component='span' color='primary' sx={{ fontWeight: 'bold' }} onClick={(e) => { setTruncate(true); e.stopPropagation(); }}>Read Less...</Typography></Box>}
+            </Box>
             <br />
             {divisionIn && <Typography component='div' sx={{ fontWeight: 'bold' }}>{`Division: ${divisionIn}`}</Typography>}
           </Box>
