@@ -68,7 +68,7 @@ export default function ExperienceTextBox({ sectorId, text, divisionIn, imageLin
   }
 
   const backgroundColor = selected ? colorToken.brand.aeGreenLight : colorToken.greyPalette.lightGrey;
-  const borderColor = selected ? 'green' : colorToken.greyPalette.lightGrey;
+  const borderColor = selected ? 'green' : colorToken.greyPalette.lightGrey; 
   return (
     <Box sx={{ minHeight: 170, display: 'flex', flexDirection: 'row' }}>
       <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
@@ -80,7 +80,7 @@ export default function ExperienceTextBox({ sectorId, text, divisionIn, imageLin
             </CardActionArea>
           }
           {!selectable &&
-            <CardActionArea sx={{ height: '100%', border: 2, borderColor: colorToken.greyPalette.lightGrey }} onClick={() => { !hideEdit? setOpenDialog(true): setOpenDialog(false)}}>
+            <CardActionArea disabled={hideEdit} sx={{ height: '100%', border: 2, borderColor: colorToken.greyPalette.lightGrey }} onClick={() => { !hideEdit? setOpenDialog(true): setOpenDialog(false)}}>
               {drawContent()}
             </CardActionArea>
           }

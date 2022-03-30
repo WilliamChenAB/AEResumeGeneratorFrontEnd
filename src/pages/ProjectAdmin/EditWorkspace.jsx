@@ -373,7 +373,7 @@ function EditWorkspace() {
           <>
             <SideBar selected={activeEmployeeTab} title={workSpaceName} entries={entries} setTab={(index) => { setActiveEmployeeTab(index); setActiveSectorTypeTab(0) }} subtitle='' color='primary' useButton={true} buttonText='Add Employee' buttonClick={() => { setOpenAddEmployee(true) }} />
             {
-              activeEmployeeTab !== -1 && workSpace && entries[activeEmployeeTab] && <SideBar selected={activeSectorTypeTab} title={entries[activeEmployeeTab].name} color='secondary' setTab={setActiveSectorTypeTab} useButton={true} buttonText='Add Sector Type' buttonClick={() => { setShowChooseSectorTypeDialog(true) }} entries={getResumeEntries()}></SideBar>
+              activeEmployeeTab !== -1 && workSpace && entries[activeEmployeeTab] && <SideBar selected={activeSectorTypeTab} title={entries[activeEmployeeTab].name} color='secondary' setTab={setActiveSectorTypeTab} useButton={true} buttonText='Add Types To Resume' buttonClick={() => { setShowChooseSectorTypeDialog(true) }} entries={getResumeEntries()}></SideBar>
             }
             <Box sx={{ width: '100%' }}>
               <Box m={1.5} sx={{ display: 'flex', justifyContent: 'flex-end' }}>

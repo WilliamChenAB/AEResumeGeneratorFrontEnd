@@ -303,7 +303,7 @@ function Resume() {
       {!isLoading && !errorStatus &&
         <>
           <Box>
-            <SideBar title={userName} subtitle={userTitle} entries={sectorTypes} setTab={setActiveTab} color='primary' useButton buttonText='Add Sector Types' buttonClick={() => { setShowChooseSectorTypeDialog(true) }} selected={activeTab} />
+            <SideBar title={userName} subtitle={userTitle} entries={sectorTypes} setTab={setActiveTab} color='primary' useButton buttonText='Add Types To Resume' buttonClick={() => { setShowChooseSectorTypeDialog(true) }} selected={activeTab} />
           </Box>
           <Box sx={{ flexGrow: 1 }} className='content-section-margins'>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
