@@ -61,6 +61,20 @@ function EditTemplate() {
     getTemplateSectors();
   }, []);
 
+  // Update template
+
+  const updateTemplateSectors = () => {
+    setIsLoading(true);
+    setErrorStatus(false);
+    axios.get('/SectorType/GetAll').then((response) => {
+      setAllSectors(response.data);
+      setFirstRender(false);
+    }).catch((error) => {
+      setIsLoading(false);
+      setErrorStatus(error.response);
+    });
+  }
+
   // Create entries 
 
   const mapEntries = new Promise((resolve) => {
@@ -205,7 +219,7 @@ function EditTemplate() {
             }
           </Box>
           {showAddDialog &&
-            <AddSectorType open={showAddDialog} onClose={() => setShowAddDialog(!showAddDialog)} onSave={() => getTemplateSectors()} />
+            <AddSectorType open={showAddDialog} onClose={() => setShowAddDialog(!showAddDialog)} onSave={() => updateTemplateSectors()} />
           }
         </>
       }
