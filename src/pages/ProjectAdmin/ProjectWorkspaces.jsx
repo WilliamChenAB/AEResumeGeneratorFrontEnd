@@ -57,8 +57,8 @@ function ProjectWorkspaces() {
       const responseData = response.data.map((workspace) => {
         const name = workspace.name === '' ? 'name' : workspace.name;
         return {
-          key: workspace.workspaceId,
-          id: workspace.proposalNumber,
+          id: workspace.workspaceId,
+          proposalNum: workspace.proposalNumber,
           workspaceName: name,
           creationDate: workspace.creationDate,
           division: workspace.division

@@ -14,10 +14,10 @@ export default function WorkspaceTable({ rows, workSpaceExpanded, onDeleteClick,
       flex: 1.2,
       minWidth: 200,
       renderCell: (params) => {
-        return <TextButton onClick={() => { workSpaceExpanded(params.row.key) }} text={params.row.workspaceName} />
+        return <TextButton onClick={() => { workSpaceExpanded(params.row.id) }} text={params.row.workspaceName} />
       }
     },
-    { field: 'id', headerName: 'Proposal No.', flex: 0.5, minWidth: 125 },
+    { field: 'proposalNum', headerName: 'Proposal No.', flex: 0.5, minWidth: 125 },
     { field: 'division', headerName: 'Division', flex: 0.75, minWidth: 125 },
     { field: 'creationDate', headerName: 'Creation Date', flex: 0.5, minWidth: 125 },
     {
