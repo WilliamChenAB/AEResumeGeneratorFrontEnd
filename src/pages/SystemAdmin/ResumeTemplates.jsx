@@ -96,13 +96,13 @@ function ResumeTemplates() {
         {!isLoading && errorStatus && <Error text='Error retrieving templates.' response={errorStatus}></Error>}
         {!isLoading && !errorStatus && <>
           <Typography variant='h3'>RESUME TEMPLATES</Typography>
-          <br />
-          <br />
+          <Box my={3}>
+          <AddButton text='Add Template' onClick={() => setShowAddDialog(!showAddDialog)} />
+          </Box>
           <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-            <Box sx={{ width: '40%' }}>
+            <Box mb={1} sx={{ width: '40%' }}>
               <SearchBar placeholder='Search Templates' onChange={(value) => { tableFilter(value) }}/>
             </Box>
-            <AddButton text='Add Template' onClick={() => setShowAddDialog(!showAddDialog)} />
           </Box>
           <TemplateTable rows={rows} handleSelect={(id) => { navigate('/system/templates/'.concat(id)); }} onDeleteClick={(templateObj) => { handleDeleteClick(templateObj) }} />
           {showAddDialog &&

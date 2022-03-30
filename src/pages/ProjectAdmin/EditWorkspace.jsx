@@ -4,7 +4,7 @@ import ConfirmDelete from '../../containers/ConfirmDelete';
 import SectorSelection from '../../containers/SectorSelection';
 import ExperienceTextBox from '../../components/TextBox/ExperienceTextBox';
 import { Box, Button, Typography } from '@mui/material';
-import { ArrowBack } from '@mui/icons-material';
+import { ArrowForward } from '@mui/icons-material';
 import AddButton from '../../components/AddButton';
 import SideBar from '../../containers/SideBar';
 import ChooseSectorTypes from '../../containers/ChooseSectorTypes';
@@ -15,6 +15,7 @@ import AlertPopup from '../../components/AlertPopup';
 import Loading from '../../components/Loading';
 import Error from '../../components/Error';
 import axios from 'axios';
+import Divider from '@mui/material/Divider';
 
 function EditWorkspace() {
   const [isLoading, setIsLoading] = useState(false);
@@ -375,10 +376,14 @@ function EditWorkspace() {
               activeEmployeeTab !== -1 && workSpace && entries[activeEmployeeTab] && <SideBar selected={activeSectorTypeTab} title={entries[activeEmployeeTab].name} color='secondary' setTab={setActiveSectorTypeTab} useButton={true} buttonText='Add Sector Type' buttonClick={() => { setShowChooseSectorTypeDialog(true) }} entries={getResumeEntries()}></SideBar>
             }
             <Box sx={{ width: '100%' }}>
-              <Box sx={{ margin: 2 }}>
+              <Box m={1.5} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
                 <Link to='/project/workspaces' style={{ textDecoration: 'none' }}>
-                  <Button startIcon={<ArrowBack />}>Back to Workspaces</Button>
+                  <Button endIcon={<ArrowForward />}>Back to Workspaces</Button>
                 </Link>
+                
+              </Box>
+              <Box my={2}>
+                <Divider variant='middle'/>
               </Box>
               {
                 activeEmployeeTab !== -1 && workSpace && entries[activeEmployeeTab] && activeSectorTypeTab !== -1 && drawSectors()

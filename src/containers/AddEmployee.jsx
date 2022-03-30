@@ -184,7 +184,9 @@ function AddEmployee({ open, onClose, workspaceId, wname }) {
               <Box sx={{ mt: 1, mb: 2, width: '40%' }}>
                 <Dropdown required label='Resume Template' options={templates} name='template' onChange={(ev) => { setChosenTemplate(ev.target.value) }}></Dropdown>
               </Box>
+              <Box mb={1}>
               <SearchBar defaultValue='' placeholder='Search Table...' onChange={(searchVal) => { tableFilter(searchVal); }} />
+              </Box>
               <WorkSpaceEmployeeTable rows={rows} onSelect={(id) => { setEmployeeName(rows.filter((row) => row.id === id[0])[0].name); setEmployeeId(id[0]) }} />
               <Box my={1} mx={2} sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around' }}>
                 <Button variant='contained' onClick={handleNewResumeRequest} disabled={(employeeId === '' || chosenTemplate === '') ? true : false}>Request New Resume</Button>

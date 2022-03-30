@@ -114,13 +114,13 @@ function Resumes() {
           </Box>
           <Box sx={{ flexGrow: 1 }} className='content-section-margins'>
             <Typography variant='h3'>RESUMES</Typography>
-            <br />
-            <br />
+            <Box my={3}>
+              <AddButton text='Add Resume' onClick={() => setShowAddDialog(true)} />
+            </Box>
             <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-              <Box sx={{ width: '40%' }}>
+              <Box mb={1} sx={{ width: '40%' }}>
                 <SearchBar placeholder='Search Resumes' onChange={(value) => { tableFilter(value) }}></SearchBar>
               </Box>
-              <AddButton text='Add Resume' onClick={() => setShowAddDialog(true)} />
             </Box>
             <ResumeTable rows={rows} handleSelect={(id) => { navigate(`/employee/resumes/${id}`) }} onDeleteClick={(resumeObj) => { handleDeleteClick(resumeObj) }} />
             <AddResume open={showAddDialog} onClose={() => { setShowAddDialog(false) }}></AddResume>

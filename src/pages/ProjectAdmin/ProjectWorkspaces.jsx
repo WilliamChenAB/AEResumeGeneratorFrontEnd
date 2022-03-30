@@ -123,13 +123,13 @@ function ProjectWorkspaces() {
         {!isLoading && !errorStatus &&
           <>
             <Typography variant='h3'>PROPOSAL WORKSPACES</Typography>
-            <br />
-            <br />
+            <Box my={3}>
+            <AddButton text='Add Workspace' onClick={() => setShowWorkspaceDialog(true)} />
+            </Box>
             <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-              <Box sx={{ width: '40%' }}>
+              <Box mb={1} sx={{ width: '40%' }}>
                 <SearchBar placeholder='Search Workspaces' onChange={(value) => { tableFilter(value) }}></SearchBar>
               </Box>
-              <AddButton text='Add Workspace' onClick={() => setShowWorkspaceDialog(true)} />
             </Box>
             <AddWorkspace open={showWorkspaceDialog} onClose={() => setShowWorkspaceDialog(false)}></AddWorkspace>
             <WorkspaceTable onExportClicked={(workspaceObj) => { exportResume(workspaceObj) }} onDeleteClick={(workspaceObj) => { handleDeleteClick(workspaceObj) }} rows={rows} workSpaceExpanded={(id) => { navigate('/project/workspaces/'.concat(id)) }} />

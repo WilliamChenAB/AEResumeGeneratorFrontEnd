@@ -1,7 +1,9 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import TextBox from '../../components/TextBox/TextBox';
+import { ArrowForward } from '@mui/icons-material';
 import { Box, Button } from '@mui/material';
 import AddButton from '../../components/AddButton';
 import SideBarResumeTemplate from '../../containers/SideBarResumeTemplate';
@@ -179,6 +181,10 @@ function EditTemplate() {
         <>
           <Box m={1.5} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <EditableTextField templateText={templateName} setTemplateText={setTemplateName} tabClicked={activeTemplateTab} />
+                <Link to='/system/templates' style={{ textDecoration: 'none' }}>
+                  <Button endIcon={<ArrowForward />}>Back to Templates</Button>
+                </Link>
+                
           </Box>
           <Divider />
           <Box sx={{ display: 'flex', flexDirection: 'row', height: '83vh', overflow: 'auto' }} >

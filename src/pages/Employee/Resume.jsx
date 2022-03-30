@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Box, Button, Typography } from '@mui/material';
-import { ArrowBack } from '@mui/icons-material';
+import { ArrowForward } from '@mui/icons-material';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { userSelectors } from '../../slices/userSlice';
@@ -16,6 +16,7 @@ import ChooseSectorTypes from '../../containers/ChooseSectorTypes';
 import axios from 'axios';
 import SortButton from '../../components/SortButton';
 import ConfirmResumeSubmit from '../../containers/ConfirmResumeSubmit';
+import Divider from '@mui/material/Divider';
 
 function Resume() {
   const { resumeId } = useParams();
@@ -305,12 +306,15 @@ function Resume() {
             <SideBar title={userName} subtitle={userTitle} entries={sectorTypes} setTab={setActiveTab} color='primary' useButton buttonText='Add Sector Types' buttonClick={() => { setShowChooseSectorTypeDialog(true) }} selected={activeTab} />
           </Box>
           <Box sx={{ flexGrow: 1 }} className='content-section-margins'>
-            <Link to='/employee/resumes' style={{ textDecoration: 'none' }}>
-              <Button startIcon={<ArrowBack />}>Back to Resumes</Button>
-            </Link>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <Typography variant='h3'>{resumeDetails.name}</Typography>
+              <Link to='/employee/resumes' style={{ textDecoration: 'none' }}>
+                <Button endIcon={<ArrowForward />}>Back to Resumes</Button>
+              </Link>
+            </Box>
+            <Divider />
             <br />
             <br />
-            <Typography variant='subtitle2'>{resumeDetails.name}</Typography>
             <br />
             {sectorTypes.length > 0 &&
               <>
