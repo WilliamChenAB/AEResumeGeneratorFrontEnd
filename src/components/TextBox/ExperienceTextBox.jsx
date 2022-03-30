@@ -53,16 +53,16 @@ export default function ExperienceTextBox({ sectorId, text, divisionIn, imageLin
     return (
       <Box sx={{ margin: 2, height: '100%' }}>
         <Box sx={{ display: 'flex', flexDirection: 'row' }}>
-          <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%', justifyContent: 'center'}}>
             <Box>
-              <Typography ref={descriptionRef} sx={(truncatable && truncate) ? textStyle : { display: 'inline-block' }}>{text}</Typography>
-              {truncatable && truncate && <Typography component='span' color='primary' sx={{ fontWeight: 'bold' }} onClick={(e) => { setTruncate(false); e.stopPropagation(); }}>Read More...</Typography>}
-              {truncatable && !truncate && <Typography component='span' color='primary' sx={{ fontWeight: 'bold' }} onClick={(e) => { setTruncate(true); e.stopPropagation(); }}>Read Less...</Typography>}
+              <Typography style={{whiteSpace: 'pre-line'}} ref={descriptionRef} sx={(truncatable && truncate) ? textStyle : { display: 'inline-block' }}>{text}</Typography>
             </Box>
+            {truncatable && truncate && <Box mt={1}><Typography component='span' color='primary' sx={{ fontWeight: 'bold' }} onClick={(e) => { setTruncate(false); e.stopPropagation(); }}>Read More...</Typography></Box>}
+            {truncatable && !truncate && <Box mt={1}><Typography component='span' color='primary' sx={{ fontWeight: 'bold' }} onClick={(e) => { setTruncate(true); e.stopPropagation(); }}>Read Less...</Typography></Box>}
             <br />
             {divisionIn && <Typography component='div' sx={{ fontWeight: 'bold' }}>{`Division: ${divisionIn}`}</Typography>}
           </Box>
-          {imageLinkIn && <Avatar variant='rounded' alt={imageLinkIn} src={picture} sx={{ borderRadius: 4, width: 150, height: 150, margin: 3, textAlign: 'center', wordWrap: 'break-word' }}>{imageLinkIn}</Avatar>}
+          {imageLinkIn && <Box mx={3} my={2}><Avatar variant='rounded' alt={imageLinkIn} src={picture} sx={{ borderRadius: 4, width: 150, height: 150, textAlign: 'center', wordWrap: 'break-word' }}>{imageLinkIn}</Avatar></Box>}
         </Box>
       </Box>);
   }
