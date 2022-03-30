@@ -79,13 +79,12 @@ function ProjectWorkspaces() {
     axios.get('/Export/ResumesInWorkspace', {
       params: {
         workspaceId: workspaceObj.key,
-      }
+      },
+      responseType: 'blob',
     }).then((response) => {
       setIsLoading(false);
-      console.log(response.data);
-      const file = new Blob([response.data], { type: 'text/plain;charset=utf-8' })
       return new Promise(resolve => {
-        saveAs(file, 'resumes.zip');
+        saveAs(response.data, 'resumes.zip');
         resolve(true);
       })
     }).catch((error) => {

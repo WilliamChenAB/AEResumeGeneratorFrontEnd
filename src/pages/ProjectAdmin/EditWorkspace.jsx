@@ -69,7 +69,7 @@ function EditWorkspace() {
       setEntries(
         response.data.resumes.map((resume) => {
           return ({
-            name: String(resume.name), error: false
+            name: String(resume.employeeName), error: false
           });
         })
       );
