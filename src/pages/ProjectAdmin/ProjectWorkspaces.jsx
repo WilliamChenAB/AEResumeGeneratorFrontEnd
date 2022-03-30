@@ -22,6 +22,9 @@ function ProjectWorkspaces() {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [deleteWorkspaceOBJ, setDeleteWorkspaceOBJ] = useState({});
   const [openCompleteMessage, setOpenCompleteMessage] = useState(false);
+  const [showExportDialog, setShowExportDialog] = useState(false);
+  const [exportObj, setExportObj] = useState({});
+  const [isExporting, setIsExporting] = useState(false);
 
   const navigate = useNavigate();
 
@@ -73,23 +76,25 @@ function ProjectWorkspaces() {
     });
   }
 
-  const exportResume = (workspaceObj) => {
-    setIsLoading(true);
+  const exportResume = () => {
+    setIsExporting(true);
     setErrorStatus(false);
     axios.get('/Export/ResumesInWorkspace', {
       params: {
-        workspaceId: workspaceObj.key,
+        workspaceId: exportObj.id,
       },
       responseType: 'blob',
     }).then((response) => {
-      setIsLoading(false);
+      setIsExporting(false);
+      setShowExportDialog(false);
       return new Promise(resolve => {
-        saveAs(response.data, 'resumes.zip');
+        saveAs(response.data, `${exportObj.workspaceName}.zip`);
         resolve(true);
       })
     }).catch((error) => {
-      setIsLoading(false);
+      setIsExporting(false);
       setErrorStatus(error.response);
+      setShowExportDialog(false);
     });
   }
 
@@ -118,9 +123,10 @@ function ProjectWorkspaces() {
           </AlertPopup>
         }
         <ConfirmDelete nameToDelete={`workspace ${deleteWorkspaceOBJ?.workspaceName}`} open={showDeleteDialog} onClose={() => { setShowDeleteDialog(false) }} onConfirm={() => { deleteWorkspace() }} isDeleting={isDeleting} />
+        <ConfirmDelete exporting={true} nameToDelete={`workspace ${exportObj?.workspaceName}`} open={showExportDialog} onClose={() => { setShowExportDialog(false) }} onConfirm={() => { exportResume() }} isDeleting={isExporting} />
         {isLoading && <Loading text='Loading Workspaces...' />}
         {!isLoading && errorStatus && <Error text='Error retrieving workspaces.' response={errorStatus}></Error>}
-        {!isLoading && !errorStatus &&
+        {!isLoading &&  !errorStatus &&
           <>
             <Typography variant='h3'>PROPOSAL WORKSPACES</Typography>
             <Box my={3}>
@@ -132,7 +138,7 @@ function ProjectWorkspaces() {
               </Box>
             </Box>
             <AddWorkspace open={showWorkspaceDialog} onClose={() => setShowWorkspaceDialog(false)}></AddWorkspace>
-            <WorkspaceTable onExportClicked={(workspaceObj) => { exportResume(workspaceObj) }} onDeleteClick={(workspaceObj) => { handleDeleteClick(workspaceObj) }} rows={rows} workSpaceExpanded={(id) => { navigate('/project/workspaces/'.concat(id)) }} />
+            <WorkspaceTable onExportClicked={(workspaceObj) => { setExportObj(workspaceObj); setShowExportDialog(true) }} onDeleteClick={(workspaceObj) => { handleDeleteClick(workspaceObj) }} rows={rows} workSpaceExpanded={(id) => { navigate('/project/workspaces/'.concat(id)) }} />
           </>
         }
       </Box>
