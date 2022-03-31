@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef} from 'react';
+import { useEffect, useState} from 'react';
 import { Button, Divider, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, Box, Typography } from '@mui/material';
 import { Close } from '@mui/icons-material';
 import SideBarTabs from '../components/SideBarTabs'
@@ -28,11 +28,9 @@ function ResumeSelection({ employeeName, open, employeeId, onClose, onSubmit, su
   const [resumes, setResumes] = useState([]);
   const [currentSectors, setCurrentSectors] = useState([]);
 
-  const debouncedSearch = useRef(
-    debounce(async (criteria) => {
-      searchResumes(criteria);
-    }, 300)
-  ).current;
+  const debouncedSearch = debounce(async (criteria) => {
+    searchResumes(criteria);
+  }, 300);
 
   const searchResumes = (search) => {
     setIsLoading(true);

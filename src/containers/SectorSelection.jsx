@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState} from 'react';
 import { Button, Divider, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, Box, Typography } from '@mui/material';
 import { Close } from '@mui/icons-material';
 import SideBarTabs from '../components/SideBarTabs'
@@ -33,11 +33,9 @@ function SectorSelection({ title, open, onClose, onSubmit, targetEid = false, su
   const [search, setSearch] = useState('');
 
 
-  const debouncedSearch = useRef(
-    debounce(async (criteria) => {
-      searchSectors(criteria);
-    }, 300)
-  ).current;
+  const debouncedSearch = debounce(async (criteria) => {
+    searchSectors(criteria);
+  }, 300);
 
   useEffect(() => {
     if (open && !singleSectorTypeObj) {
@@ -193,7 +191,7 @@ function SectorSelection({ title, open, onClose, onSubmit, targetEid = false, su
                 {sectors.filter((sector) => {
                   return sector.type === sectorTypes[activeTab]?.id;
                 }).sort(sorting).map((sector) => {
-                  if (filteredSectors === false || search === '' || filteredSectors.filter((filterSector) => sector.id == filterSector.sectorId).length > 0) {
+                  if (filteredSectors === false || search === '' || filteredSectors.find((filterSector) => sector.id == filterSector.sectorId)) {
                     return (
                       <Box mb={5} key={sector.id}>
                         <ExperienceTextBox imageLinkIn={sector.image} divisionIn={sector.division} key={sector.id} sectorId={sector.id} text={sector.content} selectState={sector.selected} onSelect={() => { sector.selected = !sector.selected }} header={`Resume: ${sector.resumeName}`} footer={`Date Created: ${sector.createDate}`} hideEdit selectable={submittable} />
