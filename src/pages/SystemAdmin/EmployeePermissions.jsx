@@ -87,7 +87,7 @@ function EmployeePermissions() {
           <br />
           <br />
           <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-            <Box sx={{ width: '40%' }}>
+            <Box mb={1} sx={{ width: '40%' }}>
               <SearchBar placeholder='Search Employees' onChange={(value) => { tableFilter(value) }}></SearchBar>
             </Box>
           </Box>

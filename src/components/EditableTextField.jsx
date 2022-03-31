@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
-import { Box, IconButton, TextField, Typography } from '@mui/material';
+import { Box, TextField, Typography } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import CheckIcon from '@mui/icons-material/Check';
 import ClickAwayListener from '@mui/material/ClickAwayListener';
+import CustomIconButton from './CustomIconButton';
 
-export default function EditableTextField({ templateText, setTemplateText, tabClicked }) {
+export default function EditableTextField({ tooltipEditText, tooltipSaveText, templateText, setTemplateText, tabClicked }) {
   const [edit, setEdit] = useState(false);
   const [text, setText] = useState(templateText);
   const handleChange = (e) => {
@@ -43,18 +44,18 @@ export default function EditableTextField({ templateText, setTemplateText, tabCl
                 variant='standard'
                 onChange={(e) => handleChange(e)}
               />
-              {text !== '' && <IconButton onClick={() => saveChange()}>
+              {text !== '' && <CustomIconButton tooltipText={tooltipSaveText} tooltipPlacement='right-end' onClick={() => saveChange()}>
                 <CheckIcon />
-              </IconButton>
+              </CustomIconButton>
               }
             </Box>
           </ClickAwayListener>
         </> :
         <>
           <Typography variant='h3'>{text.toUpperCase()}</Typography>
-          <IconButton onClick={() => setEdit(true)}>
+          <CustomIconButton tooltipText={tooltipEditText} tooltipPlacement='right-end' onClick={() => setEdit(true)}>
             <EditIcon />
-          </IconButton>
+          </CustomIconButton>
         </>
       }
     </Box>

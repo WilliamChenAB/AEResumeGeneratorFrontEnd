@@ -191,11 +191,11 @@ function EditTemplate() {
         </AlertPopup>
       }
       {(isLoading || firstRender) && <Loading text='Loading Template...' />}
-      {!isLoading && errorStatus && <Error text='Error retrieving resume.' response={errorStatus}></Error>}
+      {!isLoading && errorStatus && <Error text='Error retrieving template.' response={errorStatus}></Error>}
       {!isLoading && !firstRender && !errorStatus &&
         <>
           <Box m={1.5} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <EditableTextField templateText={templateName} setTemplateText={setTemplateName} tabClicked={activeTemplateTab} />
+            <EditableTextField tooltipEditText='Edit template name' tooltipSaveText='Save template name' templateText={templateName} setTemplateText={setTemplateName} tabClicked={activeTemplateTab} />
                 <Link to='/system/templates' style={{ textDecoration: 'none' }}>
                   <Button endIcon={<ArrowForward />}>Back to Templates</Button>
                 </Link>
@@ -212,7 +212,7 @@ function EditTemplate() {
             </Box>
             {entries.length > 0 &&
               <Box m={4} sx={{ width: '100%' }}>
-                <EditableTextField templateText={entries[activeTemplateTab].name} setTemplateText={saveSectorTypeName} tabClicked={activeTemplateTab} />
+                <EditableTextField tooltipEditText='Edit sector type name' tooltipSaveText='Save sector type name' templateText={entries[activeTemplateTab].name} setTemplateText={saveSectorTypeName} tabClicked={activeTemplateTab} />
                 <Box my={3}>
                   <TextBox rows={5} hideEdit></TextBox>
                 </Box>

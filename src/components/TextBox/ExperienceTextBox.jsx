@@ -2,11 +2,11 @@ import { useState, useRef, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import { Avatar, CardActionArea, Typography } from '@mui/material';
-import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddExperience from '../../containers/AddExperience';
 import { colorToken } from '../../theme/colorToken';
+import CustomIconButton from '../../components/CustomIconButton';
 
 const textStyle = {
   maxWidth: '100%',
@@ -90,8 +90,8 @@ export default function ExperienceTextBox({ sectorId, text, divisionIn, imageLin
       </Box>
       {!hideEdit &&
         <Box sx={{ mb: 3, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-          <IconButton onClick={() => { setOpenDialog(true) }}><EditIcon /></IconButton>
-          <IconButton onClick={() => { onDelete() }}><DeleteIcon /></IconButton>
+          <CustomIconButton tooltipText='Edit sector' onClick={() => { setOpenDialog(true) }}><EditIcon /></CustomIconButton>
+          <CustomIconButton tooltipText='Delete sector' onClick={() => { onDelete() }}><DeleteIcon /></CustomIconButton>
         </Box>
       }
       <AddExperience startingImage={imageLinkIn} startingDiv={divisionIn} startingContent={text} open={dialogOpen} onClose={onEditDialogClose}></AddExperience>
