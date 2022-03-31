@@ -73,7 +73,7 @@ function App() {
         {!isLoading && errorStatus && <Error text='Error loading application.' response={errorStatus}></Error>}
         {!isLoading && !errorStatus &&
           <Routes>
-            <Route path='/' element={<Navigate to='/employee' replace />} />
+            <Route path='/' element={<RequireAuth><DefaultScreen /></RequireAuth>} />
             <Route path='/auth/login-callback' element={<Callback />} />
             <Route path='login' element={<LoginPage />} />
             <Route path='employee' element={<RequireAuth access={0}><EmployeePage /></RequireAuth>}>
@@ -140,4 +140,20 @@ function RequireAuth({ children, access = 0 }) {
   }
 
   return <Navigate to='/login' state={{ from: location }} replace />;
+}
+
+function DefaultScreen() {
+  const role = useSelector(userSelectors.getAccess);
+
+  if (role === -1) {
+    return <div>Loading...</div>
+  }
+
+  if (role === 0) {
+    return <Navigate to='/employee' replace />;
+  } else if (role === 1) {
+    return <Navigate to='/project' replace />;
+  } else if (role === 2) {
+    return <Navigate to='/system' replace />;
+  }
 }

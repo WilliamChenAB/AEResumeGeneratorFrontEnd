@@ -5,7 +5,7 @@ const userManager = new UserManager({ ...oidcConfig, response_mode: 'query' });
 
 function Callback() {
   userManager.signinRedirectCallback().then(() => {
-    window.location = '/employee';
+    window.location = '/';
   }).catch((error) => {
     return <div>Oops... there was an unexpected authentication error. Please try again later.</div>;
   });
