@@ -2,8 +2,8 @@ import StyledTable from './StyledTable/StyledTable';
 
 const columns = [
   { field: 'name', headerName: 'Name', flex: 0.5, minWidth: 200 },
-  { field: 'id', headerName: 'Employee ID', flex: 0.5, minWidth: 200 },
-  { field: 'role', headerName: 'Role', flex: 0.5, minWidth: 200 },
+  { field: 'jobTitle', headerName: 'Job Title', flex: 0.5, minWidth: 200 },
+  { field: 'access', headerName: 'Access Level', flex: 0.5, minWidth: 200}
 ];
 
 export default function WorkspaceEmoployeeTable({ rows, onSelect }) {

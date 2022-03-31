@@ -25,7 +25,7 @@ function EmployeeDatabase() {
         return {
           id: employee.employeeId,
           name: employee.name,
-          role: employee.jobTitle,
+          jobTitle: employee.jobTitle,
           email: employee.email,
         };
       });
@@ -40,7 +40,7 @@ function EmployeeDatabase() {
 
   const tableFilter = (value) => {
     const filteredRows = data.filter((row) => {
-      return row.name.toLowerCase().includes(value.toLowerCase());
+      return row.name.toLowerCase().includes(value.toLowerCase()) || row.jobTitle.toLowerCase().includes(value.toLowerCase()) || row.email.toLowerCase().includes(value.toLowerCase());
     });
     setRows(filteredRows);
   }

@@ -76,13 +76,15 @@ function Resume() {
             name: sector.typeTitle || 'untitled',
             template: false,
             error: false,
+            content: sector.content
           };
         });
         let typesUnique = [...typesTemplate]
         for (const typeResume of typesResume) {
+          const foundErr = typesUnique.find(type => (type.id === typeResume.id && typeResume.content !== ''));
           let found = typesUnique.find(type => type.id === typeResume.id);
           if (found) {
-            found.error = false;
+            foundErr? found.error = false : found.error = true;
           } else {
             typesUnique.push(typeResume);
           }

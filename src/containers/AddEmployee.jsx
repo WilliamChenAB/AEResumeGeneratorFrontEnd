@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Button, IconButton, Dialog, DialogTitle, DialogContent, Box } from '@mui/material';
+import { Button, IconButton, Dialog, DialogTitle, DialogContent, Box, Tooltip} from '@mui/material';
 import { Close } from '@mui/icons-material';
 import WorkSpaceEmployeeTable from '../components/Table/WorkspaceEmployeeTable';
 import SearchBar from '../components/SearchBar';
@@ -38,7 +38,8 @@ function AddEmployee({ open, onClose, workspaceId, wname }) {
           return {
             id: employee.employeeId,
             name: `${employee.name}`, // force name to be string
-            role: employee.access //Change to role
+            jobTitle: employee.jobTitle,
+            access: employee.access === 0? "Employee" : employee.access === 1? "Project Admin": "System Admin"
           };
         });
         setData(responseData);
@@ -57,7 +58,7 @@ function AddEmployee({ open, onClose, workspaceId, wname }) {
 
   const tableFilter = (searchVal) => {
     const filteredRows = data.filter((row) => {
-      return String(row.name).toLowerCase().includes(searchVal.toLowerCase()) || String(row.id).toLowerCase().includes(searchVal.toLowerCase()) || String(row.role).toLowerCase().includes(searchVal.toLowerCase());
+      return String(row.name).toLowerCase().includes(searchVal.toLowerCase()) || String(row.jobTitle).toLowerCase().includes(searchVal.toLowerCase()) || String(row.access).toLowerCase().includes(searchVal.toLowerCase());
     });
     setRows(filteredRows);
   }
@@ -117,7 +118,7 @@ function AddEmployee({ open, onClose, workspaceId, wname }) {
       setIsLoading(false);
       setOpenCompleteMessage({
         type: 'success',
-        text: `resume Requested for employee ${employeeId}.`
+        text: `resume Requested for employee ${employeeName}.`
       });
       setEmployeeId('');
       handleClose(true);
@@ -147,7 +148,7 @@ function AddEmployee({ open, onClose, workspaceId, wname }) {
       setIsLoading(false);
       setOpenCompleteMessage({
         type: 'success',
-        text: `Copied resume for employee ${employeeId}.`
+        text: `Copied resume for employee ${employeeName}.`
       });
       setEmployeeId('');
       handleClose(true);
@@ -189,9 +190,21 @@ function AddEmployee({ open, onClose, workspaceId, wname }) {
               </Box>
               <WorkSpaceEmployeeTable rows={rows} onSelect={(id) => { setEmployeeName(rows.filter((row) => row.id === id[0])[0].name); setEmployeeId(id[0]) }} />
               <Box my={1} mx={2} sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around' }}>
-                <Button variant='contained' onClick={handleNewResumeRequest} disabled={(employeeId === '' || chosenTemplate === '') ? true : false}>Request New Resume</Button>
-                <Button variant='contained' onClick={handleFromResume} disabled={(employeeId === '') ? true : false}>Import Existing Resume</Button>
-                <Button variant='contained' onClick={handleNew} disabled={(employeeId === '' || chosenTemplate === '') ? true : false}>Add New Empty Resume</Button>
+                <Tooltip title='Target Employee and template required' placement='top'>
+                  <span>
+                    <Button variant='contained' onClick={handleNewResumeRequest} disabled={(employeeId === '' || chosenTemplate === '') ? true : false}>Request New Resume</Button>
+                  </span>
+                </Tooltip>
+                <Tooltip title='Target Employee required' placement='top'>
+                  <span>
+                    <Button variant='contained' onClick={handleFromResume} disabled={(employeeId === '') ? true : false}>Import Existing Resume</Button>
+                  </span>
+                </Tooltip>
+                <Tooltip title='Target Employee and template required' placement='top'>
+                  <span>
+                    <Button variant='contained' onClick={handleNew} disabled={(employeeId === '' || chosenTemplate === '') ? true : false}>Add New Empty Resume</Button>
+                  </span>
+                </Tooltip>
               </Box>
             </>}
         </DialogContent>

@@ -27,6 +27,9 @@ function EditWorkspace() {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [deleteSectorId, setDeleteSectorId] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isDeletingResume, setIsDeletingResume] = useState(false);
+  const [showDeleteDialogResume, setShowDeleteDialogResume] = useState(false);
+  const [deleteResumeObj, setDeleteResumeObj] = useState({});
   const [workSpace, setWorkspace] = useState({});
   const [entries, setEntries] = useState([]);
   const [resumes, setResumes] = useState([]);
@@ -229,9 +232,16 @@ function EditWorkspace() {
       let retArray = [];
       resume.sectorList.map((sector) => {
         if (retArray.filter(entry => entry.name === sector.typeTitle).length === 0) {
-          retArray.push({ name: sector.typeTitle, error: false, id: sector.typeId });
+          retArray.push({ name: sector.typeTitle, error: true, id: sector.typeId});
         }
       });
+
+      resume.sectorList.map((sector) => {
+        let found = retArray.find(entry => entry.id === sector.typeId && sector.content !== '');
+        if(found){
+          found.error = false;
+        }
+      })
 
       const template = templates[activeEmployeeTab];
       if (template !== undefined && template !== null) {
@@ -242,12 +252,6 @@ function EditWorkspace() {
           }
         });
       }
-
-      // if(retArray[activeSectorTypeTab] === null || retArray[activeSectorTypeTab] === undefined){
-      //   setActiveSectorTypeTab(0);
-      // }
-
-      //TODO: add templates here
       return retArray;
     }
     return null;
@@ -279,6 +283,30 @@ function EditWorkspace() {
       });
     });
   }
+
+  const deleteResume = () => {
+    setIsDeletingResume(true);
+    axios.delete('/Resume/Delete', {
+      params: {
+        resumeId: deleteResumeObj.resumeId,
+      }
+    }).then((response) => {
+      setIsDeletingResume(false);
+      setOpenCompleteMessage({
+        type: 'success',
+        text: `Resume ${deleteResumeObj.name} has been permanently deleted.`
+      });
+      setShowDeleteDialogResume(false);
+      getWorkspace();
+    }).catch((error) => {
+      setShowDeleteDialogResume(false);
+      setOpenCompleteMessage({
+        type: 'error',
+        text: `An error occurred while deleting resume. (${error.response.status} ${error.response.statusText})`
+      });
+      setShowDeleteDialog(false);
+    });
+  };
 
   const drawSectors = () => {
     if (activeEmployeeTab === -1) {
@@ -387,6 +415,13 @@ function EditWorkspace() {
               </Box>
               {
                 activeEmployeeTab !== -1 && workSpace && entries[activeEmployeeTab] && activeSectorTypeTab !== -1 && drawSectors()
+              }
+              {
+                activeEmployeeTab !== -1 && workSpace && entries[activeEmployeeTab] &&                
+                <Box sx={{ display: 'flex', justifyContent: 'flex-end', position: 'fixed', bottom: 10, right: 10 }}>
+                  <ConfirmDelete nameToDelete={`resume ${deleteResumeObj?.name}`} open={showDeleteDialogResume} onClose={() => { setShowDeleteDialogResume(false) }} onConfirm={() => { deleteResume() }} isDeleting={isDeletingResume} />
+                  <Button variant='contained' color='secondary' sx={{ color: 'white' }} onClick={() => { setDeleteResumeObj(resumes[activeEmployeeTab]); setShowDeleteDialogResume(true);}}>Delete Resume</Button>
+                </Box>
               }
             </Box>
           </>

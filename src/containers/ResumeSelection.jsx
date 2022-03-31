@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef} from 'react';
 import { Button, Divider, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, Box, Typography } from '@mui/material';
 import { Close } from '@mui/icons-material';
 import SideBarTabs from '../components/SideBarTabs'
 import SearchBar from '../components/SearchBar';
 import ExperienceTextBox from '../components/TextBox/ExperienceTextBox';
 import { colorToken } from '../theme/colorToken';
+import { debounce } from "lodash"
 import Loading from '../components/Loading';
 import Error from '../components/Error';
 import axios from 'axios';
@@ -26,28 +27,35 @@ function ResumeSelection({ employeeName, open, employeeId, onClose, onSubmit, su
   const [activeTab, setActiveTab] = useState(0);
   const [resumes, setResumes] = useState([]);
   const [currentSectors, setCurrentSectors] = useState([]);
-  const [search, setSearch] = useState('');
 
-  const searchResumes = () => {
-    if (search !== '') {
-      setIsLoading(true);
-      setErrorStatus(false);
-      axios.get('/Search/AllEmployeeResumes', {
-        params: {
-          filter: search,
-          employeeId: employeeId,
-        }
-      }).then((response) => {
-        setResumes(response.data);
-        if (resumes.length > 0) {
-          handleResumeClicked(0);
-        }
-        setIsLoading(false);
-      }).catch((error) => {
-        setIsLoading(false);
-        setErrorStatus(error.response);
-      });
-    }
+  const debouncedSearch = useRef(
+    debounce(async (criteria) => {
+      searchResumes(criteria);
+    }, 300)
+  ).current;
+
+  const searchResumes = (search) => {
+    setIsLoading(true);
+    setErrorStatus(false);
+    axios.get('/Search/AllEmployeeResumes', {
+      params: {
+        filter: search,
+        employeeId: employeeId,
+      }
+    }).then((response) => {
+      setResumes(response.data);
+      if (response.data !== null && response.data.length !== undefined && response.data.length > 0) {
+        handleResumeClicked(0, response.data);
+      }
+      else{
+        setCurrentSectors([]);
+      }
+      setIsLoading(false);
+    }).catch((error) => {
+      setIsLoading(false);
+      setErrorStatus(error.response);
+    });
+
   }
 
   const getResumes = () => {
@@ -59,8 +67,8 @@ function ResumeSelection({ employeeName, open, employeeId, onClose, onSubmit, su
       }
     }).then((response) => {
       setResumes(response.data);
-      if (resumes.length > 0) {
-        handleResumeClicked(0);
+      if (response.data !== null && response.data.length !== undefined && response.data.length > 0) {
+        handleResumeClicked(0, response.data);
       }
       setIsLoading(false);
     }).catch((error) => {
@@ -76,19 +84,18 @@ function ResumeSelection({ employeeName, open, employeeId, onClose, onSubmit, su
   }, [open]);
 
   const handleClose = (success) => {
-    setSearch('');
     setCurrentSectors([]);
     onClose(success);
   }
 
 
-  const handleResumeClicked = (tabNum) => {
+  const handleResumeClicked = (tabNum, array) => {
     setActiveTab(tabNum);
     setIsLoadingReusme(true);
     setErrorStatus(false);
     axios.get('/Resume/Get', {
       params: {
-        resumeId: resumes[tabNum].resumeId,
+        resumeId: array[tabNum].resumeId,
       }
     }).then((response) => {
       setCurrentSectors(response.data.sectorList);
@@ -125,11 +132,7 @@ function ResumeSelection({ employeeName, open, employeeId, onClose, onSubmit, su
         </DialogTitle>
         <Box sx={{ pb: 1, pl: 2, display: 'flex', flexDirection: 'row' }}>
           <Box sx={{ width: '50%' }}>
-            <SearchBar defaultValue='' placeholder='Search Resumes' onChange={(value) => { setSearch(value) }}></SearchBar>
-          </Box>
-          <Box sx={{ pl: 2, width: '20%', display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-            <Button variant='outlined' onClick={searchResumes}>Search</Button>
-            <Button variant='outlined' onClick={() => { getResumes() }}>Clear</Button>
+            <SearchBar defaultValue='' placeholder='Search Resumes' onChange={(value) => { debouncedSearch(value);}}></SearchBar>
           </Box>
         </Box>
         <Divider color='primary' />
@@ -145,7 +148,7 @@ function ResumeSelection({ employeeName, open, employeeId, onClose, onSubmit, su
                   color={colorToken.brand.aeBlueLight}
                   selectedColor={colorToken.brand.aeBlueMid}
                   textColor={colorToken.greyPalette.aeBlue}
-                  onEntryClick={(tabNum) => { handleResumeClicked(tabNum) }}
+                  onEntryClick={(tabNum) => { handleResumeClicked(tabNum, resumes) }}
                   selected={activeTab} />
               </Box>
               <Divider color='primary' orientation='vertical' flexItem />

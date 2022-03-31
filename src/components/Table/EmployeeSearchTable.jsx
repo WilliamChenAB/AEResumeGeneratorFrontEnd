@@ -6,7 +6,7 @@ export default function EmployeeSearchTable({ rows, resumesClicked, sectorsClick
   const columns = [
     { field: 'name', headerName: 'Name', flex: 0.5, minWidth: 180 },
     { field: 'email', headerName: 'Email Address', flex: 0.5, minWidth: 200 },
-    { field: 'role', headerName: 'Role', flex: 0.2, minWidth: 150 },
+    { field: 'jobTitle', headerName: 'Job Title', flex: 0.2, minWidth: 150 },
     {
       field: 'resumeAction',
       headerName: 'Action',

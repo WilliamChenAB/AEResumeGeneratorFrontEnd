@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Button, Divider, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, Box, Typography } from '@mui/material';
 import { Close } from '@mui/icons-material';
 import SideBarTabs from '../components/SideBarTabs'
@@ -6,6 +6,7 @@ import SearchBar from '../components/SearchBar';
 import ExperienceTextBox from '../components/TextBox/ExperienceTextBox';
 import { colorToken } from '../theme/colorToken';
 import Loading from '../components/Loading';
+import { debounce } from "lodash"
 import Error from '../components/Error';
 import SortButton from '../components/SortButton';
 import axios from 'axios';
@@ -30,6 +31,13 @@ function SectorSelection({ title, open, onClose, onSubmit, targetEid = false, su
   const [sectorTypes, setSectorTypes] = useState([]);
   const [sortState, setSortState] = useState(0);
   const [search, setSearch] = useState('');
+
+
+  const debouncedSearch = useRef(
+    debounce(async (criteria) => {
+      searchSectors(criteria);
+    }, 300)
+  ).current;
 
   useEffect(() => {
     if (open && !singleSectorTypeObj) {
@@ -116,24 +124,21 @@ function SectorSelection({ title, open, onClose, onSubmit, targetEid = false, su
     }
   }
 
-  const searchSectors = () => {
-    if (search !== '') {
-      setIsLoading(true);
-      setErrorStatus(false);
-      const url = targetEid ? '/Search/EmployeeSectors' : '/Search/OwnSectors';
-      const params = targetEid ? { params: { filter: search, EmployeeId: targetEid, } } : { params: { filter: search } };
-      axios.get(url, params).then((response) => {
-        setFilteredSectors(response.data);
-        setIsLoading(false);
-      }).catch((error) => {
-        setIsLoading(false);
-        setErrorStatus(error.response);
-      });
-    }
+  const searchSectors = (search) => {
+    setIsLoading(true);
+    setErrorStatus(false);
+    const url = targetEid ? '/Search/EmployeeSectors' : '/Search/OwnSectors';
+    const params = targetEid ? { params: { filter: search, EmployeeId: targetEid, } } : { params: { filter: search } };
+    axios.get(url, params).then((response) => {
+      setFilteredSectors(response.data);
+      setIsLoading(false);
+    }).catch((error) => {
+      setIsLoading(false);
+      setErrorStatus(error.response);
+    });
   }
 
   const handleClose = (success) => {
-    setSearch('');
     setSortState(0);
     onClose(success);
   }
@@ -157,11 +162,7 @@ function SectorSelection({ title, open, onClose, onSubmit, targetEid = false, su
         </DialogTitle>
         <Box sx={{ pb: 1, pl: 2, display: 'flex', flexDirection: 'row' }}>
           <Box sx={{ width: '50%' }}>
-            <SearchBar defaultValue='' placeholder='Search Sectors' onChange={(value) => { setSearch(value) }}></SearchBar>
-          </Box>
-          <Box sx={{ pl: 2, width: '20%', display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-            <Button variant='outlined' onClick={searchSectors}>Search</Button>
-            <Button variant='outlined' onClick={() => { setFilteredSectors(false) }}>Clear</Button>
+            <SearchBar defaultValue='' placeholder='Search Sectors' onChange={(value) => { setSearch(value);debouncedSearch(value)}}></SearchBar>
           </Box>
         </Box>
         <Divider color='primary' />
@@ -192,7 +193,7 @@ function SectorSelection({ title, open, onClose, onSubmit, targetEid = false, su
                 {sectors.filter((sector) => {
                   return sector.type === sectorTypes[activeTab]?.id;
                 }).sort(sorting).map((sector) => {
-                  if (filteredSectors === false || filteredSectors.filter((filterSector) => sector.id == filterSector.sectorId).length > 0) {
+                  if (filteredSectors === false || search === '' || filteredSectors.filter((filterSector) => sector.id == filterSector.sectorId).length > 0) {
                     return (
                       <Box mb={5} key={sector.id}>
                         <ExperienceTextBox imageLinkIn={sector.image} divisionIn={sector.division} key={sector.id} sectorId={sector.id} text={sector.content} selectState={sector.selected} onSelect={() => { sector.selected = !sector.selected }} header={`Resume: ${sector.resumeName}`} footer={`Date Created: ${sector.createDate}`} hideEdit selectable={submittable} />
