@@ -32,7 +32,7 @@ function ProjectWorkspaces() {
     setIsDeleting(true);
     axios.delete('/Workspace/Delete', {
       params: {
-        workspaceId: deleteWorkspaceOBJ.key,
+        workspaceId: deleteWorkspaceOBJ.id,
       }
     }).then((response) => {
       setIsDeleting(false);
