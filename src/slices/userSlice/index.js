@@ -28,6 +28,9 @@ export const userSlice = createSlice({
     editEmail(state, { payload }) {
       return { ...state, email: payload };
     },
+    editAccess(state, { payload }) {
+      return { ...state, access: payload}
+    }
   }
 });
 

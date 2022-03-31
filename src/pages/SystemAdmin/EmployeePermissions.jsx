@@ -7,12 +7,19 @@ import Loading from '../../components/Loading';
 import Error from '../../components/Error';
 import ConfirmAccessChange from '../../containers/ConfirmAccessChange';
 import AlertPopup from '../../components/AlertPopup';
+import { useDispatch, useSelector } from 'react-redux';
+import { userSelectors, userActions } from '../../slices/userSlice';
+import { useNavigate } from 'react-router-dom';
+
 
 const createRow = (data) => {
   return { name: data.name, id: data.employeeId, role: data.jobTitle, access: data.access, email: data.email }
 }
 
 function EmployeePermissions() {
+  const dispatch = useDispatch();
+  let navigate = useNavigate();
+  
   const [isLoading, setIsLoading] = useState(false);
   const [errorStatus, setErrorStatus] = useState(false);
   const [employees, setEmployees] = useState([]);
@@ -22,6 +29,11 @@ function EmployeePermissions() {
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [newAccess, setNewAccess] = useState(0);
+
+  const selfEmployeeID = useSelector(userSelectors.getEid);
+  const SYS_ADMIN_ACCESS_NUM = 2;
+  const PROJ_ADMIN_ACCESS_NUM = 1;
+
 
   const getAllUserPermissions = () => {
     setIsLoading(true);
@@ -44,18 +56,33 @@ function EmployeePermissions() {
     setShowEditDialog(false);
     setIsLoading(true);
     setErrorStatus(false);
-
     axios.post('/Employee/AssignAccess', null, {
       params: {
         employeeId: id,
         access: accessNum,
       }
     }).then((response) => {
-      getAllUserPermissions();
+      if (id === selfEmployeeID) {
+        dispatch(userActions.editAccess(accessNum));
+        if (accessNum !== SYS_ADMIN_ACCESS_NUM) {
+          redirectAccessPage(accessNum);
+        }
+      } else {
+        getAllUserPermissions();
+      }
     }).catch((error) => {
       setIsLoading(false);
       setErrorStatus(error.response);
     });
+  }
+
+  const redirectAccessPage = (accessNum) => {
+    if (accessNum === PROJ_ADMIN_ACCESS_NUM) {
+      navigate('/project/workspaces', { replace: true });
+    }
+    else {
+      navigate('/employee/resumes', { replace: true });
+    }
   }
 
   const editEmployeeAccess = (employee, newAccess) => {
