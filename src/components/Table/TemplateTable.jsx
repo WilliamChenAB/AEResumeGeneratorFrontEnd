@@ -1,14 +1,10 @@
-import * as React from 'react';
 import StyledTable from './StyledTable/StyledTable';
 import { IconButton, Tooltip } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import TextButton from '../TextButton';
+import { formatToLocalTime } from '../../utils/DateTime';
 
-// TODO: update on click
-
-// TODO: replace mock data with BE data, id to be template id
-
-export default function TemplateTable({rows, onSelectClick, handleSelect, onDeleteClick }) {
+export default function TemplateTable({ rows, onSelectClick, handleSelect, onDeleteClick }) {
   const columns = [
     {
       field: 'name',
@@ -19,7 +15,15 @@ export default function TemplateTable({rows, onSelectClick, handleSelect, onDele
         return <TextButton onClick={() => handleSelect(params.row.id)} text={params.row.name} />
       }
     },
-    { field: 'updateDate', headerName: 'Last Updated', flex: 0.5, minWidth: 125 },
+    {
+      field: 'updateDate',
+      headerName: 'Last Updated',
+      flex: 0.5,
+      minWidth: 125,
+      renderCell: (params) => {
+        return formatToLocalTime(params.row.updateDate);
+      }
+    },
     {
       field: 'action',
       headerName: 'Action',
@@ -41,7 +45,7 @@ export default function TemplateTable({rows, onSelectClick, handleSelect, onDele
 
   return (
     <div style={{ height: 400, width: '100%' }}>
-      <StyledTable columns={columns} rows={rows} onSelect={onSelectClick}/>
+      <StyledTable columns={columns} rows={rows} onSelect={onSelectClick} />
     </div>
   );
 }

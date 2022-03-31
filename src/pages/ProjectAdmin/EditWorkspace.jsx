@@ -16,6 +16,7 @@ import Loading from '../../components/Loading';
 import Error from '../../components/Error';
 import axios from 'axios';
 import Divider from '@mui/material/Divider';
+import { formatToLocalTime } from '../../utils/DateTime';
 
 function EditWorkspace() {
   const [isLoading, setIsLoading] = useState(false);
@@ -232,13 +233,13 @@ function EditWorkspace() {
       let retArray = [];
       resume.sectorList.map((sector) => {
         if (retArray.filter(entry => entry.name === sector.typeTitle).length === 0) {
-          retArray.push({ name: sector.typeTitle, error: true, id: sector.typeId});
+          retArray.push({ name: sector.typeTitle, error: true, id: sector.typeId });
         }
       });
 
       resume.sectorList.map((sector) => {
         let found = retArray.find(entry => entry.id === sector.typeId && sector.content !== '');
-        if(found){
+        if (found) {
           found.error = false;
         }
       })
@@ -376,7 +377,7 @@ function EditWorkspace() {
                   sectorId={sector.sectorId}
                   text={sector.content}
                   onDelete={() => { handleDeleteSectorClick(sector.sectorId) }}
-                  footer={`Last Updated: ${sector.lastEditedDate}`}
+                  footer={`Last Updated: ${formatToLocalTime(sector.lastEditedDate)}`}
                   onEdit={(sectorId, newDivision, newImageLink, newDescription) => { editSector(sectorId, newDivision, newImageLink, newDescription) }} />
               </Box>
             )
@@ -408,19 +409,19 @@ function EditWorkspace() {
                 <Link to='/project/workspaces' style={{ textDecoration: 'none' }}>
                   <Button endIcon={<ArrowForward />}>Back to Workspaces</Button>
                 </Link>
-                
+
               </Box>
               <Box my={2}>
-                <Divider variant='middle'/>
+                <Divider variant='middle' />
               </Box>
               {
                 activeEmployeeTab !== -1 && workSpace && entries[activeEmployeeTab] && activeSectorTypeTab !== -1 && drawSectors()
               }
               {
-                activeEmployeeTab !== -1 && workSpace && entries[activeEmployeeTab] &&                
+                activeEmployeeTab !== -1 && workSpace && entries[activeEmployeeTab] &&
                 <Box sx={{ display: 'flex', justifyContent: 'flex-end', position: 'fixed', bottom: 10, right: 10 }}>
                   <ConfirmDelete nameToDelete={`resume ${deleteResumeObj?.name}`} open={showDeleteDialogResume} onClose={() => { setShowDeleteDialogResume(false) }} onConfirm={() => { deleteResume() }} isDeleting={isDeletingResume} />
-                  <Button variant='contained' color='secondary' sx={{ color: 'white' }} onClick={() => { setDeleteResumeObj(resumes[activeEmployeeTab]); setShowDeleteDialogResume(true);}}>Delete Resume</Button>
+                  <Button variant='contained' color='secondary' sx={{ color: 'white' }} onClick={() => { setDeleteResumeObj(resumes[activeEmployeeTab]); setShowDeleteDialogResume(true); }}>Delete Resume</Button>
                 </Box>
               }
             </Box>

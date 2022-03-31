@@ -1,4 +1,4 @@
-import { useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
 import { Button, Divider, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, Box, Typography } from '@mui/material';
 import { Close } from '@mui/icons-material';
 import SideBarTabs from '../components/SideBarTabs'
@@ -9,6 +9,7 @@ import { debounce } from "lodash"
 import Loading from '../components/Loading';
 import Error from '../components/Error';
 import axios from 'axios';
+import { formatToLocalTime } from '../utils/DateTime';
 
 /**
  * Select Resume popup
@@ -45,7 +46,7 @@ function ResumeSelection({ employeeName, open, employeeId, onClose, onSubmit, su
       if (response.data !== null && response.data.length !== undefined && response.data.length > 0) {
         handleResumeClicked(0, response.data);
       }
-      else{
+      else {
         setCurrentSectors([]);
       }
       setIsLoading(false);
@@ -130,7 +131,7 @@ function ResumeSelection({ employeeName, open, employeeId, onClose, onSubmit, su
         </DialogTitle>
         <Box sx={{ pb: 1, pl: 2, display: 'flex', flexDirection: 'row' }}>
           <Box sx={{ width: '50%' }}>
-            <SearchBar defaultValue='' placeholder='Search Resumes' onChange={(value) => { debouncedSearch(value);}}></SearchBar>
+            <SearchBar defaultValue='' placeholder='Search Resumes' onChange={(value) => { debouncedSearch(value); }}></SearchBar>
           </Box>
         </Box>
         <Divider color='primary' />
@@ -160,7 +161,14 @@ function ResumeSelection({ employeeName, open, employeeId, onClose, onSubmit, su
                         currentSectors.filter((sector) => sector.typeTitle === sectorTypeName).map((sector) => {
                           return (
                             <Box mb={5} key={`box_${sector.sectorId}`}>
-                              <ExperienceTextBox imageLinkIn={sector.image} divisionIn={sector.division} key={sector.sectorId} sectorId={sector.sectorId} text={sector.content} footer={`Date Edited: ${sector.lastEditedDate}`} hideEdit />
+                              <ExperienceTextBox
+                                imageLinkIn={sector.image}
+                                divisionIn={sector.division}
+                                key={sector.sectorId}
+                                sectorId={sector.sectorId}
+                                text={sector.content}
+                                footer={`Last Updated: ${formatToLocalTime(sector.lastEditedDate)}`}
+                                hideEdit />
                             </Box>);
                         })
                       }

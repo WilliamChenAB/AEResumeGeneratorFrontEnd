@@ -1,4 +1,4 @@
-import { useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
 import { Button, Divider, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, Box, Typography } from '@mui/material';
 import { Close } from '@mui/icons-material';
 import SideBarTabs from '../components/SideBarTabs'
@@ -10,6 +10,7 @@ import { debounce } from "lodash"
 import Error from '../components/Error';
 import SortButton from '../components/SortButton';
 import axios from 'axios';
+import { formatToLocalTime } from '../utils/DateTime';
 
 /**
  * Select Sector popup
@@ -160,7 +161,7 @@ function SectorSelection({ title, open, onClose, onSubmit, targetEid = false, su
         </DialogTitle>
         <Box sx={{ pb: 1, pl: 2, display: 'flex', flexDirection: 'row' }}>
           <Box sx={{ width: '50%' }}>
-            <SearchBar defaultValue='' placeholder='Search Sectors' onChange={(value) => { setSearch(value);debouncedSearch(value)}}></SearchBar>
+            <SearchBar defaultValue='' placeholder='Search Sectors' onChange={(value) => { setSearch(value); debouncedSearch(value) }}></SearchBar>
           </Box>
         </Box>
         <Divider color='primary' />
@@ -194,7 +195,18 @@ function SectorSelection({ title, open, onClose, onSubmit, targetEid = false, su
                   if (filteredSectors === false || search === '' || filteredSectors.find((filterSector) => sector.id == filterSector.sectorId)) {
                     return (
                       <Box mb={5} key={sector.id}>
-                        <ExperienceTextBox imageLinkIn={sector.image} divisionIn={sector.division} key={sector.id} sectorId={sector.id} text={sector.content} selectState={sector.selected} onSelect={() => { sector.selected = !sector.selected }} header={`Resume: ${sector.resumeName}`} footer={`Date Created: ${sector.createDate}`} hideEdit selectable={submittable} />
+                        <ExperienceTextBox
+                          imageLinkIn={sector.image}
+                          divisionIn={sector.division}
+                          key={sector.id}
+                          sectorId={sector.id}
+                          text={sector.content}
+                          selectState={sector.selected}
+                          onSelect={() => { sector.selected = !sector.selected }}
+                          header={`Resume: ${sector.resumeName}`}
+                          footer={`Last Updated: ${formatToLocalTime(sector.updateDate)}`}
+                          hideEdit
+                          selectable={submittable} />
                       </Box>)
                   }
                   return (null);

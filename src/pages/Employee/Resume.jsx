@@ -17,6 +17,7 @@ import axios from 'axios';
 import SortButton from '../../components/SortButton';
 import ConfirmResumeSubmit from '../../containers/ConfirmResumeSubmit';
 import Divider from '@mui/material/Divider';
+import { formatToLocalTime } from '../../utils/DateTime';
 
 function Resume() {
   const { resumeId } = useParams();
@@ -84,7 +85,7 @@ function Resume() {
           const foundErr = typesUnique.find(type => (type.id === typeResume.id && typeResume.content !== ''));
           let found = typesUnique.find(type => type.id === typeResume.id);
           if (found) {
-            foundErr? found.error = false : found.error = true;
+            foundErr ? found.error = false : found.error = true;
           } else {
             typesUnique.push(typeResume);
           }
@@ -339,7 +340,7 @@ function Resume() {
                         sectorId={sector.id}
                         text={sector.content}
                         onDelete={() => { handleDeleteSectorClick(sector.id) }}
-                        footer={`Last Updated: ${sector.updateDate}`}
+                        footer={`Last Updated: ${formatToLocalTime(sector.updateDate)}`}
                         onEdit={(sectorId, newDivision, newImageLink, newDescription) => { editSector(sectorId, newDivision, newImageLink, newDescription) }} />
                     </Box>)
                 })}

@@ -5,6 +5,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import TextButton from '../TextButton';
 import Tooltip from '@mui/material/Tooltip'
 import { Box } from '@mui/system';
+import { formatToLocalTime } from '../../utils/DateTime';
 
 export default function WorkspaceTable({ rows, workSpaceExpanded, onDeleteClick, onExportClicked }) {
   const columns = [
@@ -19,7 +20,15 @@ export default function WorkspaceTable({ rows, workSpaceExpanded, onDeleteClick,
     },
     { field: 'proposalNum', headerName: 'Proposal No.', flex: 0.5, minWidth: 125 },
     { field: 'division', headerName: 'Division', flex: 0.75, minWidth: 125 },
-    { field: 'creationDate', headerName: 'Creation Date', flex: 0.5, minWidth: 125 },
+    {
+      field: 'creationDate',
+      headerName: 'Creation Date',
+      flex: 0.5,
+      minWidth: 125,
+      renderCell: (params) => {
+        return formatToLocalTime(params.row.creationDate);
+      }
+    },
     {
       field: 'export',
       headerName: 'Actions',
