@@ -12,6 +12,7 @@ import Loading from '../../components/Loading';
 import Error from '../../components/Error';
 import AlertPopup from '../../components/AlertPopup';
 import ConfirmDelete from '../../containers/ConfirmDelete';
+import EditEmployeeDetails from '../../containers/EditEmployeeDetails';
 import axios from 'axios';
 
 const RESUME_STATUS = {
@@ -32,6 +33,7 @@ function Resumes() {
   const [isDeleting, setIsDeleting] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [deleteResumeObj, setDeleteResumeObj] = useState({});
+  const [showEmployeeDetailsDialog, setShowEmployeeDetailsDialog] = useState(false);
 
   const userName = useSelector(userSelectors.getName);
   const userTitle = useSelector(userSelectors.getTitle);
@@ -105,12 +107,13 @@ function Resumes() {
         </AlertPopup>
       }
       <ConfirmDelete nameToDelete={`resume ${deleteResumeObj?.resumeName}`} open={showDeleteDialog} onClose={() => { setShowDeleteDialog(false) }} onConfirm={() => { deleteResume() }} isDeleting={isDeleting} />
+      <EditEmployeeDetails open={showEmployeeDetailsDialog} onClose={() => { setShowEmployeeDetailsDialog(false) }} />
       {isLoading && <Box sx={{ width: '100%' }}><Loading text='Loading Resumes...' /></Box>}
       {!isLoading && errorStatus && <Box sx={{ width: '100%' }}><Error text='Error retrieving resumes.' response={errorStatus} /></Box>}
       {!isLoading && !errorStatus &&
         <>
           <Box>
-            <SideBar title={userName} subtitle={userTitle} color='primary' />
+            <SideBar title={userName} subtitle={userTitle} color='primary' onProfileEdit={() => { setShowEmployeeDetailsDialog(true) }} />
           </Box>
           <Box sx={{ flexGrow: 1 }} className='content-section-margins'>
             <Typography variant='h3'>RESUMES</Typography>

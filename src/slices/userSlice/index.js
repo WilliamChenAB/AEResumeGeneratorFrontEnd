@@ -19,6 +19,15 @@ export const userSlice = createSlice({
     resetUser(state, action) {
       return initialState;
     },
+    editName(state, { payload }) {
+      return { ...state, name: payload };
+    },
+    editTitle(state, { payload }) {
+      return { ...state, title: payload };
+    },
+    editEmail(state, { payload }) {
+      return { ...state, email: payload };
+    },
   }
 });
 

@@ -2,8 +2,6 @@ import { useEffect, useState, useRef } from 'react';
 import { Button, IconButton, Dialog, DialogTitle, DialogContent, TextField, DialogActions } from '@mui/material';
 import { Close } from '@mui/icons-material';
 import AlertPopup from '../components/AlertPopup';
-import Loading from '../components/Loading';
-import Error from '../components/Error';
 import axios from 'axios';
 
 const defaultFormValues = {
@@ -46,9 +44,10 @@ function AddSectorType({ open, onClose, onSave }) {
     setSubmitDisabled(true);
     axios.post('/SectorType/New', null, {
       params: {
-      title: formValues.name,
-      description: 'description',
-    }}).then(() => {
+        title: formValues.name,
+        description: 'description',
+      }
+    }).then(() => {
       setOpenCompleteMessage({
         type: 'success',
         text: `Sector type ${formValues.name} has been successfully created.`
@@ -79,7 +78,7 @@ function AddSectorType({ open, onClose, onSave }) {
           </IconButton>
         </DialogTitle>
         <DialogContent>
-          <form ref={formRef}>
+          <form ref={formRef} onSubmit={e => { e.preventDefault() }}>
             <TextField fullWidth required label='Sector Type Name' variant='standard' name='name' onChange={handleFormChange} autoComplete='off'></TextField>
           </form>
         </DialogContent>

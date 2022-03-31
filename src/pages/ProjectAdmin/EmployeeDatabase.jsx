@@ -58,7 +58,7 @@ function EmployeeDatabase() {
             <br />
             <br />
             <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-              <Box sx={{ width: '40%' }}>
+              <Box mb={1} sx={{ width: '40%' }}>
                 <SearchBar placeholder='Search Employee Database' onChange={(value) => { tableFilter(value) }}></SearchBar>
               </Box>
             </Box>
