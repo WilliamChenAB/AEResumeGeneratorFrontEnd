@@ -1,6 +1,8 @@
 import StyledTable from './StyledTable/StyledTable';
 import TextButton from '../TextButton';
-import { Box } from '@mui/system';
+import { Box, Typography } from '@mui/material';
+import { Tooltip } from '@mui/material';
+import HelpRounded from '@mui/icons-material/HelpRounded';
 
 export default function EmployeeSearchTable({ rows, resumesClicked, sectorsClicked }) {
   const columns = [
@@ -9,8 +11,16 @@ export default function EmployeeSearchTable({ rows, resumesClicked, sectorsClick
     { field: 'jobTitle', headerName: 'Job Title', flex: 0.2, minWidth: 150 },
     {
       field: 'resumeAction',
-      headerName: 'Action',
-      description: 'Click to view resume or sector',
+      renderHeader: () => (
+        <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+          <Box mr={1}>
+            <Typography variant='subtitle3'>Action</Typography>
+          </Box>
+          <Tooltip title='Click to view resume or sector'>
+            <HelpRounded />
+          </Tooltip>
+        </Box>
+      ),
       flex: 0.2,
       minWidth: 250,
       sortable: false,

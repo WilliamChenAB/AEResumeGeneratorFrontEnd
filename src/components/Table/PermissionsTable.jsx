@@ -3,6 +3,9 @@ import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
+import HelpRounded from '@mui/icons-material/HelpRounded';
+import { Box, Typography } from '@mui/material';
+import { Tooltip } from '@mui/material';
 
 export default function PermissionsTable({ rows, onEditPermission }) {
   const columns = [
@@ -11,8 +14,16 @@ export default function PermissionsTable({ rows, onEditPermission }) {
     { field: 'role', headerName: 'Role', flex: 0.8, minWidth: 150 },
     {
       field: 'access',
-      headerName: 'Access Level',
-      description: 'Select one access level. System Admins have Project Admin permissions.',
+      renderHeader: () => (
+        <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+          <Box mr={1}>
+            <Typography variant='subtitle3'>Access Level</Typography>
+          </Box>
+          <Tooltip title='Select one access level. System Admins have Project Admin permissions.'>
+            <HelpRounded />
+          </Tooltip>
+        </Box>
+      ),
       flex: 0.8,
       minWidth: 500,
       sortable: false,
