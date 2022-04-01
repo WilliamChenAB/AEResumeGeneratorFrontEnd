@@ -11,7 +11,7 @@ export default function PermissionsTable({ rows, onEditPermission }) {
   const columns = [
     { field: 'name', headerName: 'Name', flex: 1, minWidth: 200 },
     { field: 'email', headerName: 'Email Address', flex: 1, minWidth: 180 },
-    { field: 'role', headerName: 'Role', flex: 0.8, minWidth: 150 },
+    { field: 'role', headerName: 'Job Title', flex: 0.8, minWidth: 150 },
     {
       field: 'access',
       renderHeader: () => (
