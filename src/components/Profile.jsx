@@ -1,5 +1,6 @@
-import { Avatar, Box, Typography, IconButton } from '@mui/material';
+import { Avatar, Box, Typography } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
+import CustomIconButton from './CustomIconButton';
 
 function getInitials(text) {
   return text ? text.split(' ').map(word => word[0]).join('').toUpperCase() : null;
@@ -21,9 +22,9 @@ function Profile({ title, subtitle, picture, width = 150, showEdit, onEdit }) {
     <Box sx={{ position: 'relative', width: width }}>
       {showEdit &&
         <Box sx={{ position: 'absolute', right: '-35px', bottom: '0px' }}>
-          <IconButton onClick={onEdit}>
+          <CustomIconButton tooltipText='Edit employee details' onClick={onEdit}>
             <EditIcon />
-          </IconButton>
+          </CustomIconButton>
         </Box>
       }
       <Box mb={1}>
