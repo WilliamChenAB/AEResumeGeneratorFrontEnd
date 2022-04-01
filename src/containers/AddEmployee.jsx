@@ -188,7 +188,15 @@ function AddEmployee({ open, onClose, workspaceId, wname }) {
               <Box mb={1}>
               <SearchBar defaultValue='' placeholder='Search Table...' onChange={(searchVal) => { tableFilter(searchVal); }} />
               </Box>
-              <WorkSpaceEmployeeTable rows={rows} onSelect={(id) => { setEmployeeName(rows.filter((row) => row.id === id[0])[0].name); setEmployeeId(id[0]) }} />
+              <WorkSpaceEmployeeTable rows={rows} onSelect={(id) => {
+                  if(id.length ===0){
+                    setEmployeeName(''); 
+                    setEmployeeId('');//
+                  }else {
+                    setEmployeeName(rows.filter((row) => row.id === id[0])[0]?.name); 
+                    setEmployeeId(id[0]);
+                  }
+                }} />
               <Box my={1} mx={2} sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around' }}>
                 <Tooltip title='Target Employee and template required' placement='top'>
                   <span>
