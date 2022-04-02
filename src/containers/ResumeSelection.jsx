@@ -47,6 +47,7 @@ function ResumeSelection({ employeeName, open, employeeId, onClose, onSubmit, su
         handleResumeClicked(0, response.data);
       }
       else {
+        setActiveTab(-1);
         setCurrentSectors([]);
       }
       setIsLoading(false);
@@ -68,6 +69,9 @@ function ResumeSelection({ employeeName, open, employeeId, onClose, onSubmit, su
       setResumes(response.data);
       if (response.data !== null && response.data.length !== undefined && response.data.length > 0) {
         handleResumeClicked(0, response.data);
+      }
+      else if(response.data.length === 0){
+        setActiveTab(-1);
       }
       setIsLoading(false);
     }).catch((error) => {
@@ -182,7 +186,7 @@ function ResumeSelection({ employeeName, open, employeeId, onClose, onSubmit, su
           <>
             <Divider color='primary' />
             <DialogActions>
-              <Button variant='contained' onClick={() => { handleSubmit() }} disabled={false}>Copy Selected Resume</Button>
+              <Button variant='contained' disabled={resumes[activeTab] === null || resumes[activeTab] === undefined || activeTab === -1} onClick={() => { handleSubmit() }}>Copy Selected Resume</Button>
             </DialogActions>
           </>
         }
