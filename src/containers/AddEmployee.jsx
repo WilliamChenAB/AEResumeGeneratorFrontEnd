@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Button, IconButton, Dialog, DialogTitle, DialogContent, Box, Tooltip} from '@mui/material';
+import { Button, IconButton, Dialog, DialogTitle, DialogContent, Box, Tooltip } from '@mui/material';
 import { Close } from '@mui/icons-material';
 import WorkSpaceEmployeeTable from '../components/Table/WorkspaceEmployeeTable';
 import SearchBar from '../components/SearchBar';
@@ -39,7 +39,7 @@ function AddEmployee({ open, onClose, workspaceId, wname }) {
             id: employee.employeeId,
             name: `${employee.name}`, // force name to be string
             jobTitle: employee.jobTitle,
-            access: employee.access === 0? "Employee" : employee.access === 1? "Project Admin": "System Admin"
+            access: employee.access === 0 ? 'Employee' : employee.access === 1 ? 'Project Admin' : 'System Admin',
           };
         });
         setData(responseData);
@@ -74,10 +74,6 @@ function AddEmployee({ open, onClose, workspaceId, wname }) {
   }
 
   const handleNew = (ev) => {
-    console.log('requesting employee:');
-    console.log(workspaceId);
-    console.log(employeeId);
-
     setIsLoading(true);
     axios.post('/Workspace/AddEmptyResume', null, {
       params: {
@@ -90,7 +86,7 @@ function AddEmployee({ open, onClose, workspaceId, wname }) {
       setIsLoading(false);
       setOpenCompleteMessage({
         type: 'success',
-        text: `Empty Resume added for employee: ${employeeName}.`
+        text: `Empty resume successfully added for ${employeeName}.`
       });
       setEmployeeId('');
       handleClose(true);
@@ -98,7 +94,7 @@ function AddEmployee({ open, onClose, workspaceId, wname }) {
       setIsLoading(false);
       setOpenCompleteMessage({
         type: 'error',
-        text: `An error occurred while creating blank resume. (${error.response.status} ${error.response.statusText})`
+        text: `An error occurred while creating empty resume. (${error.response.status} ${error.response.statusText})`
       });
       setEmployeeId('');
       handleClose(true);
@@ -118,7 +114,7 @@ function AddEmployee({ open, onClose, workspaceId, wname }) {
       setIsLoading(false);
       setOpenCompleteMessage({
         type: 'success',
-        text: `resume Requested for employee ${employeeName}.`
+        text: `Resume successfully requested for ${employeeName}.`
       });
       setEmployeeId('');
       handleClose(true);
@@ -126,7 +122,7 @@ function AddEmployee({ open, onClose, workspaceId, wname }) {
       setIsLoading(false);
       setOpenCompleteMessage({
         type: 'error',
-        text: `An error occurred while requesting Resume. (${error.response.status} ${error.response.statusText})`
+        text: `An error occurred while requesting resume. (${error.response.status} ${error.response.statusText})`
       });
       setEmployeeId('');
       handleClose(true);
@@ -140,7 +136,6 @@ function AddEmployee({ open, onClose, workspaceId, wname }) {
   const handleSubmitCopiedResume = (resumeId) => {
     axios.post('/Workspace/CopyResume', null, {
       params: {
-        // TODO - replace with actual template
         resumeId: resumeId,
         workspaceId: workspaceId,
       }
@@ -148,7 +143,7 @@ function AddEmployee({ open, onClose, workspaceId, wname }) {
       setIsLoading(false);
       setOpenCompleteMessage({
         type: 'success',
-        text: `Copied resume for employee ${employeeName}.`
+        text: `Resume successfully copied for ${employeeName}.`
       });
       setEmployeeId('');
       handleClose(true);
@@ -156,7 +151,7 @@ function AddEmployee({ open, onClose, workspaceId, wname }) {
       setIsLoading(false);
       setOpenCompleteMessage({
         type: 'error',
-        text: `An error occurred while copying Resume. (${error.response.status} ${error.response.statusText})`
+        text: `An error occurred while copying resume. (${error.response.status} ${error.response.statusText})`
       });
       setEmployeeId('');
       handleClose(true);
@@ -186,29 +181,29 @@ function AddEmployee({ open, onClose, workspaceId, wname }) {
                 <Dropdown required label='Resume Template' options={templates} name='template' onChange={(ev) => { setChosenTemplate(ev.target.value) }}></Dropdown>
               </Box>
               <Box mb={1}>
-              <SearchBar defaultValue='' placeholder='Search Table...' onChange={(searchVal) => { tableFilter(searchVal); }} />
+                <SearchBar defaultValue='' placeholder='Search Table...' onChange={(searchVal) => { tableFilter(searchVal); }} />
               </Box>
               <WorkSpaceEmployeeTable rows={rows} onSelect={(id) => {
-                  if(id.length ===0){
-                    setEmployeeName(''); 
-                    setEmployeeId('');//
-                  }else {
-                    setEmployeeName(rows.filter((row) => row.id === id[0])[0]?.name); 
-                    setEmployeeId(id[0]);
-                  }
-                }} />
+                if (id.length === 0) {
+                  setEmployeeName('');
+                  setEmployeeId('');
+                } else {
+                  setEmployeeName(rows.filter((row) => row.id === id[0])[0]?.name);
+                  setEmployeeId(id[0]);
+                }
+              }} />
               <Box my={1} mx={2} sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around' }}>
-                <Tooltip title='Target Employee and template required' placement='top'>
+                <Tooltip title='Target employee and template required' placement='top'>
                   <span>
                     <Button variant='contained' onClick={handleNewResumeRequest} disabled={(employeeId === '' || chosenTemplate === '') ? true : false}>Request New Resume</Button>
                   </span>
                 </Tooltip>
-                <Tooltip title='Target Employee required' placement='top'>
+                <Tooltip title='Target employee required' placement='top'>
                   <span>
                     <Button variant='contained' onClick={handleFromResume} disabled={(employeeId === '') ? true : false}>Import Existing Resume</Button>
                   </span>
                 </Tooltip>
-                <Tooltip title='Target Employee and template required' placement='top'>
+                <Tooltip title='Target employee and template required' placement='top'>
                   <span>
                     <Button variant='contained' onClick={handleNew} disabled={(employeeId === '' || chosenTemplate === '') ? true : false}>Add New Empty Resume</Button>
                   </span>

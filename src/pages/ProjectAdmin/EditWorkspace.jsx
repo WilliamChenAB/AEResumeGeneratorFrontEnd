@@ -63,21 +63,17 @@ function EditWorkspace() {
       }
     }).then((response) => {
       setWorkSpaceName(response.data.name);
-      setWorkspace(
-        {
-          name: response.data.name,
-          proposalNumber: response.data.proposalNumber,
-          division: response.data.division,
-          creationDate: response.data.creationDate
-        }
-      );
-      setEntries(
-        response.data.resumes.map((resume) => {
-          return ({
-            name: String(resume.employeeName), error: false
-          });
-        })
-      );
+      setWorkspace({
+        name: response.data.name,
+        proposalNumber: response.data.proposalNumber,
+        division: response.data.division,
+        creationDate: response.data.creationDate
+      });
+      setEntries(response.data.resumes.map((resume) => {
+        return ({
+          name: String(resume.employeeName), error: false
+        });
+      }));
       setResumes(response.data.resumes);
       if (response.data.resumes[activeEmployeeTab] === null || response.data.resumes[activeEmployeeTab] === undefined) {
         setActiveEmployeeTab(0);
@@ -104,7 +100,6 @@ function EditWorkspace() {
     });
   }
 
-  // Get workspace
   useEffect(() => {
     getWorkspace();
   }, []);
@@ -227,9 +222,9 @@ function EditWorkspace() {
     if (activeEmployeeTab === -1) {
       return null;
     }
+
     const resume = resumes[activeEmployeeTab];
     if (resume !== undefined) {
-
       let retArray = [];
       resume.sectorList.map((sector) => {
         if (retArray.filter(entry => entry.name === sector.typeTitle).length === 0) {
@@ -242,7 +237,7 @@ function EditWorkspace() {
         if (found) {
           found.error = false;
         }
-      })
+      });
 
       const template = templates[activeEmployeeTab];
       if (template !== undefined && template !== null) {
@@ -329,7 +324,7 @@ function EditWorkspace() {
               <Box sx={{ mt: 0, ml: 2, display: 'flex', flexDirection: 'column' }}>
                 <Typography color='brown' variant='h2'>Resume Pending</Typography>
                 <br />
-                <Typography color='brown'>Will be uploaded once available</Typography>
+                <Typography color='brown'>Will be displayed once available.</Typography>
               </Box>
             </Box>
           </Box>

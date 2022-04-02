@@ -38,7 +38,7 @@ function ProjectWorkspaces() {
       setIsDeleting(false);
       setOpenCompleteMessage({
         type: 'success',
-        text: `Workspace ${deleteWorkspaceOBJ.resumeName} has been permanently deleted.`
+        text: `Workspace ${deleteWorkspaceOBJ.workspaceName} has been permanently deleted.`
       });
       setShowDeleteDialog(false);
       getWorkspaces();
@@ -55,8 +55,7 @@ function ProjectWorkspaces() {
   const getWorkspaces = () => {
     setIsLoading(true);
     setErrorStatus(false);
-    axios.get('/Workspace/GetPersonal'
-    ).then((response) => {
+    axios.get('/Workspace/GetPersonal').then((response) => {
       const responseData = response.data.map((workspace) => {
         const name = workspace.name === '' ? 'name' : workspace.name;
         return {
@@ -90,7 +89,7 @@ function ProjectWorkspaces() {
       return new Promise(resolve => {
         saveAs(response.data, `${exportObj.workspaceName}.zip`);
         resolve(true);
-      })
+      });
     }).catch((error) => {
       setIsExporting(false);
       setErrorStatus(error.response);
@@ -126,11 +125,11 @@ function ProjectWorkspaces() {
         <ConfirmDelete exporting={true} nameToDelete={`workspace ${exportObj?.workspaceName}`} open={showExportDialog} onClose={() => { setShowExportDialog(false) }} onConfirm={() => { exportResume() }} isDeleting={isExporting} />
         {isLoading && <Loading text='Loading Workspaces...' />}
         {!isLoading && errorStatus && <Error text='Error retrieving workspaces.' response={errorStatus}></Error>}
-        {!isLoading &&  !errorStatus &&
+        {!isLoading && !errorStatus &&
           <>
             <Typography variant='h3'>PROPOSAL WORKSPACES</Typography>
             <Box my={3}>
-            <AddButton text='Add Workspace' onClick={() => setShowWorkspaceDialog(true)} />
+              <AddButton text='Add Workspace' onClick={() => setShowWorkspaceDialog(true)} />
             </Box>
             <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
               <Box mb={1} sx={{ width: '40%' }}>
