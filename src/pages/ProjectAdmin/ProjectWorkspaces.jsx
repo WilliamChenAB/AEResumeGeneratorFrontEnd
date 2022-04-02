@@ -109,7 +109,7 @@ function ProjectWorkspaces() {
 
   const tableFilter = (value) => {
     const filteredRows = data.filter((row) => {
-      return String(row.workspaceName).toLowerCase().includes(value.toLowerCase()) || String(row.id).toLowerCase().includes(value.toLowerCase()) || String(row.division).toLowerCase().includes(value.toLowerCase());
+      return String(row.workspaceName).toLowerCase().includes(value.toLowerCase()) || String(row.proposalNum).toLowerCase().includes(value.toLowerCase()) || String(row.division).toLowerCase().includes(value.toLowerCase());
     });
     setRows(filteredRows);
   }
