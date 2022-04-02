@@ -107,8 +107,8 @@ function EmployeePermissions() {
       }
       <ConfirmAccessChange name={employee.name} oldAccess={employee.access} newAccess={newAccess} open={showEditDialog} onClose={() => { setShowEditDialog(false) }} onConfirm={() => saveEmployeeAccess(employee.id, newAccess)} isEditing={isEditing} />
       <Box sx={{ flexGrow: 1 }} className='content-section-margins'>
-        {isLoading && <Loading text='Loading Templates...' />}
-        {!isLoading && errorStatus && <Error text='Error retrieving templates.' response={errorStatus}></Error>}
+        {isLoading && <Loading text='Loading Permissions...' />}
+        {!isLoading && errorStatus && <Error text='Error retrieving permissions.' response={errorStatus}></Error>}
         {!isLoading && !errorStatus && <>
           <Typography variant='h3'>EMPLOYEE PERMISSIONS</Typography>
           <br />
