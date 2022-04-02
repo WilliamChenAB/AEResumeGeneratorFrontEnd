@@ -1,5 +1,5 @@
 const oidcConfig = {
-  authority: 'https://ae-resume-idp.azurewebsites.net/',
+  authority: 'https://<YOUR_IP_HERE>:5003/',
   client_id: 'js',
   redirect_uri: process.env.REACT_APP_AUTH_REDIRECT_URI,
   response_type: 'code',
